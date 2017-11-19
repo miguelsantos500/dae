@@ -1,4 +1,4 @@
-package entities;
+package entities.publictest;
 
 import java.io.Serializable;
 import java.util.Date;

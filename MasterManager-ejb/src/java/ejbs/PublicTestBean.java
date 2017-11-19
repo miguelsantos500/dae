@@ -1,6 +1,6 @@
 package ejbs;
 
-import entities.PublicTest;
+import entities.publictest.PublicTest;
 import exceptions.EntityAlreadyExistsException;
 import exceptions.EntityDoesNotExistException;
 import java.util.Date;
