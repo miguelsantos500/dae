@@ -9,6 +9,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class StudentDTO extends UserDTO {
 
+    private int courseCode;
+    private String courseName;
     
     public StudentDTO(){
         
@@ -17,18 +19,34 @@ public class StudentDTO extends UserDTO {
     public StudentDTO(String username,
             String password,
             String name,
-            String email){
+            String email,
+            int courseCode,
+            String courseName){
         super(username, password, name, email);
-        
+        this.courseCode = courseCode;
+        this.courseName = courseName;
     }
 
     @Override
     public void reset() {
         super.reset(); 
     }
-    
-    
-    
-    
+
+    public int getCourseCode() {
+        return courseCode;
+    }
+
+    public void setCourseCode(int courseCode) {
+        this.courseCode = courseCode;
+    }
+
+    public String getCourseName() {
+        return courseName;
+    }
+
+    public void setCourseName(String courseName) {
+        this.courseName = courseName;
+    }
+
     
 }
