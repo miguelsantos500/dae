@@ -6,8 +6,8 @@
 package entities.publictest;
 
 import java.io.Serializable;
-import users.CCPUser;
-import users.Teacher;
+import entities.users.CCPUser;
+import entities.users.Teacher;
 
 /**
  *
