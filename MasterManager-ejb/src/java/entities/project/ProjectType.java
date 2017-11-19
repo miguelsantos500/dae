@@ -5,10 +5,12 @@
  */
 package entities.project;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Miguel
  */
-public enum ProjectType {
+public enum ProjectType implements Serializable {
     DISSERTATION, PROJECT, INTERNSHIP;
 }
