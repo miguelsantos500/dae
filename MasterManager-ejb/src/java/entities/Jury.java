@@ -6,6 +6,8 @@
 package entities;
 
 import java.io.Serializable;
+import users.CCPUser;
+import users.Teacher;
 
 /**
  *
