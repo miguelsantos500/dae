@@ -5,11 +5,13 @@
  */
 package entities.project;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Miguel
  */
-public class BudgetItem {
+public class BudgetItem  implements Serializable {
     
     private double value;
     

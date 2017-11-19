@@ -5,6 +5,7 @@
  */
 package entities.project;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -12,7 +13,7 @@ import java.util.List;
  *
  * @author Miguel
  */
-public class Budget {
+public class Budget implements Serializable {
     
     private List<BudgetItem> budgetItems;
 

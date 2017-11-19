@@ -6,7 +6,6 @@
 package ejbs;
 
 import dtos.ProjectProposalDTO;
-import entities.User;
 import entities.project.Budget;
 import entities.project.ProjectProposal;
 import entities.project.ProjectType;
@@ -21,6 +20,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.validation.ConstraintViolationException;
+import users.User;
 
 /**
  *

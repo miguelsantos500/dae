@@ -1,12 +1,12 @@
 package dtos;
 
-import entities.User;
 import entities.project.ProjectType;
 import java.io.Serializable;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
+import users.User;
 
 public class ProjectProposalDTO implements Serializable{
 
