@@ -1,14 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package ejbs;
 
-import exceptions.EntityDoesNotExistException;
-import exceptions.EntityAlreadyExistsException;
-import entities.CCPUser;
+import entities.Student;
 import entities.User;
+import exceptions.EntityAlreadyExistsException;
+import exceptions.EntityDoesNotExistException;
 import exceptions.MyConstraintViolationException;
 import exceptions.Utils;
 import javax.ejb.EJBException;
@@ -17,12 +12,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.validation.ConstraintViolationException;
 
-/**
- *
- * @author Soraia <soraiabasso@outlook.pt>
- */
+
 @Stateless
-public class CCPUserBean {
+public class StudentBean {
 
     @PersistenceContext
     private EntityManager em;
@@ -34,7 +26,7 @@ public class CCPUserBean {
                 throw new EntityAlreadyExistsException(
                         "Um utilizador já existe com esse username.");
             }
-            em.persist(new CCPUser(username, password, name, email));
+            em.persist(new Student(username, password, name, email));
         } catch (EntityAlreadyExistsException e) {
             throw e;
         } catch (Exception e) {
@@ -46,15 +38,15 @@ public class CCPUserBean {
             throws EntityDoesNotExistException, MyConstraintViolationException,
             MyConstraintViolationException {
         try {
-            CCPUser ccpuser = em.find(CCPUser.class, username);
-            if (ccpuser == null) {
+            Student student = em.find(Student.class, username);
+            if (student == null) {
                 throw new EntityDoesNotExistException(
-                        "Não existe um utilizador CCP com esse username");
+                        "Não existe um utilizador Estudante com esse username.");
             }
-            ccpuser.setName(name);
-            ccpuser.setEmail(email);
+            student.setName(name);
+            student.setEmail(email);
 
-            em.merge(ccpuser);
+            em.merge(student);
 
         } catch (EntityDoesNotExistException e) {
             throw e;
@@ -68,13 +60,13 @@ public class CCPUserBean {
 
     public void remove(String username) throws EntityDoesNotExistException {
         try {
-            CCPUser ccpuser = em.find(CCPUser.class, username);
-            if (ccpuser == null) {
+            Student student = em.find(Student.class, username);
+            if (student == null) {
                 throw new EntityDoesNotExistException(
-                        "Não existe um utilizador CCP com esse username");
+                        "Não existe um utilizador Estudante com esse username.");
             }
 
-            em.remove(ccpuser);
+            em.remove(student);
 
         } catch (EntityDoesNotExistException e) {
             throw e;
