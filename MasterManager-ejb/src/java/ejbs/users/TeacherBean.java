@@ -1,7 +1,7 @@
 package ejbs.users;
 
-import users.Teacher;
-import users.User;
+import entities.users.Teacher;
+import entities.users.User;
 import exceptions.EntityAlreadyExistsException;
 import exceptions.EntityDoesNotExistException;
 import exceptions.MyConstraintViolationException;

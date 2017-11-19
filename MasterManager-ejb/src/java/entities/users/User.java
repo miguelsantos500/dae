@@ -1,5 +1,5 @@
 
-package users;
+package entities.users;
 
 import java.io.Serializable;
 import javax.persistence.Entity;

@@ -1,6 +1,6 @@
-package users;
+package entities.users;
 
-import users.User;
+import entities.users.User;
 import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.Table;

@@ -1,7 +1,7 @@
-package users;
+package entities.users;
 
 import entities.Course;
-import users.User;
+import entities.users.User;
 import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
