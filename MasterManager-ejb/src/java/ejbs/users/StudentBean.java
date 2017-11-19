@@ -1,7 +1,8 @@
-package ejbs;
+package ejbs.users;
 
-import entities.Teacher;
-import entities.User;
+import entities.Course;
+import users.Student;
+import users.User;
 import exceptions.EntityAlreadyExistsException;
 import exceptions.EntityDoesNotExistException;
 import exceptions.MyConstraintViolationException;
@@ -12,22 +13,30 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.validation.ConstraintViolationException;
 
+
 @Stateless
-public class TeacherBean {
+public class StudentBean {
 
     @PersistenceContext
     private EntityManager em;
 
-    public void create(String username, String password, String name, String email)
-            throws EntityAlreadyExistsException {
+    public void create(String username, String password, String name, String email, int courseCode)
+            throws EntityAlreadyExistsException, MyConstraintViolationException {
         try {
-            if (em.find(User.class, username) != null) {
-                throw new EntityAlreadyExistsException(
-                        "Um utilizador já existe com esse username.");
+            if (em.find(Student.class, username) != null) {
+                throw new EntityAlreadyExistsException("A user with that username already exists.");
             }
-            em.persist(new Teacher(username, password, name, email));
+            Course course = em.find(Course.class, courseCode);
+            if (course == null) {
+                throw new EJBException("There is no course with that code.");
+            }
+            Student student = new Student(username, password, name, email, course);
+            course.addStudent(student);
+            em.persist(student);
         } catch (EntityAlreadyExistsException e) {
             throw e;
+        } catch (ConstraintViolationException e) {
+            throw new MyConstraintViolationException(Utils.getConstraintViolationMessages(e));
         } catch (Exception e) {
             throw new EJBException(e.getMessage());
         }
@@ -37,15 +46,15 @@ public class TeacherBean {
             throws EntityDoesNotExistException, MyConstraintViolationException,
             MyConstraintViolationException {
         try {
-            Teacher teacher = em.find(Teacher.class, username);
-            if (teacher == null) {
+            Student student = em.find(Student.class, username);
+            if (student == null) {
                 throw new EntityDoesNotExistException(
-                        "Não existe um utilizador Professore com esse username");
+                        "Não existe um utilizador Estudante com esse username.");
             }
-            teacher.setName(name);
-            teacher.setEmail(email);
+            student.setName(name);
+            student.setEmail(email);
 
-            em.merge(teacher);
+            em.merge(student);
 
         } catch (EntityDoesNotExistException e) {
             throw e;
@@ -59,13 +68,13 @@ public class TeacherBean {
 
     public void remove(String username) throws EntityDoesNotExistException {
         try {
-            Teacher teacher = em.find(Teacher.class, username);
-            if (teacher == null) {
+            Student student = em.find(Student.class, username);
+            if (student == null) {
                 throw new EntityDoesNotExistException(
-                        "Não existe um utilizador Professore com esse username.");
+                        "Não existe um utilizador Estudante com esse username.");
             }
 
-            em.remove(teacher);
+            em.remove(student);
 
         } catch (EntityDoesNotExistException e) {
             throw e;
@@ -73,5 +82,6 @@ public class TeacherBean {
             throw new EJBException(e.getMessage());
         }
     }
+    
 
 }
