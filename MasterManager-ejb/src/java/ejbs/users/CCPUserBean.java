@@ -1,9 +1,14 @@
-package ejbs;
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package ejbs.users;
 
-import entities.Institution;
-import entities.User;
-import exceptions.EntityAlreadyExistsException;
 import exceptions.EntityDoesNotExistException;
+import exceptions.EntityAlreadyExistsException;
+import users.CCPUser;
+import users.User;
 import exceptions.MyConstraintViolationException;
 import exceptions.Utils;
 import javax.ejb.EJBException;
@@ -12,9 +17,12 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.validation.ConstraintViolationException;
 
+/**
+ *
+ * @author Soraia <soraiabasso@outlook.pt>
+ */
 @Stateless
-
-public class InstitutionBean {
+public class CCPUserBean {
 
     @PersistenceContext
     private EntityManager em;
@@ -26,7 +34,7 @@ public class InstitutionBean {
                 throw new EntityAlreadyExistsException(
                         "Um utilizador já existe com esse username.");
             }
-            em.persist(new Institution(username, password, name, email));
+            em.persist(new CCPUser(username, password, name, email));
         } catch (EntityAlreadyExistsException e) {
             throw e;
         } catch (Exception e) {
@@ -38,15 +46,15 @@ public class InstitutionBean {
             throws EntityDoesNotExistException, MyConstraintViolationException,
             MyConstraintViolationException {
         try {
-            Institution institution = em.find(Institution.class, username);
-            if (institution == null) {
+            CCPUser ccpuser = em.find(CCPUser.class, username);
+            if (ccpuser == null) {
                 throw new EntityDoesNotExistException(
-                        "Não existe um utilizador Instituição com esse username");
+                        "Não existe um utilizador CCP com esse username");
             }
-            institution.setName(name);
-            institution.setEmail(email);
+            ccpuser.setName(name);
+            ccpuser.setEmail(email);
 
-            em.merge(institution);
+            em.merge(ccpuser);
 
         } catch (EntityDoesNotExistException e) {
             throw e;
@@ -60,13 +68,13 @@ public class InstitutionBean {
 
     public void remove(String username) throws EntityDoesNotExistException {
         try {
-            Institution institution = em.find(Institution.class, username);
-            if (institution == null) {
+            CCPUser ccpuser = em.find(CCPUser.class, username);
+            if (ccpuser == null) {
                 throw new EntityDoesNotExistException(
-                        "Não existe um utilizador Instituição com esse username.");
+                        "Não existe um utilizador CCP com esse username");
             }
 
-            em.remove(institution);
+            em.remove(ccpuser);
 
         } catch (EntityDoesNotExistException e) {
             throw e;

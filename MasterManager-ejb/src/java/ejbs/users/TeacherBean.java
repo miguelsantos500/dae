@@ -1,7 +1,7 @@
-package ejbs;
+package ejbs.users;
 
-import entities.Student;
-import entities.User;
+import users.Teacher;
+import users.User;
 import exceptions.EntityAlreadyExistsException;
 import exceptions.EntityDoesNotExistException;
 import exceptions.MyConstraintViolationException;
@@ -12,9 +12,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.validation.ConstraintViolationException;
 
-
 @Stateless
-public class StudentBean {
+public class TeacherBean {
 
     @PersistenceContext
     private EntityManager em;
@@ -26,7 +25,7 @@ public class StudentBean {
                 throw new EntityAlreadyExistsException(
                         "Um utilizador já existe com esse username.");
             }
-            em.persist(new Student(username, password, name, email));
+            em.persist(new Teacher(username, password, name, email));
         } catch (EntityAlreadyExistsException e) {
             throw e;
         } catch (Exception e) {
@@ -38,15 +37,15 @@ public class StudentBean {
             throws EntityDoesNotExistException, MyConstraintViolationException,
             MyConstraintViolationException {
         try {
-            Student student = em.find(Student.class, username);
-            if (student == null) {
+            Teacher teacher = em.find(Teacher.class, username);
+            if (teacher == null) {
                 throw new EntityDoesNotExistException(
-                        "Não existe um utilizador Estudante com esse username.");
+                        "Não existe um utilizador Professore com esse username");
             }
-            student.setName(name);
-            student.setEmail(email);
+            teacher.setName(name);
+            teacher.setEmail(email);
 
-            em.merge(student);
+            em.merge(teacher);
 
         } catch (EntityDoesNotExistException e) {
             throw e;
@@ -60,13 +59,13 @@ public class StudentBean {
 
     public void remove(String username) throws EntityDoesNotExistException {
         try {
-            Student student = em.find(Student.class, username);
-            if (student == null) {
+            Teacher teacher = em.find(Teacher.class, username);
+            if (teacher == null) {
                 throw new EntityDoesNotExistException(
-                        "Não existe um utilizador Estudante com esse username.");
+                        "Não existe um utilizador Professore com esse username.");
             }
 
-            em.remove(student);
+            em.remove(teacher);
 
         } catch (EntityDoesNotExistException e) {
             throw e;

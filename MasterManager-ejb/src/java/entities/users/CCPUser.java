@@ -1,9 +1,12 @@
-package entities;
+package users;
 
+import users.User;
 import java.io.Serializable;
 import javax.persistence.Entity;
+import javax.persistence.Table;
 
 @Entity
+@Table(name="CCP_USERS")
 public class CCPUser extends User implements Serializable {
 
     public CCPUser() {
