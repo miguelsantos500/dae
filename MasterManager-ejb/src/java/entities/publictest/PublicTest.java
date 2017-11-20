@@ -12,7 +12,9 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
+import users.CCPUser;
 import users.Student;
+import users.Teacher;
 
 @Entity
 @Table(name = "PUBLIC_TESTS")
@@ -22,47 +24,51 @@ public class PublicTest implements Serializable {
 
     @Id
     private int code;
-    
+
     @NotNull
     private String title;
-    
+
     @NotNull
     @Temporal(TemporalType.DATE)
     @Column(name = "TEST_DATE")
     private Date testDate;
-    
+
     @NotNull
     @Column(name = "TEST_HOUR")
     private String testHour;
-    
+
     @NotNull
     private String place;
-    
+
     @NotNull
     private String link;
-    
+
     @NotNull
     //@OneToMany
     private List<Student> students;
-    
-    private List<Jury> jury;
-    
-    
+
+    @NotNull
+    //@OneToMany
+    private CCPUser ccpUserJury;
+
+    //@ManyToMany
+    private List<Teacher> teachersJurys;
 
     public PublicTest() {
-        jury = new LinkedList<>();
+        teachersJurys = new LinkedList<>();
         students = new LinkedList<>();
     }
 
-    public PublicTest(int code,String title, Date testDate,
-            String testHour, String place, String link) {
+    public PublicTest(int code, String title, Date testDate,
+            String testHour, String place, String link, CCPUser ccpUserJury) {
         this.code = code;
         this.title = title;
         this.testDate = testDate;
         this.testHour = testHour;
         this.place = place;
         this.link = link;
-        jury = new LinkedList<>();
+        this.ccpUserJury = ccpUserJury;
+        teachersJurys = new LinkedList<>();
         students = new LinkedList<>();
     }
 
@@ -114,14 +120,6 @@ public class PublicTest implements Serializable {
         this.link = link;
     }
 
-    public List<Jury> getJury() {
-        return jury;
-    }
-
-    public void setJury(List<Jury> jury) {
-        this.jury = jury;
-    }
-
     public List<Student> getStudent() {
         return students;
     }
@@ -129,7 +127,29 @@ public class PublicTest implements Serializable {
     public void setStudent(List<Student> student) {
         this.students = student;
     }
-    
-    
+
+    public List<Student> getStudents() {
+        return students;
+    }
+
+    public void setStudents(List<Student> students) {
+        this.students = students;
+    }
+
+    public CCPUser getCcpUserJury() {
+        return ccpUserJury;
+    }
+
+    public void setCcpUserJury(CCPUser ccpUserJury) {
+        this.ccpUserJury = ccpUserJury;
+    }
+
+    public List<Teacher> getTeachersJurys() {
+        return teachersJurys;
+    }
+
+    public void setTeachersJurys(List<Teacher> teachersJurys) {
+        this.teachersJurys = teachersJurys;
+    }
 
 }
