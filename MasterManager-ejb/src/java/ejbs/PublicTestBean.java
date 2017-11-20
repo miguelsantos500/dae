@@ -1,6 +1,7 @@
 package ejbs;
 
 import entities.publictest.PublicTest;
+import entities.users.CCPUser;
 import exceptions.EntityAlreadyExistsException;
 import exceptions.EntityDoesNotExistException;
 import java.util.Date;
@@ -9,7 +10,7 @@ import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import users.CCPUser;
+
 
 @Stateless
 public class PublicTestBean {

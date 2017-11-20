@@ -1,5 +1,8 @@
 package entities.publictest;
 
+import entities.users.CCPUser;
+import entities.users.Student;
+import entities.users.Teacher;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.LinkedList;
@@ -12,9 +15,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
-import users.CCPUser;
-import users.Student;
-import users.Teacher;
+
+
 
 @Entity
 @Table(name = "PUBLIC_TESTS")

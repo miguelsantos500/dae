@@ -6,7 +6,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
-import users.User;
+import entities.users.User;
 
 public class ProjectProposalDTO implements Serializable{
 

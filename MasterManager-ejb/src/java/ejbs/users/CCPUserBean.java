@@ -7,8 +7,8 @@ package ejbs.users;
 
 import exceptions.EntityDoesNotExistException;
 import exceptions.EntityAlreadyExistsException;
-import users.CCPUser;
-import users.User;
+import entities.users.CCPUser;
+import entities.users.User;
 import exceptions.MyConstraintViolationException;
 import exceptions.Utils;
 import javax.ejb.EJBException;
