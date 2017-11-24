@@ -40,7 +40,7 @@ public class Course implements Serializable {
     public Course(int courseCode, String name) {
         this.courseCode = courseCode;
         this.name = name;
-        this.students = students;
+        this.students = new LinkedList<>();
     }
 
     public int getCourseCode() {

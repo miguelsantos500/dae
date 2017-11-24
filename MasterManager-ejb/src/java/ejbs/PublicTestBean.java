@@ -19,14 +19,15 @@ public class PublicTestBean {
     private EntityManager em;
 
     public void create(int code, String title, Date testDate,
-            String testHour, String place, String link, String username) throws
+            String testHour, String place, String link, String ccpUsername, 
+            List<String> studentsUsernames, List<String> teachersUsernames) throws
             EntityAlreadyExistsException, EntityDoesNotExistException {
         try {
             if (em.find(PublicTest.class, code) != null) {
                 throw new EntityAlreadyExistsException(
                         "Uma prova publica já existe com esse código.");
             }
-            CCPUser ccpUser = em.find(CCPUser.class, username);
+            CCPUser ccpUser = em.find(CCPUser.class, ccpUsername);
             if (ccpUser == null) {
                 throw new EntityDoesNotExistException(
                         "Não existe nenhum ccpuser com esse username");

@@ -3,6 +3,7 @@ package entities.publictest;
 import entities.users.CCPUser;
 import entities.users.Student;
 import entities.users.Teacher;
+import java.io.File;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.LinkedList;
@@ -44,17 +45,18 @@ public class PublicTest implements Serializable {
 
     @NotNull
     private String link;
-
-    @NotNull
-    //@OneToMany
-    private List<Student> students;
-
+    
     @NotNull
     //@OneToMany
     private CCPUser ccpUserJury;
 
+    //@OneToMany
+    private List<Student> students;
+    
     //@ManyToMany
     private List<Teacher> teachersJurys;
+    
+    private File fileRecord;
 
     public PublicTest() {
         teachersJurys = new LinkedList<>();
@@ -153,5 +155,15 @@ public class PublicTest implements Serializable {
     public void setTeachersJurys(List<Teacher> teachersJurys) {
         this.teachersJurys = teachersJurys;
     }
+
+    public File getFileRecord() {
+        return fileRecord;
+    }
+
+    public void setFileRecord(File fileRecord) {
+        this.fileRecord = fileRecord;
+    }
+    
+    
 
 }
