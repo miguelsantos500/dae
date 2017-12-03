@@ -3,6 +3,9 @@ package ejbs;
 import ejbs.users.CourseBean;
 import ejbs.users.StudentBean;
 import ejbs.users.TeacherBean;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -22,7 +25,9 @@ public class ConfigBean {
     private StudentBean studentBean;
     @EJB
     private TeacherBean teacherBean;
-
+    @EJB
+    private ProjectProposalBean projectProposalBean;
+    
     @PostConstruct
     public void populateBD() {
 
@@ -47,12 +52,24 @@ public class ConfigBean {
             teacherBean.create("3243243", "José", "José", "dae.jose.ipleiria@gmail.com");
             teacherBean.create("2446546", "Tati", "Tati", "dae.tati.ipleiria@gmail.com");
             teacherBean.create("9473829", "Marco", "Marco", "dae.marco.ipleiria@gmail.com");
-            teacherBean.create("3243243", "Carlos", "Carlos", "dae.carlos.ipleiria@gmail.com");
-            teacherBean.create("3243243", "Leonel", "Leonel", "dae.leonel.ipleiria@gmail.com");
-            teacherBean.create("3243243", "Ricardo", "Ricardo", "dae.ricardo.ipleiria@gmail.com");
+            teacherBean.create("3243244", "Carlos", "Carlos", "dae.carlos.ipleiria@gmail.com");
+            teacherBean.create("3243245", "Leonel", "Leonel", "dae.leonel.ipleiria@gmail.com");
+            teacherBean.create("3243246", "Ricardo", "Ricardo", "dae.ricardo.ipleiria@gmail.com");
 
+            projectProposalBean.create(1, "PROJECT", "My First Project",
+                    new LinkedList<>(Arrays.asList("Programming", "Management")),
+                    "3243243", "This is my first abstract", 
+                    new LinkedList<>(Arrays.asList("Pass", "Have more than 12")),
+                    new ArrayList<>(Arrays.asList("Wikipedia", "Google")),
+                    "Do it the day before", "My Basement", 
+                    new LinkedList<>(Arrays.asList("Pass", "Have more than 12")),
+                    "Literaly Zero Euros", 
+                    new LinkedList<>(Arrays.asList("Mum", "Pops")));
+            
+            
         } catch(Exception e){
-            logger.warning(e.getMessage());
+            e.printStackTrace();
+            logger.severe(e.getMessage());
         }
     }
 }

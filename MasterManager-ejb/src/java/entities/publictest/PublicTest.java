@@ -16,13 +16,14 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 
 
 @Entity
 @Table(name = "PUBLIC_TESTS")
 @NamedQuery(name = "getAllPublicTests",
-        query = "SELECT s FROM PublicTest s ORDER BY s.testDate, s.testHour")
+        query = "SELECT s FROM PublicTest s ORDER BY s.testDateTime")
 public class PublicTest implements Serializable {
 
     @Id
@@ -33,12 +34,8 @@ public class PublicTest implements Serializable {
 
     @NotNull
     @Temporal(TemporalType.DATE)
-    @Column(name = "TEST_DATE")
-    private Date testDate;
-
-    @NotNull
-    @Column(name = "TEST_HOUR")
-    private String testHour;
+    @Column(name = "TEST_DATETIME")
+    private Date testDateTime;
 
     @NotNull
     private String place;
@@ -48,32 +45,44 @@ public class PublicTest implements Serializable {
     
     @NotNull
     //@OneToMany
-    private CCPUser ccpUserJury;
-
-    //@OneToMany
-    private List<Student> students;
+    private CCPUser juryPresident;
     
-    //@ManyToMany
-    private List<Teacher> teachersJurys;
+    //@OneToMany
+    private Teacher advisor;
+    
+    @NotNull
+    private String outsideTeacherName;
+    
+    @NotNull
+    @Pattern(regexp = "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\."
+            + "[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@"
+            + "(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?",
+            message = "Invalid email format")
+    private String outsideTeacherEmail;
+    
+    //@OneToOne
+    private Student student;
     
     private File fileRecord;
 
     public PublicTest() {
-        teachersJurys = new LinkedList<>();
-        students = new LinkedList<>();
+
     }
 
-    public PublicTest(int code, String title, Date testDate,
-            String testHour, String place, String link, CCPUser ccpUserJury) {
+    public PublicTest(int code, String title, Date testDateTime,
+            String place, String link, CCPUser juryPresident, 
+            Teacher advisor, String outsideTeacherName, String outsideTeacherEmail,
+            Student student) {
         this.code = code;
         this.title = title;
-        this.testDate = testDate;
-        this.testHour = testHour;
+        this.testDateTime = testDateTime;
         this.place = place;
         this.link = link;
-        this.ccpUserJury = ccpUserJury;
-        teachersJurys = new LinkedList<>();
-        students = new LinkedList<>();
+        this.juryPresident = juryPresident;
+        this.advisor = advisor;
+        this.outsideTeacherEmail = outsideTeacherEmail;
+        this.outsideTeacherName = outsideTeacherName;
+        this.student = student;
     }
 
     public int getCode() {
@@ -92,20 +101,12 @@ public class PublicTest implements Serializable {
         this.title = title;
     }
 
-    public Date getTestDate() {
-        return testDate;
+    public Date getTestDateTime() {
+        return testDateTime;
     }
 
-    public void setTestDate(Date testDate) {
-        this.testDate = testDate;
-    }
-
-    public String getTestHour() {
-        return testHour;
-    }
-
-    public void setTestHour(String testHour) {
-        this.testHour = testHour;
+    public void setTestDateTime(Date testDateTime) {
+        this.testDateTime = testDateTime;
     }
 
     public String getPlace() {
@@ -124,36 +125,12 @@ public class PublicTest implements Serializable {
         this.link = link;
     }
 
-    public List<Student> getStudent() {
-        return students;
+    public CCPUser getJuryPresident() {
+        return juryPresident;
     }
 
-    public void setStudent(List<Student> student) {
-        this.students = student;
-    }
-
-    public List<Student> getStudents() {
-        return students;
-    }
-
-    public void setStudents(List<Student> students) {
-        this.students = students;
-    }
-
-    public CCPUser getCcpUserJury() {
-        return ccpUserJury;
-    }
-
-    public void setCcpUserJury(CCPUser ccpUserJury) {
-        this.ccpUserJury = ccpUserJury;
-    }
-
-    public List<Teacher> getTeachersJurys() {
-        return teachersJurys;
-    }
-
-    public void setTeachersJurys(List<Teacher> teachersJurys) {
-        this.teachersJurys = teachersJurys;
+    public void setJuryPresident(CCPUser juryPresident) {
+        this.juryPresident = juryPresident;
     }
 
     public File getFileRecord() {
@@ -163,7 +140,38 @@ public class PublicTest implements Serializable {
     public void setFileRecord(File fileRecord) {
         this.fileRecord = fileRecord;
     }
-    
-    
 
+    public Teacher getAdvisor() {
+        return advisor;
+    }
+
+    public void setAdvisor(Teacher advisor) {
+        this.advisor = advisor;
+    }
+
+    public String getOutsideTeacherName() {
+        return outsideTeacherName;
+    }
+
+    public void setOutsideTeacherName(String outsideTeacherName) {
+        this.outsideTeacherName = outsideTeacherName;
+    }
+
+    public String getOutsideTeacherEmail() {
+        return outsideTeacherEmail;
+    }
+
+    public void setOutsideTeacherEmail(String outsideTeacherEmail) {
+        this.outsideTeacherEmail = outsideTeacherEmail;
+    }
+
+    public Student getStudent() {
+        return student;
+    }
+
+    public void setStudent(Student student) {
+        this.student = student;
+    }
+ 
+    
 }
