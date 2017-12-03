@@ -41,13 +41,16 @@ public class ProjectProposalDTO implements Serializable{
     @NotNull
     private String workPlace;
     
+    @NotNull
+    private String budget;
+    
     
     public ProjectProposalDTO(){
     }
 
     public ProjectProposalDTO(int code, ProjectType projectType, String title,
             User preponent, String projectAbstract, 
-            String workPlan, String workPlace) {
+            String workPlan, String workPlace, String budget) {
         this.code = code;
         this.projectType = projectType;
         this.title = title;
@@ -55,6 +58,7 @@ public class ProjectProposalDTO implements Serializable{
         this.projectAbstract = projectAbstract;
         this.workPlan = workPlan;
         this.workPlace = workPlace;
+        this.budget = budget;
     }
     
     
@@ -67,6 +71,7 @@ public class ProjectProposalDTO implements Serializable{
         this.projectAbstract = null;
         this.workPlan = null;
         this.workPlace = null;
+        this.budget = null;
     }
 
     public int getCode() {
@@ -125,6 +130,15 @@ public class ProjectProposalDTO implements Serializable{
         this.workPlace = workPlace;
     }
 
+    public String getBudget() {
+        return budget;
+    }
+
+    public void setBudget(String budget) {
+        this.budget = budget;
+    }
+
+    
     
     
 }

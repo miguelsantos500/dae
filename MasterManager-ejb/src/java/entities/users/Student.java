@@ -5,11 +5,16 @@ import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 @Entity
 @Table( name = "STUDENTS")
+@NamedQueries({
+    @NamedQuery(name = "getAllStudents",
+    query = "SELECT s FROM Student s ORDER BY s.name")})
 public class Student extends User implements Serializable {
 
     @ManyToOne
