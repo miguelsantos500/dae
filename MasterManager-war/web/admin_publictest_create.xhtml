@@ -1,0 +1,123 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Create Public Test</title>
+    </h:head>
+    <h:body>
+        <h:form>                  
+            <h:panelGrid columns="3">
+
+                <h:outputLabel for="code" value="Código: " />
+                <h:inputText 
+                    id="code"
+                    size="10"
+                    required="true"
+                    requiredMessage="Erro: Código não pode estar vazio."
+                    value="#{administratorManager.newPublicTest.code}"/>
+                <h:message for="code" errorStyle="color: red" />
+
+                <h:outputLabel for="title" value="Título: " />
+                <h:inputText
+                    id="title"
+                    size="50"
+                    required="true"
+                    requiredMessage="Erro: Título não pode estar vazio."
+                    value="#{administratorManager.newPublicTest.title}"/>
+                <h:message for="title" errorStyle="color: red" />                        
+
+                <h:outputLabel for="testDate" value="Data e Hora: " />
+                <p:calendar
+                    id="testDate"
+                    showOn="button"
+                    required="true"
+                    requiredMessage="Erro: Data e Hora não pode estar vazio."  
+                    pattern="dd/MM/yyyy HH:mm"
+                    navigator="true" 
+                    minHour="09"
+                    maxHour="22"
+                    mindate="#{administratorManager.dateNow}"
+                    value="#{administratorManager.newPublicTest.testDateTime}"/>
+                <h:message for="testDate" errorStyle="color: red" />
+
+                <h:outputLabel for="place" value="Local: " />
+                <h:inputText
+                    id="place"
+                    size="50"
+                    required="true"
+                    requiredMessage="Erro: Local não pode estar vazio."
+                    value="#{administratorManager.newPublicTest.place}"/>
+                <h:message for="place" errorStyle="color: red" /> 
+
+                <h:outputLabel for="link" value="Link: " />
+                <h:inputText
+                    id="link"
+                    size="50"
+                    required="true"
+                    requiredMessage="Erro: Link não pode estar vazio."
+                    value="#{administratorManager.newPublicTest.link}"/>
+                <h:message for="link" errorStyle="color: red" /> 
+                
+                <h:outputLabel for="student" value="Estudante: " />
+                <h:inputText
+                    id="student"
+                    size="50"
+                    disabled="true"
+                    value="#{administratorManager.newPublicTest.studentUsername}"/>
+
+                <h:outputLabel for="ccpUser" value="Presidente do Júri(Membro da CCP): " />
+                <h:selectOneMenu
+                    id="ccpUser"
+                    value="#{administratorManager.newPublicTest.CCPUserUsername}" >
+                    <f:selectItems
+                        value="#{administratorManager.allStudents}"
+                        var="ccp"
+                        itemValue="#{ccp.username}"
+                        itemLabel="#{ccp.name}" />
+                </h:selectOneMenu>
+
+                <h:outputLabel for="teacher" value="Orientador: " />
+                <h:inputText
+                    id="teacher"
+                    size="50"
+                    disabled="true"
+                    value="#{administratorManager.newPublicTest.teacherUsername}"/>
+
+                
+                <h:outputLabel for="outsideTeacherName" value="Professore de fora: " />
+                <h:inputText
+                    id="outsideTeacherName"
+                    size="50"
+                    required="true"
+                    requiredMessage="Erro: Professore de fora não pode estar vazio."
+                    value="#{administratorManager.newPublicTest.link}"/>
+                <h:message for="outsideTeacherName" errorStyle="color: red" />
+                
+                <h:outputLabel for="outsideTeacherEmail" value="Email do professore de fora: " />
+                <h:inputText
+                    id="outsideTeacherEmail"
+                    size="50"
+                    required="true"
+                    requiredMessage="Erro: Email do professore de fora não pode estar vazio."
+                    value="#{administratorManager.newPublicTest.outsideTeacherEmail}">
+                <f:validateRegex pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]" />
+                </h:inputText>
+                <h:message for="outsideTeacherEmail" errorStyle="color: red" /> 
+                
+                <br></br>
+
+                <h:commandButton
+                    id="submit"
+                    value="Criar"
+                    binding="#{administratorManager.component}" 
+                    action="#{administratorManager.createPublicTest}" />
+                <h:message for="submit" style="color: red"/>
+            </h:panelGrid >                       
+
+        </h:form>
+    </h:body>
+</html>
+

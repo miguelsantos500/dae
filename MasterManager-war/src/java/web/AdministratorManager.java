@@ -2,12 +2,17 @@ package web;
 
 import dtos.CourseDTO;
 import dtos.ProjectProposalDTO;
+import dtos.PublicTestDTO;
 import dtos.StudentDTO;
 import dtos.UserDTO;
+import ejbs.PublicTestBean;
 import ejbs.users.CCPUserBean;
 import ejbs.users.InstitutionBean;
 import ejbs.users.StudentBean;
 import ejbs.users.TeacherBean;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
@@ -31,13 +36,21 @@ public class AdministratorManager {
     private StudentBean studentBean;
     @EJB
     private TeacherBean teacherBean;
+    @EJB
+    private PublicTestBean publicTestBean;
 
     private StudentDTO newStudent;
     private CourseDTO newCourse;
+
     private ProjectProposalDTO currentProjectProposal;
+
+    private PublicTestDTO newPublicTest;
 
     private UIComponent component;
     private static final Logger logger = Logger.getLogger("web.AdministratorManager");
+
+    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    private String dateNow = dtf.format(LocalDate.now());
 
     private Client client;
     private final String baseUri
@@ -46,6 +59,7 @@ public class AdministratorManager {
     public AdministratorManager() {
         newStudent = new StudentDTO();
         newCourse = new CourseDTO();
+        newPublicTest = new PublicTestDTO();
         client = ClientBuilder.newClient();
     }
 
@@ -113,6 +127,55 @@ public class AdministratorManager {
         this.currentProjectProposal = currentProjectProposal;
     }
 
-    
-    
+    ////////////// PUBLIC TEST ///////////////////
+    public String createPublicTest() {
+
+        try {
+            publicTestBean.create(
+                    newPublicTest.getCode(),
+                    newPublicTest.getTitle(),
+                    newPublicTest.getTestDateTime(),
+                    newPublicTest.getPlace(),
+                    newPublicTest.getLink(),
+                    newPublicTest.getCCPUserUsername(),
+                    newPublicTest.getTeacherUsername(),
+                    newPublicTest.getOutsideTeacherName(),
+                    newPublicTest.getOutsideTeacherEmail(),
+                    newPublicTest.getStudentUsername());
+            newPublicTest.reset();
+
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Erro ao criar a prova pública!",
+                    component, logger);
+            return null;
+        }
+        return "index?faces-redirect=true";
+    }
+
+    public List<PublicTestDTO> getAllPublicTests() {
+        try {
+            return publicTestBean.getAll();
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!",
+                    logger);
+            return null;
+        }
+    }
+
+    public PublicTestDTO getNewPublicTest() {
+        return newPublicTest;
+    }
+
+    public void setNewPublicTest(PublicTestDTO newPublicTest) {
+        this.newPublicTest = newPublicTest;
+    }
+
+    public String getDateNow() {
+        return dateNow;
+    }
+
+    public void setDateNow(String dateNow) {
+        this.dateNow = dateNow;
+    }
+
 }
