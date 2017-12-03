@@ -1,18 +1,26 @@
 package ejbs.users;
 
+import dtos.TeacherDTO;
 import entities.users.Teacher;
 import entities.users.User;
 import exceptions.EntityAlreadyExistsException;
 import exceptions.EntityDoesNotExistException;
 import exceptions.MyConstraintViolationException;
 import exceptions.Utils;
+import java.util.ArrayList;
+import java.util.List;
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.validation.ConstraintViolationException;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 
 @Stateless
+@Path("/teachers")
 public class TeacherBean {
 
     @PersistenceContext
@@ -72,6 +80,36 @@ public class TeacherBean {
         } catch (Exception e) {
             throw new EJBException(e.getMessage());
         }
+    }
+    
+    @GET
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Path("all")
+    public List<TeacherDTO> getAll(){
+        try{
+            List<Teacher> teachers = em.createNamedQuery("getAllTeachers").getResultList();
+            return teachersToDTOs(teachers);
+        } catch (Exception e){
+            e.printStackTrace();
+            throw new EJBException(e.getMessage());
+        }
+    }
+
+    public TeacherDTO teacherToDTO(Teacher teacher){
+        return new TeacherDTO(
+                teacher.getUsername(),
+                null,
+                teacher.getName(),
+                teacher.getEmail());
+    }
+    
+    public List<TeacherDTO> teachersToDTOs(List<Teacher> teachers) {
+        List<TeacherDTO> teacherdtos = new ArrayList<>();
+        
+        for(Teacher t : teachers){
+            teacherdtos.add(teacherToDTO(t));
+        }
+        return teacherdtos;
     }
 
 }

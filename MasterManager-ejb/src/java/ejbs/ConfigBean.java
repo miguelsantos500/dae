@@ -2,6 +2,7 @@ package ejbs;
 
 import ejbs.users.CourseBean;
 import ejbs.users.StudentBean;
+import ejbs.users.TeacherBean;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -19,6 +20,8 @@ public class ConfigBean {
     private CourseBean courseBean;
     @EJB
     private StudentBean studentBean;
+    @EJB
+    private TeacherBean teacherBean;
 
     @PostConstruct
     public void populateBD() {
@@ -40,6 +43,13 @@ public class ConfigBean {
             studentBean.create("6666666", "Joaquim", "Joaquim", "dae.ei.ipleiria@gmail.com", 3);
             studentBean.create("7777777", "Alzira", "Alzira", "dae.ei.ipleiria@gmail.com", 4);
             studentBean.create("8888888", "Pedro", "Pedro", "dae.ei.ipleiria@gmail.com", 4);
+            
+            teacherBean.create("3243243", "José", "José", "dae.jose.ipleiria@gmail.com");
+            teacherBean.create("2446546", "Tati", "Tati", "dae.tati.ipleiria@gmail.com");
+            teacherBean.create("9473829", "Marco", "Marco", "dae.marco.ipleiria@gmail.com");
+            teacherBean.create("3243243", "Carlos", "Carlos", "dae.carlos.ipleiria@gmail.com");
+            teacherBean.create("3243243", "Leonel", "Leonel", "dae.leonel.ipleiria@gmail.com");
+            teacherBean.create("3243243", "Ricardo", "Ricardo", "dae.ricardo.ipleiria@gmail.com");
 
         } catch(Exception e){
             logger.warning(e.getMessage());

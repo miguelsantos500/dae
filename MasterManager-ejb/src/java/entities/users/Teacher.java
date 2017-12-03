@@ -3,11 +3,16 @@ package entities.users;
 import entities.users.User;
 import java.io.Serializable;
 import javax.persistence.Entity;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 @Entity
 @Table(name="TEACHERS")
-public class Teacher extends User implements Serializable {
+@NamedQueries({
+    @NamedQuery(name = "getAllTeachers",
+    query = "SELECT t FROM Teacher t ORDER BY t.name")})
+public class Teacher extends Proponent implements Serializable {
 
     public Teacher() {
     }
