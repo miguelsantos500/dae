@@ -2,6 +2,9 @@ package ejbs;
 
 import ejbs.users.CourseBean;
 import ejbs.users.StudentBean;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -19,7 +22,9 @@ public class ConfigBean {
     private CourseBean courseBean;
     @EJB
     private StudentBean studentBean;
-
+    @EJB
+    private ProjectProposalBean projectProposalBean;
+    
     @PostConstruct
     public void populateBD() {
 
@@ -41,6 +46,18 @@ public class ConfigBean {
             studentBean.create("7777777", "Alzira", "Alzira", "dae.ei.ipleiria@gmail.com", 4);
             studentBean.create("8888888", "Pedro", "Pedro", "dae.ei.ipleiria@gmail.com", 4);
 
+            logger.info("Creating");
+            projectProposalBean.create(1, "PROJECT", "My First Project",
+                    new LinkedList<>(Arrays.asList("Programming", "Management")),
+                    "1111111", "This is my first abstract", 
+                    new LinkedList<>(Arrays.asList("Pass", "Have more than 12")),
+                    new ArrayList<>(Arrays.asList("Wikipedia", "Google")),
+                    "Do it the day before", "My Basement", 
+                    new LinkedList<>(Arrays.asList("Pass", "Have more than 12")),
+                    "Literaly Zero Euros", 
+                    new LinkedList<>(Arrays.asList("Mum", "Pops")));
+            
+            
         } catch(Exception e){
             logger.warning(e.getMessage());
         }

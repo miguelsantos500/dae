@@ -7,7 +7,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 import entities.users.User;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
+@XmlRootElement(name = "ProjectProposal")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class ProjectProposalDTO implements Serializable{
 
 

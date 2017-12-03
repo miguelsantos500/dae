@@ -35,6 +35,13 @@
                     </h:form>
                 </p:column>
             </em:dt>
+            
+            <em:dt 
+                   title="Project Proposals" 
+                   headers="#{['projectType', 'title', 'preponent']}"
+                   props="#{['projectType', 'title', 'preponent']}"
+                   list="#{administratorManager.allProjectProposals}">
+            </em:dt>
 
             <br/>
             <br/>

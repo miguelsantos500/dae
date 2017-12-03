@@ -2,6 +2,7 @@
 package web;
 
 import dtos.CourseDTO;
+import dtos.ProjectProposalDTO;
 import dtos.StudentDTO;
 import ejbs.users.CCPUserBean;
 import ejbs.users.InstitutionBean;
@@ -16,6 +17,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.component.UIComponent;
 import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 
@@ -44,6 +46,7 @@ public class AdminstratorManager {
     public AdminstratorManager(){
         newStudent = new StudentDTO();
         newCourse = new CourseDTO();
+        client = ClientBuilder.newClient();
     }
     
     public String creaTeStudent(){
@@ -78,6 +81,22 @@ public class AdminstratorManager {
            
         }
         return returnedStudents;
+    }
+    
+    public List<ProjectProposalDTO> getAllProjectProposals() {
+        List<ProjectProposalDTO> returnedProjectProposals = null;
+        try {
+            returnedProjectProposals = client.target(baseUri)
+                    .path("/projectProposals/all")
+                    .request(MediaType.APPLICATION_XML)
+                    .get(new GenericType<List<ProjectProposalDTO>>(){
+                    });
+
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Erro inesperado",component, logger);
+           
+        }
+        return returnedProjectProposals;
     }
     
 }

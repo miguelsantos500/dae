@@ -65,9 +65,12 @@ public class ProjectProposal implements Serializable {
     
     @NotNull
     private List<String>  successRequirements;
-    
+
+/*    
     @NotNull
-    private Budget budget;
+    private Budget budget;*///TODO:LATER
+    @NotNull
+    private String budget;
     
     @NotNull
     private List<String> supports;
@@ -81,7 +84,7 @@ public class ProjectProposal implements Serializable {
             String projectAbstract, List<String> objectives, 
             ArrayList<String> bibliography, String workPlan, 
             String workPlace, List<String> successRequirements, 
-            Budget budget, List<String> supports) {
+            String budget, List<String> supports) {
         
         this.code = code;
         this.projectType = projectType;
@@ -193,11 +196,11 @@ public class ProjectProposal implements Serializable {
         this.successRequirements = successRequirements;
     }
 
-    public Budget getBudget() {
+    public String getBudget() {
         return budget;
     }
 
-    public void setBudget(Budget budget) {
+    public void setBudget(String budget) {
         this.budget = budget;
     }
 
