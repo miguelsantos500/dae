@@ -3,6 +3,7 @@ package web;
 
 import dtos.CourseDTO;
 import dtos.StudentDTO;
+import dtos.UserDTO;
 import ejbs.users.CCPUserBean;
 import ejbs.users.InstitutionBean;
 import ejbs.users.StudentBean;
@@ -16,12 +17,13 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.component.UIComponent;
 import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 
 @ManagedBean
 @SessionScoped
-public class AdminstratorManager {
+public class AdministratorManager {
     
     @EJB
     private CCPUserBean ccpUserBean;
@@ -41,12 +43,13 @@ public class AdminstratorManager {
     private final String baseUri
             = "http://localhost:8080/MasterManager-war/webapi";
        
-    public AdminstratorManager(){
+    public AdministratorManager(){
         newStudent = new StudentDTO();
         newCourse = new CourseDTO();
+        client = ClientBuilder.newClient();
     }
     
-    public String creaTeStudent(){
+    public String createStudent(){
         
         try{
           studentBean.create(
@@ -58,7 +61,8 @@ public class AdminstratorManager {
           newStudent.reset();
         
         }catch(Exception e){
-            FacesExceptionHandler.handleException(e, "Erro inesperado", component, logger);
+            FacesExceptionHandler.handleException(e, "Erro inesperado no createStudent do AdministratorManager", component, logger);
+            e.printStackTrace();
             return null;
         }
         return "index?faces-redirect=true";
@@ -74,8 +78,13 @@ public class AdminstratorManager {
                     });
 
         } catch (Exception e) {
-            FacesExceptionHandler.handleException(e, "Erro inesperado", logger);
+            e.printStackTrace();
+            FacesExceptionHandler.handleException(e, "Erro inesperado no getAllStudents AdministratorManager", 
+                     logger);
            
+        }
+        for(UserDTO s : returnedStudents) {
+            logger.warning(s.getUsername());
         }
         return returnedStudents;
     }

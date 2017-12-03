@@ -52,7 +52,7 @@ public class CourseBean {
     List<CourseDTO> coursesToDTOs(List<Course> courses) {
         List<CourseDTO> dtos = new ArrayList<>();
         for (Course c : courses) {
-            dtos.add(new CourseDTO(c.getCourseCode(), c.getName()));            
+            dtos.add(new CourseDTO(c.getCourseCode(), c.getCourseName()));            
         }
         return dtos;
     }
