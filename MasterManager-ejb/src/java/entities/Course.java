@@ -18,18 +18,18 @@ import entities.users.Student;
 @Entity
 @Table(name = "COURSES",
 uniqueConstraints =
-@UniqueConstraint(columnNames = {"NAME"}))
+@UniqueConstraint(columnNames = {"COURSENAME"}))
 @NamedQueries({
     @NamedQuery(name = "getAllCourses",
-    query = "SELECT c FROM Course c ORDER BY c.name"),
+    query = "SELECT c FROM Course c ORDER BY c.courseName"),
     @NamedQuery(name = "getAllCoursesNames",
-    query = "SELECT c.name FROM Course c ORDER BY c.name")})
+    query = "SELECT c.courseName FROM Course c ORDER BY c.courseName")})
 public class Course implements Serializable {
 
     @Id
     private int courseCode;
     @NotNull (message="O curso tem que ter um nome.")
-    private String name;
+    private String courseName;
     @OneToMany(mappedBy="course", cascade = CascadeType.REMOVE)
     private List<Student> students;
 
@@ -39,7 +39,7 @@ public class Course implements Serializable {
 
     public Course(int courseCode, String name) {
         this.courseCode = courseCode;
-        this.name = name;
+        this.courseName = name;
         this.students = new LinkedList<>();
     }
 
@@ -51,12 +51,12 @@ public class Course implements Serializable {
         this.courseCode = courseCode;
     }
 
-    public String getName() {
-        return name;
+    public String getCourseName() {
+        return courseName;
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.courseName = name;
     }
 
     public List<Student> getStudents() {

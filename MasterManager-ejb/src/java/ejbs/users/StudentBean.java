@@ -1,5 +1,6 @@
 package ejbs.users;
 
+import dtos.StudentDTO;
 import entities.Course;
 import entities.users.Student;
 import entities.users.User;
@@ -7,14 +8,21 @@ import exceptions.EntityAlreadyExistsException;
 import exceptions.EntityDoesNotExistException;
 import exceptions.MyConstraintViolationException;
 import exceptions.Utils;
+import java.util.ArrayList;
+import java.util.List;
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
+import javax.ws.rs.Path;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.validation.ConstraintViolationException;
+import javax.ws.rs.GET;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 
 
 @Stateless
+@Path("/students")
 public class StudentBean {
 
     @PersistenceContext
@@ -81,6 +89,38 @@ public class StudentBean {
         } catch (Exception e) {
             throw new EJBException(e.getMessage());
         }
+    }
+    
+    @GET
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Path("all")
+    public List<StudentDTO> getAll() {
+        try {
+            List<Student> students = em.createNamedQuery("getAllStudents").getResultList();
+            return studentsToDTOs(students);
+        } catch (Exception e) {
+            throw new EJBException(e.getMessage());
+        }
+    }
+
+    StudentDTO studentToDTO(Student student) {
+        return new StudentDTO(
+                student.getUsername(),
+                null,
+                student.getName(),
+                student.getEmail(),
+                student.getCourse().getCourseCode(),
+                student.getCourse().getCourseName());
+    }
+
+    List<StudentDTO> studentsToDTOs(List<Student> students) {
+        List<StudentDTO> dtos = new ArrayList<>();
+
+        for (Student s : students) {
+            dtos.add(studentToDTO(s));
+        }
+
+        return dtos;
     }
     
 

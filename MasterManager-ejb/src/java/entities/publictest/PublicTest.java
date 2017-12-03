@@ -21,7 +21,7 @@ import javax.validation.constraints.Pattern;
 @Entity
 @Table(name = "PUBLIC_TESTS")
 @NamedQuery(name = "getAllPublicTests",
-        query = "SELECT s FROM PublicTest s ORDER BY s.testDate, s.testHour")
+        query = "SELECT s FROM PublicTest s ORDER BY s.testDateTime")
 public class PublicTest implements Serializable {
 
     @Id

@@ -3,6 +3,7 @@ package web;
 import dtos.CourseDTO;
 import dtos.PublicTestDTO;
 import dtos.StudentDTO;
+import dtos.UserDTO;
 import ejbs.PublicTestBean;
 import ejbs.users.CCPUserBean;
 import ejbs.users.InstitutionBean;
@@ -57,36 +58,42 @@ public class AdministratorManager {
         client = ClientBuilder.newClient();
     }
 
-    public String creaTeStudent() {
-
-        try {
-            studentBean.create(
-                    newStudent.getUsername(),
-                    newStudent.getPassword(),
-                    newStudent.getName(),
-                    newStudent.getEmail(),
-                    newStudent.getCourseCode());
-            newStudent.reset();
-
-        } catch (Exception e) {
-            FacesExceptionHandler.handleException(e, "Erro inesperado", component, logger);
+    public String createStudent(){
+        
+        try{
+          studentBean.create(
+                  newStudent.getUsername(),
+                  newStudent.getPassword(),
+                  newStudent.getName(),
+                  newStudent.getEmail(),
+                  newStudent.getCourseCode());
+          newStudent.reset();
+        
+        }catch(Exception e){
+            FacesExceptionHandler.handleException(e, "Erro inesperado no createStudent do AdministratorManager", component, logger);
+            e.printStackTrace();
             return null;
         }
         return "index?faces-redirect=true";
     }
-
+    
     public List<StudentDTO> getAllStudents() {
         List<StudentDTO> returnedStudents = null;
         try {
             returnedStudents = client.target(baseUri)
                     .path("/students/all")
                     .request(MediaType.APPLICATION_XML)
-                    .get(new GenericType<List<StudentDTO>>() {
+                    .get(new GenericType<List<StudentDTO>>(){
                     });
 
         } catch (Exception e) {
-            FacesExceptionHandler.handleException(e, "Erro inesperado", logger);
-
+            e.printStackTrace();
+            FacesExceptionHandler.handleException(e, "Erro inesperado no getAllStudents AdministratorManager", 
+                     logger);
+           
+        }
+        for(UserDTO s : returnedStudents) {
+            logger.warning(s.getUsername());
         }
         return returnedStudents;
     }
@@ -141,7 +148,7 @@ public class AdministratorManager {
     public void setDateNow(String dateNow) {
         this.dateNow = dateNow;
     }
-    
+       
     
     
 }

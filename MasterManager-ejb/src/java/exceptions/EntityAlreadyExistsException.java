@@ -4,7 +4,12 @@ package exceptions;
 
 public class EntityAlreadyExistsException extends Exception {
 
-    public EntityAlreadyExistsException(String a_user_with_that_username_already_exists) {
+    public EntityAlreadyExistsException(String msg) {
+        super(msg);
     }
+    public EntityAlreadyExistsException() {
+        super("Entity Already Exists!");
+    }
+    
 
 }
