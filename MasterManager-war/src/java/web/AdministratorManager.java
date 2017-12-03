@@ -97,9 +97,6 @@ public class AdministratorManager {
                     logger);
 
         }
-        for (UserDTO s : returnedStudents) {
-            logger.warning(s.getUsername());
-        }
         return returnedStudents;
     }
 

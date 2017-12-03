@@ -129,7 +129,8 @@ public class ProjectProposalBean {
                     projectProposal.getProjectAbstract(),
                     projectProposal.getWorkPlan(),
                     projectProposal.getWorkPlace(),
-                    projectProposal.getBudget()));
+                    projectProposal.getBudget(),
+                    projectProposal.getScientificAreas()));
         }
         return dtos;
     }
