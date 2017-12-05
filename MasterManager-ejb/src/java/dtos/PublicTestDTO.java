@@ -21,18 +21,22 @@ public class PublicTestDTO implements Serializable {
     private String Place;
     private String link;
     private String ccpUserUsername;
+    private String ccpUserName;
     private String teacherUsername;
+    private String teacherName;
     private String outsideTeacherName;
     private String outsideTeacherEmail;
     private String studentUsername;
+    private String studentName;
     private File fileRecord;
 
     public PublicTestDTO() {
     }
 
     public PublicTestDTO(int code, String title, Date testDateTime,
-            String Place, String link, String ccpUserUsername, String teacherUsername, 
-            String outsideTeacherName, String outsideTeacherEmail, String studentUsername, 
+            String Place, String link, String ccpUserUsername, String ccpUserName, 
+            String teacherUsername, String teacherName, String outsideTeacherName, 
+            String outsideTeacherEmail, String studentUsername, String studentName,
             File fileRecord) {
         this.code = code;
         this.title = title;
@@ -40,10 +44,13 @@ public class PublicTestDTO implements Serializable {
         this.Place = Place;
         this.link = link;
         this.ccpUserUsername = ccpUserUsername;
+        this.ccpUserName = ccpUserName;
         this.teacherUsername = teacherUsername;
+        this.teacherName = teacherName;
         this.outsideTeacherName = outsideTeacherName;
         this.outsideTeacherEmail = outsideTeacherEmail;
         this.studentUsername = studentUsername;
+        this.studentName = studentName;
         this.fileRecord = fileRecord;
     }
     
@@ -101,14 +108,6 @@ public class PublicTestDTO implements Serializable {
         this.link = link;
     }
 
-    public String getCCPUserUsername() {
-        return ccpUserUsername;
-    }
-
-    public void setCCPUserUsername(String ccpUserUsername) {
-        this.ccpUserUsername = ccpUserUsername;
-    }
-
     public String getTeacherUsername() {
         return teacherUsername;
     }
@@ -147,6 +146,38 @@ public class PublicTestDTO implements Serializable {
 
     public void setFileRecord(File fileRecord) {
         this.fileRecord = fileRecord;
+    }
+
+    public String getCcpUserUsername() {
+        return ccpUserUsername;
+    }
+
+    public void setCcpUserUsername(String ccpUserUsername) {
+        this.ccpUserUsername = ccpUserUsername;
+    }
+
+    public String getCcpUserName() {
+        return ccpUserName;
+    }
+
+    public void setCcpUserName(String ccpUserName) {
+        this.ccpUserName = ccpUserName;
+    }
+
+    public String getTeacherName() {
+        return teacherName;
+    }
+
+    public void setTeacherName(String teacherName) {
+        this.teacherName = teacherName;
+    }
+
+    public String getStudentName() {
+        return studentName;
+    }
+
+    public void setStudentName(String studentName) {
+        this.studentName = studentName;
     }
     
     

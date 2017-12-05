@@ -9,7 +9,10 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -40,12 +43,15 @@ public class PublicTest implements Serializable {
 
     @NotNull
     private String link;
-    
+     
+    @ManyToOne
+    @JoinColumn(name = "CCPUSER_USERNAME")
     @NotNull
-    //@OneToMany
     private CCPUser juryPresident;
     
-    //@OneToMany
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "TEACHER_USERNAME")
     private Teacher advisor;
     
     @NotNull
@@ -58,7 +64,8 @@ public class PublicTest implements Serializable {
             message = "Invalid email format")
     private String outsideTeacherEmail;
     
-    //@OneToOne
+    @NotNull
+    @OneToOne(mappedBy = "publicTest")
     private Student student;
     
     private File fileRecord;

@@ -11,7 +11,6 @@ import ejbs.users.StudentBean;
 import ejbs.users.TeacherBean;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
@@ -41,9 +40,10 @@ public class AdministratorManager {
     private StudentDTO newStudent;
     private CourseDTO newCourse;
     private PublicTestDTO newPublicTest;
+    private PublicTestDTO currentPublicTest;
     private UIComponent component;
     private static final Logger logger = Logger.getLogger("web.AdministratorManager");
-    
+
     DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private String dateNow = dtf.format(LocalDate.now());
 
@@ -58,41 +58,41 @@ public class AdministratorManager {
         client = ClientBuilder.newClient();
     }
 
-    public String createStudent(){
-        
-        try{
-          studentBean.create(
-                  newStudent.getUsername(),
-                  newStudent.getPassword(),
-                  newStudent.getName(),
-                  newStudent.getEmail(),
-                  newStudent.getCourseCode());
-          newStudent.reset();
-        
-        }catch(Exception e){
+    public String createStudent() {
+
+        try {
+            studentBean.create(
+                    newStudent.getUsername(),
+                    newStudent.getPassword(),
+                    newStudent.getName(),
+                    newStudent.getEmail(),
+                    newStudent.getCourseCode());
+            newStudent.reset();
+
+        } catch (Exception e) {
             FacesExceptionHandler.handleException(e, "Erro inesperado no createStudent do AdministratorManager", component, logger);
             e.printStackTrace();
             return null;
         }
         return "index?faces-redirect=true";
     }
-    
+
     public List<StudentDTO> getAllStudents() {
         List<StudentDTO> returnedStudents = null;
         try {
             returnedStudents = client.target(baseUri)
                     .path("/students/all")
                     .request(MediaType.APPLICATION_XML)
-                    .get(new GenericType<List<StudentDTO>>(){
+                    .get(new GenericType<List<StudentDTO>>() {
                     });
 
         } catch (Exception e) {
             e.printStackTrace();
-            FacesExceptionHandler.handleException(e, "Erro inesperado no getAllStudents AdministratorManager", 
-                     logger);
-           
+            FacesExceptionHandler.handleException(e, "Erro inesperado no getAllStudents AdministratorManager",
+                    logger);
+
         }
-        for(UserDTO s : returnedStudents) {
+        for (UserDTO s : returnedStudents) {
             logger.warning(s.getUsername());
         }
         return returnedStudents;
@@ -108,7 +108,7 @@ public class AdministratorManager {
                     newPublicTest.getTestDateTime(),
                     newPublicTest.getPlace(),
                     newPublicTest.getLink(),
-                    newPublicTest.getCCPUserUsername(),
+                    newPublicTest.getCcpUserUsername(),
                     newPublicTest.getTeacherUsername(),
                     newPublicTest.getOutsideTeacherName(),
                     newPublicTest.getOutsideTeacherEmail(),
@@ -116,7 +116,7 @@ public class AdministratorManager {
             newPublicTest.reset();
 
         } catch (Exception e) {
-            FacesExceptionHandler.handleException(e, "Erro ao criar a prova pública!", 
+            FacesExceptionHandler.handleException(e, "Erro ao criar a prova pública!",
                     component, logger);
             return null;
         }
@@ -127,10 +127,29 @@ public class AdministratorManager {
         try {
             return publicTestBean.getAll();
         } catch (Exception e) {
-            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", 
+            FacesExceptionHandler.handleException(e, "Erro inesperado no getAllPublicTests AdministratorManager",
                     logger);
             return null;
         }
+    }
+
+    public String updatePublicTest() {
+        try {
+            publicTestBean.update(
+                    currentPublicTest.getCode(),
+                    currentPublicTest.getTitle(),
+                    currentPublicTest.getTestDateTime(),
+                    currentPublicTest.getPlace(),
+                    currentPublicTest.getLink(),
+                    currentPublicTest.getCcpUserUsername(),
+                    currentPublicTest.getOutsideTeacherName(),
+                    currentPublicTest.getOutsideTeacherEmail());
+
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
+            return null;
+        }
+        return "index?faces-redirect=true";
     }
 
     public PublicTestDTO getNewPublicTest() {
@@ -148,7 +167,21 @@ public class AdministratorManager {
     public void setDateNow(String dateNow) {
         this.dateNow = dateNow;
     }
-       
-    
-    
+
+    public PublicTestDTO getCurrentPublicTest() {
+        return currentPublicTest;
+    }
+
+    public void setCurrentPublicTest(PublicTestDTO currentPublicTest) {
+        this.currentPublicTest = currentPublicTest;
+    }
+
+    public UIComponent getComponent() {
+        return component;
+    }
+
+    public void setComponent(UIComponent component) {
+        this.component = component;
+    }
+
 }

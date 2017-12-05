@@ -60,18 +60,31 @@ public class PublicTestBean {
     }
 
     public void update(int code, String title, Date testDateTime,
-            String place, String link) throws EntityDoesNotExistException {
+            String place, String link, String ccpUserUsername,
+            String outideTeacherName, String outsideTeacherEmail) throws EntityDoesNotExistException {
         try {
             PublicTest publicTest = em.find(PublicTest.class, code);
             if (publicTest == null) {
                 throw new EntityDoesNotExistException(
                         "Não existe nenhuma prova publica com esse código.");
             }
+            if (ccpUserUsername != null) {
+                CCPUser ccpUser = em.find(CCPUser.class, ccpUserUsername);
+                if (publicTest == null) {
+                    throw new EntityDoesNotExistException(
+                            "Não existe nenhum CCPUser com esse username.");
+                } else {
+                    publicTest.setJuryPresident(ccpUser);
+                }
+            }
 
             publicTest.setTitle(title);
             publicTest.setTestDateTime(testDateTime);
             publicTest.setPlace(place);
             publicTest.setLink(link);
+            publicTest.setOutsideTeacherName(outideTeacherName);
+            publicTest.setOutsideTeacherEmail(outsideTeacherEmail);
+            
 
             em.merge(publicTest);
         } catch (EntityDoesNotExistException e) {
@@ -122,10 +135,13 @@ public class PublicTestBean {
                 publicTest.getPlace(),
                 publicTest.getLink(),
                 publicTest.getJuryPresident().getUsername(),
+                publicTest.getJuryPresident().getName(),
                 publicTest.getAdvisor().getUsername(),
+                publicTest.getAdvisor().getName(),
                 publicTest.getOutsideTeacherName(),
                 publicTest.getOutsideTeacherEmail(),
                 publicTest.getStudent().getUsername(),
+                publicTest.getStudent().getName(),
                 publicTest.getFileRecord());
     }
 }
