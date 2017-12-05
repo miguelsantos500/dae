@@ -8,6 +8,7 @@ package ejbs;
 import dtos.ProjectProposalDTO;
 import entities.project.ProjectProposal;
 import entities.project.ProjectType;
+import entities.users.Proponent;
 import exceptions.EntityAlreadyExistsException;
 import exceptions.EntityDoesNotExistException;
 import exceptions.MyConstraintViolationException;
@@ -19,7 +20,6 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.validation.ConstraintViolationException;
-import entities.users.User;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -38,7 +38,7 @@ public class ProjectProposalBean {
     private EntityManager em;
 
     public void create(int code, String projectTypeString,
-            String title, List<String> scientificAreas, String preponentUsername,
+            String title, List<String> scientificAreas, String proponentUsername,
             String projectAbstract, List<String> objectives,
             ArrayList<String> bibliography, String workPlan,
             String workPlace, List<String> successRequirements,
@@ -51,21 +51,21 @@ public class ProjectProposalBean {
                 throw new EntityAlreadyExistsException("A Project Proposal with that code already exists");
             }
             //TODO: Mudar para uma nova Interface
-            User preponentUser = em.find(User.class, preponentUsername);
-            if (preponentUser == null) {
-                throw new EntityDoesNotExistException("There is no User with that username.");
+            Proponent proponentUser = em.find(Proponent.class, proponentUsername);
+            if (proponentUser == null) {
+                throw new EntityDoesNotExistException("There is no Proponent with that username.");
             }
 
             ProjectType projectType = Enum.valueOf(ProjectType.class, projectTypeString);
 
             ProjectProposal projectProposal = new ProjectProposal(
-                    code, projectType, title, scientificAreas, preponentUser,
+                    code, projectType, title, scientificAreas, proponentUser,
                     projectAbstract, objectives, bibliography, workPlan, workPlace,
                     successRequirements, budget, supports);
             em.persist(projectProposal);
 
             //TODO
-            //preponentUser.addProjectProposal(projectProposal);
+            //proponentUser.addProjectProposal(projectProposal);
         } catch (EntityAlreadyExistsException | EntityDoesNotExistException e) {
             throw e;
         } catch (ConstraintViolationException e) {
@@ -106,7 +106,7 @@ public class ProjectProposalBean {
             }
 
             //TODO: DO
-            //projectProposal.getPreponent().removeProjectProposal(projectProposal);
+            //projectProposal.getProponent().removeProjectProposal(projectProposal);
             em.remove(projectProposal);
 
         } catch (EntityDoesNotExistException e) {
@@ -124,7 +124,7 @@ public class ProjectProposalBean {
             dtos.add(new ProjectProposalDTO(projectProposal.getCode(),
                     projectProposal.getProjectType(),
                     projectProposal.getTitle(),
-                    projectProposal.getPreponent(),
+                    projectProposal.getProponent(),
                     projectProposal.getProjectAbstract(),
                     projectProposal.getWorkPlan(),
                     projectProposal.getWorkPlace(),
