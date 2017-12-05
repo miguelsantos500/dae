@@ -10,6 +10,7 @@ import ejbs.users.CCPUserBean;
 import ejbs.users.InstitutionBean;
 import ejbs.users.StudentBean;
 import ejbs.users.TeacherBean;
+import entities.project.ProjectType;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -53,6 +54,7 @@ public class AdministratorManager {
      /**** Other ****/
 
     private ProjectProposalDTO currentProjectProposal;
+    private ProjectProposalDTO newProjectProposal;
 
     private PublicTestDTO newPublicTest;
 
@@ -215,6 +217,16 @@ public class AdministratorManager {
         this.newPublicTest = newPublicTest;
     }
 
+    public ProjectProposalDTO getNewProjectProposal() {
+        return newProjectProposal;
+    }
+
+    public void setNewProjectProposal(ProjectProposalDTO newProjectProposal) {
+        this.newProjectProposal = newProjectProposal;
+    }
+
+    
+    
     public String getDateNow() {
         return dateNow;
     }
@@ -223,4 +235,11 @@ public class AdministratorManager {
         this.dateNow = dateNow;
     }
 
+    public ProjectType[] getProjectTypes() {
+        return ProjectType.values();
+    }
+    
+    
+    
+    
 }
