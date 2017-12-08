@@ -8,7 +8,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "Teacher")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class TeacherDTO extends UserDTO implements Serializable{
+public class TeacherDTO extends ProponentDTO implements Serializable{
 
    
     public TeacherDTO() {
@@ -24,6 +24,4 @@ public class TeacherDTO extends UserDTO implements Serializable{
     }
 
    
-    
-    
 }

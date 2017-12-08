@@ -210,8 +210,23 @@ public class AdministratorManager {
         }
     }
     
-    
+     public String updateTeacher() {
+        try {
 
+            client.target(baseUri)
+                    .path("/teachers/update")
+                    .request(MediaType.APPLICATION_XML)
+                    .put(Entity.xml(currentTeacher));
+
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
+            return null;
+        }
+
+        return "index?faces-redirect=true";
+    }
+    
+    
     public List<ProjectProposalDTO> getAllProjectProposals() {
         List<ProjectProposalDTO> returnedProjectProposals = null;
         try {
