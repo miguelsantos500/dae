@@ -1,6 +1,7 @@
 package web;
 
 import dtos.CourseDTO;
+import dtos.InstitutionDTO;
 import dtos.ProjectProposalDTO;
 import dtos.PublicTestDTO;
 import dtos.StudentDTO;
@@ -56,6 +57,7 @@ public class AdministratorManager {
     private StudentDTO newStudent;
     private TeacherDTO newTeacher;
     private CourseDTO newCourse;
+    private InstitutionDTO newInstitution;
     private PublicTestDTO newPublicTest;
 
     /**
@@ -64,6 +66,7 @@ public class AdministratorManager {
     private StudentDTO currentStudent;
     private TeacherDTO currentTeacher;
     private CourseDTO currentCourse;
+    private InstitutionDTO currentInstitution;
     private PublicTestDTO currentPublicTest;
 
     /**
@@ -86,6 +89,7 @@ public class AdministratorManager {
         newTeacher = new TeacherDTO();
         newCourse = new CourseDTO();
         newPublicTest = new PublicTestDTO();
+        newInstitution = new InstitutionDTO();
         client = ClientBuilder.newClient();
     }
 
@@ -341,6 +345,31 @@ public class AdministratorManager {
     public void setCurrentPublicTest(PublicTestDTO currentPublicTest) {
         this.currentPublicTest = currentPublicTest;
     }
+    
+        ///////////////////////////////////////////INSTITUTIONS//////////////////////////////////////////
+
+     public String createInstitution() {
+
+        try {
+            institutionBean.create(
+                    newInstitution.getUsername(),
+                    newInstitution.getPassword(),
+                    newInstitution.getName(),
+                    newInstitution.getEmail());
+            newInstitution.reset();
+
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Erro inesperado no createTeacher do AdministratorManager", component, logger);
+            e.printStackTrace();
+            return null;
+        }
+        return "index?faces-redirect=true";
+    }
+    
+    
+    
+    
+    
 
     ///////////////////////////////////////////COURSES//////////////////////////////////////////
     public String createCourse() {
