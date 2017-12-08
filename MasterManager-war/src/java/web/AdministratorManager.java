@@ -411,6 +411,22 @@ public class AdministratorManager {
         }
     }
     
+    public String updateInstitution() {
+        try {
+
+            client.target(baseUri)
+                    .path("/institutions/update")
+                    .request(MediaType.APPLICATION_XML)
+                    .put(Entity.xml(currentInstitution));
+
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
+            return null;
+        }
+
+        return "index?faces-redirect=true";
+    }
+    
     
 
     ///////////////////////////////////////////COURSES//////////////////////////////////////////

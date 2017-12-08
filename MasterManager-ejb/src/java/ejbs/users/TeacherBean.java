@@ -51,24 +51,23 @@ public class TeacherBean {
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public void updateTeacher(TeacherDTO teacherDTO)
             throws MyConstraintViolationException {
-        
-        try{
-             Teacher teacher = em.find(Teacher.class, teacherDTO.getUsername());
+
+        try {
+            Teacher teacher = em.find(Teacher.class, teacherDTO.getUsername());
             if (teacher == null) {
-              //  throw new EntityDoesNotExistsException("There is no student with that username.");
+                //  throw new EntityDoesNotExistsException("There is no student with that username.");
             }
- 
+
             teacher.setPassword(teacherDTO.getPassword());
             teacher.setName(teacherDTO.getName());
             teacher.setEmail(teacherDTO.getEmail());
             em.merge(teacher);
-            
-        }catch(Exception e){
+
+        } catch (Exception e) {
             throw e;
         }
-        
-           
-        }
+
+    }
 
     public void remove(String username) throws EntityDoesNotExistException {
         try {
