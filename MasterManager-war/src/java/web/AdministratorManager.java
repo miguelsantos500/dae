@@ -200,6 +200,16 @@ public class AdministratorManager {
         return currentTeacher;
     }
     
+    public void removeTeacher(ActionEvent event) {
+        try {
+            UIParameter param = (UIParameter) event.getComponent().findComponent("teacherUsername");
+            String id = param.getValue().toString();
+            teacherBean.remove(id);
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, e.getMessage(), logger);
+        }
+    }
+    
     
 
     public List<ProjectProposalDTO> getAllProjectProposals() {
