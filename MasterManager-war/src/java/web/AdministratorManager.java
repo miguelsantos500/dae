@@ -337,4 +337,44 @@ public class AdministratorManager {
         this.newCourse = newCourse;
     }
 
+    public InstitutionBean getInstitutionBean() {
+        return institutionBean;
+    }
+
+    public void setInstitutionBean(InstitutionBean institutionBean) {
+        this.institutionBean = institutionBean;
+    }
+
+    public StudentBean getStudentBean() {
+        return studentBean;
+    }
+
+    public void setStudentBean(StudentBean studentBean) {
+        this.studentBean = studentBean;
+    }
+
+    public TeacherBean getTeacherBean() {
+        return teacherBean;
+    }
+
+    public void setTeacherBean(TeacherBean teacherBean) {
+        this.teacherBean = teacherBean;
+    }
+
+    public CourseBean getCourseBean() {
+        return courseBean;
+    }
+
+    public void setCourseBean(CourseBean courseBean) {
+        this.courseBean = courseBean;
+    }
+
+    public UIComponent getComponent() {
+        return component;
+    }
+
+    public void setComponent(UIComponent component) {
+        this.component = component;
+    }
+
 }

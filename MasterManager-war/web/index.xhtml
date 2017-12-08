@@ -35,12 +35,8 @@
                     </h:form>
                 </p:column>
             </em:dt>
-            <h:form>
-                <h:commandLink value="Create" action="students_create?facesredirect=true">
-                    <f:setPropertyActionListener
-                        target="#{administratorManager.createStudent}" value="#{object}" />
-                </h:commandLink>
-            </h:form>
+                <h:link value="Create Student" outcome="students_create"/>
+                
             <br/>
             <br/>
             <br/>
