@@ -137,6 +137,32 @@
             <br/>
             <br/>
             <br/>
+            
+            <em:dt 
+                title="Institutions" 
+                headers="#{['Username', 'Name', 'Email']}"
+                props="#{['username', 'name', 'email']}"
+                list="#{administratorManager.allInstitutions}">
+                <p:column headerText="Actions">
+                    <h:form>
+                        <h:commandLink value="Details" action="institution_details?facesredirect=true">
+                            <f:setPropertyActionListener
+                                target="#{administratorManager.currentTeacher}" value="#{object}" />
+                        </h:commandLink>
+                        &nbsp;
+                        <h:commandLink value="Update" action="institution_update?facesredirect=true">
+                            <f:setPropertyActionListener
+                                target="#{administratorManager.currentTeacher}" value="#{object}" />
+                        </h:commandLink>
+                        &nbsp;
+                        <h:commandLink value="Remove"
+                                       actionListener="#{administratorManager.removeInstitution}">
+                            <f:param name="studentUsername" id="teacherUsername"
+                                     value="#{object.username}" />
+                        </h:commandLink>
+                    </h:form>
+                </p:column>
+            </em:dt>
 
             <h:form enctype="multipart/form-data">
                 <p:growl id="messages" showDetail="true" />
