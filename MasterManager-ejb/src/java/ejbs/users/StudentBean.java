@@ -16,7 +16,9 @@ import javax.ws.rs.Path;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.validation.ConstraintViolationException;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
@@ -28,6 +30,7 @@ public class StudentBean {
     @PersistenceContext
     private EntityManager em;
 
+   
     public void create(String username, String password, String name, String email, int courseCode)
             throws EntityAlreadyExistsException, MyConstraintViolationException {
         try {
@@ -50,27 +53,32 @@ public class StudentBean {
         }
     }
 
-    public void update(String username, String password, String name, String email)
-            throws EntityDoesNotExistException, MyConstraintViolationException,
-            MyConstraintViolationException {
+    @PUT
+    @Path("/update")
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public void updateStudent(StudentDTO studentDTO)
+            throws MyConstraintViolationException {
         try {
-            Student student = em.find(Student.class, username);
-            if (student == null) {
-                throw new EntityDoesNotExistException(
-                        "Não existe um utilizador Estudante com esse username.");
+           
+            Course course = em.find(Course.class, studentDTO.getCourseCode());
+            if (course == null) {
+             //   throw new EJBException(e.getMessage());
             }
-            student.setName(name);
-            student.setEmail(email);
-
+            Student student = em.find(Student.class, studentDTO.getUsername());
+            if (student == null) {
+              //  throw new EntityDoesNotExistsException("There is no student with that username.");
+            }
+ 
+            student.setPassword(studentDTO.getPassword());
+            student.setName(studentDTO.getName());
+            student.setEmail(studentDTO.getEmail());
+           // student.getCourse().removeStudent(student);
+            student.setCourse(course);
+            course.addStudent(student);
             em.merge(student);
-
-        } catch (EntityDoesNotExistException e) {
-            throw e;
-        } catch (ConstraintViolationException e) {
-            throw new MyConstraintViolationException(
-                    Utils.getConstraintViolationMessages(e));
+ 
         } catch (Exception e) {
-            throw new EJBException(e.getMessage());
+            throw e;
         }
     }
 
