@@ -401,7 +401,15 @@ public class AdministratorManager {
         this.currentInstitution = currentInstitution;
     }
     
-    
+    public void removeInstitution(ActionEvent event) {
+        try {
+            UIParameter param = (UIParameter) event.getComponent().findComponent("institutionUsername");
+            String id = param.getValue().toString();
+            institutionBean.remove(id);
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, e.getMessage(), logger);
+        }
+    }
     
     
 
