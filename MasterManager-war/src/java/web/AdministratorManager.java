@@ -7,9 +7,11 @@ import dtos.StudentDTO;
 import dtos.TeacherDTO;
 import ejbs.PublicTestBean;
 import ejbs.users.CCPUserBean;
+import ejbs.users.CourseBean;
 import ejbs.users.InstitutionBean;
 import ejbs.users.StudentBean;
 import ejbs.users.TeacherBean;
+import exceptions.MyConstraintViolationException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -18,8 +20,11 @@ import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.component.UIComponent;
+import javax.faces.component.UIParameter;
+import javax.faces.event.ActionEvent;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 
@@ -27,7 +32,9 @@ import javax.ws.rs.core.MediaType;
 @SessionScoped
 public class AdministratorManager {
 
-    /**** Beans ****/
+    /**
+     * ** Beans ***
+     */
     @EJB
     private CCPUserBean ccpUserBean;
     @EJB
@@ -36,22 +43,29 @@ public class AdministratorManager {
     private StudentBean studentBean;
     @EJB
     private TeacherBean teacherBean;
+    @EJB
+    private CourseBean courseBean;
 
-     /**** newObjects ****/
+    /**
+     * ** newObjects ***
+     */
     @EJB
     private PublicTestBean publicTestBean;
 
     private StudentDTO newStudent;
     private TeacherDTO newTeacher;
     private CourseDTO newCourse;
-    
-     /**** currentObjects ****/
+
+    /**
+     * ** currentObjects ***
+     */
     private StudentDTO currentStudent;
     private TeacherDTO currentTeacher;
     private CourseDTO currentCourse;
-    
-     /**** Other ****/
 
+    /**
+     * ** Other ***
+     */
     private ProjectProposalDTO currentProjectProposal;
 
     private PublicTestDTO newPublicTest;
@@ -72,19 +86,20 @@ public class AdministratorManager {
         newPublicTest = new PublicTestDTO();
         client = ClientBuilder.newClient();
     }
+
     ///////////////////////////////////////////STUDENTS//////////////////////////////////////////
-    public String createStudent(){
-        
-        try{
-          studentBean.create(
-                  newStudent.getUsername(),
-                  newStudent.getPassword(),
-                  newStudent.getName(),
-                  newStudent.getEmail(),
-                  newStudent.getCourseCode());
-          newStudent.reset();
-        
-        }catch(Exception e){
+    public String createStudent() {
+
+        try {
+            studentBean.create(
+                    newStudent.getUsername(),
+                    newStudent.getPassword(),
+                    newStudent.getName(),
+                    newStudent.getEmail(),
+                    newStudent.getCourseCode());
+            newStudent.reset();
+
+        } catch (Exception e) {
             FacesExceptionHandler.handleException(e, "Erro inesperado no createStudent do AdministratorManager", component, logger);
             e.printStackTrace();
             return null;
@@ -100,54 +115,90 @@ public class AdministratorManager {
                     .request(MediaType.APPLICATION_XML)
                     .get(new GenericType<List<StudentDTO>>() {
                     });
-
         } catch (Exception e) {
             e.printStackTrace();
-            FacesExceptionHandler.handleException(e, "Erro inesperado no getAllStudents AdministratorManager", 
-                     logger);
-           
+            FacesExceptionHandler.handleException(e, "Erro inesperado no getAllStudents AdministratorManager",
+                    logger);
+
         }
         return returnedStudents;
     }
+
+    public String updateStudent() {
+        try {
+
+            client.target(baseUri)
+                    .path("/students/update")
+                    .request(MediaType.APPLICATION_XML)
+                    .put(Entity.xml(currentStudent));
+
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
+            return null;
+        }
+
+        return "index?faces-redirect=true";
+    }
     
-    
-        ///////////////////////////////////////////TEACHERS//////////////////////////////////////////
-    public String createTeacher(){
-        
-        try{
-          teacherBean.create(
-                  newTeacher.getUsername(),
-                  newTeacher.getPassword(),
-                  newTeacher.getName(),
-                  newTeacher.getEmail());
-          newTeacher.reset();
-        
-        }catch(Exception e){
+    public void removeStudent(ActionEvent event) {
+        try {
+            UIParameter param = (UIParameter) event.getComponent().findComponent("studentUsername");
+            String id = param.getValue().toString();
+            studentBean.remove(id);
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, e.getMessage(), logger);
+        }
+    }
+
+    public StudentDTO getCurrentStudent() {
+        return currentStudent;
+    }
+
+    public void setCurrentStudent(StudentDTO currentStudent) {
+        this.currentStudent = currentStudent;
+    }
+
+    ///////////////////////////////////////////TEACHERS//////////////////////////////////////////
+    public String createTeacher() {
+
+        try {
+            teacherBean.create(
+                    newTeacher.getUsername(),
+                    newTeacher.getPassword(),
+                    newTeacher.getName(),
+                    newTeacher.getEmail());
+            newTeacher.reset();
+
+        } catch (Exception e) {
             FacesExceptionHandler.handleException(e, "Erro inesperado no createTeacher do AdministratorManager", component, logger);
             e.printStackTrace();
             return null;
         }
         return "index?faces-redirect=true";
     }
-    
+
     public List<TeacherDTO> getAllTeachers() {
         List<TeacherDTO> returnedTeachers = null;
         try {
             returnedTeachers = client.target(baseUri)
                     .path("/teachers/all")
                     .request(MediaType.APPLICATION_XML)
-                    .get(new GenericType<List<TeacherDTO>>(){
+                    .get(new GenericType<List<TeacherDTO>>() {
                     });
 
         } catch (Exception e) {
             e.printStackTrace();
-            FacesExceptionHandler.handleException(e, "Erro inesperado no getAllTeachers AdministratorManager", 
-                     logger);
-           
+            FacesExceptionHandler.handleException(e, "Erro inesperado no getAllTeachers AdministratorManager",
+                    logger);
+
         }
         return returnedTeachers;
     }
-        
+
+    public TeacherDTO getCurrentTeacher() {
+        return currentTeacher;
+    }
+
     public List<ProjectProposalDTO> getAllProjectProposals() {
         List<ProjectProposalDTO> returnedProjectProposals = null;
         try {
@@ -221,6 +272,69 @@ public class AdministratorManager {
 
     public void setDateNow(String dateNow) {
         this.dateNow = dateNow;
+    }
+
+    ///////////////////////////////////////////COURSES//////////////////////////////////////////
+    public String createCourse() {
+        try {
+            courseBean.create(
+                    newCourse.getCode(),
+                    newCourse.getName());
+            newCourse.reset();
+        } catch ( MyConstraintViolationException e) {
+            FacesExceptionHandler.handleException(e, e.getMessage(), component, logger);
+            return null;
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", component, logger);
+            return null;
+        }
+        return "index?faces-redirect=true";
+    }
+
+    public List<CourseDTO> getAllCourses() {
+        try {
+            return courseBean.getAll();
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
+            return null;
+        }
+    }
+
+    ///////////////////////////////////////////Getters e setters tem que ser organizado//////////////////////////////////////////
+    public CourseDTO getCurrentCourse() {
+        return currentCourse;
+    }
+
+    public void setCurrentTeacher(TeacherDTO currentTeacher) {
+        this.currentTeacher = currentTeacher;
+    }
+
+    public void setCurrentCourse(CourseDTO currentCourse) {
+        this.currentCourse = currentCourse;
+    }
+
+    public StudentDTO getNewStudent() {
+        return newStudent;
+    }
+
+    public void setNewStudent(StudentDTO newStudent) {
+        this.newStudent = newStudent;
+    }
+
+    public TeacherDTO getNewTeacher() {
+        return newTeacher;
+    }
+
+    public void setNewTeacher(TeacherDTO newTeacher) {
+        this.newTeacher = newTeacher;
+    }
+
+    public CourseDTO getNewCourse() {
+        return newCourse;
+    }
+
+    public void setNewCourse(CourseDTO newCourse) {
+        this.newCourse = newCourse;
     }
 
 }

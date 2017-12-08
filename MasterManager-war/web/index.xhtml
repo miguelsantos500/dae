@@ -22,7 +22,7 @@
                                 target="#{administratorManager.currentStudent}" value="#{object}" />
                         </h:commandLink>
                         &nbsp;
-                        <h:commandLink value="Update" action="admin_students_update?facesredirect=true">
+                        <h:commandLink value="Update" action="students_update?facesredirect=true">
                             <f:setPropertyActionListener
                                 target="#{administratorManager.currentStudent}" value="#{object}" />
                         </h:commandLink>
@@ -35,7 +35,12 @@
                     </h:form>
                 </p:column>
             </em:dt>
-
+            <h:form>
+                <h:commandLink value="Create" action="students_create?facesredirect=true">
+                    <f:setPropertyActionListener
+                        target="#{administratorManager.createStudent}" value="#{object}" />
+                </h:commandLink>
+            </h:form>
             <br/>
             <br/>
             <br/>
@@ -66,7 +71,7 @@
                     </h:form>
                 </p:column>
             </em:dt>
-            
+
             <em:dt 
                 title="Project Proposals" 
                 headers="#{['ProjectType', 'Title', 'Proponent']}"
