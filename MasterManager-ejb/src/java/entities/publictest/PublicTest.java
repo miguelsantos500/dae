@@ -1,24 +1,23 @@
 package entities.publictest;
 
-import entities.users.CCPUser;
 import entities.users.Student;
 import entities.users.Teacher;
 import java.io.File;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
-
-
 
 @Entity
 @Table(name = "PUBLIC_TESTS")
@@ -42,27 +41,31 @@ public class PublicTest implements Serializable {
 
     @NotNull
     private String link;
-    
+
+    @ManyToOne
+    @JoinColumn(name = "JURYPRESI_USERNAME")
     @NotNull
-    //@OneToMany
-    private CCPUser juryPresident;
-    
-    //@OneToMany
+    private Teacher juryPresident;
+
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "ADVISOR_USERNAME")
     private Teacher advisor;
-    
+
     @NotNull
     private String outsideTeacherName;
-    
+
     @NotNull
     @Pattern(regexp = "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\."
             + "[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@"
             + "(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?",
             message = "Invalid email format")
     private String outsideTeacherEmail;
-    
-    //@OneToOne
+
+    @NotNull
+    @OneToOne(mappedBy = "publicTest")
     private Student student;
-    
+
     private File fileRecord;
 
     public PublicTest() {
@@ -70,7 +73,7 @@ public class PublicTest implements Serializable {
     }
 
     public PublicTest(int code, String title, Date testDateTime,
-            String place, String link, CCPUser juryPresident, 
+            String place, String link, Teacher juryPresident,
             Teacher advisor, String outsideTeacherName, String outsideTeacherEmail,
             Student student) {
         this.code = code;
@@ -125,11 +128,11 @@ public class PublicTest implements Serializable {
         this.link = link;
     }
 
-    public CCPUser getJuryPresident() {
+    public Teacher getJuryPresident() {
         return juryPresident;
     }
 
-    public void setJuryPresident(CCPUser juryPresident) {
+    public void setJuryPresident(Teacher juryPresident) {
         this.juryPresident = juryPresident;
     }
 
@@ -172,6 +175,9 @@ public class PublicTest implements Serializable {
     public void setStudent(Student student) {
         this.student = student;
     }
- 
-    
+
+    public String getTestDateTimeString() {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+        return sdf.format(this.testDateTime);
+    }
 }

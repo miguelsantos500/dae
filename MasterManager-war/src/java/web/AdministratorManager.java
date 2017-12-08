@@ -11,6 +11,8 @@ import ejbs.users.CourseBean;
 import ejbs.users.InstitutionBean;
 import ejbs.users.StudentBean;
 import ejbs.users.TeacherBean;
+import exceptions.EntityAlreadyExistsException;
+import exceptions.EntityDoesNotExistException;
 import exceptions.MyConstraintViolationException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -45,16 +47,16 @@ public class AdministratorManager {
     private TeacherBean teacherBean;
     @EJB
     private CourseBean courseBean;
+    @EJB
+    private PublicTestBean publicTestBean;
 
     /**
      * ** newObjects ***
      */
-    @EJB
-    private PublicTestBean publicTestBean;
-
     private StudentDTO newStudent;
     private TeacherDTO newTeacher;
     private CourseDTO newCourse;
+    private PublicTestDTO newPublicTest;
 
     /**
      * ** currentObjects ***
@@ -62,13 +64,12 @@ public class AdministratorManager {
     private StudentDTO currentStudent;
     private TeacherDTO currentTeacher;
     private CourseDTO currentCourse;
+    private PublicTestDTO currentPublicTest;
 
     /**
      * ** Other ***
      */
     private ProjectProposalDTO currentProjectProposal;
-
-    private PublicTestDTO newPublicTest;
 
     private UIComponent component;
     private static final Logger logger = Logger.getLogger("web.AdministratorManager");
@@ -140,7 +141,7 @@ public class AdministratorManager {
 
         return "index?faces-redirect=true";
     }
-    
+
     public void removeStudent(ActionEvent event) {
         try {
             UIParameter param = (UIParameter) event.getComponent().findComponent("studentUsername");
@@ -199,7 +200,7 @@ public class AdministratorManager {
     public TeacherDTO getCurrentTeacher() {
         return currentTeacher;
     }
-    
+
     public void removeTeacher(ActionEvent event) {
         try {
             UIParameter param = (UIParameter) event.getComponent().findComponent("teacherUsername");
@@ -261,14 +262,14 @@ public class AdministratorManager {
                     newPublicTest.getTestDateTime(),
                     newPublicTest.getPlace(),
                     newPublicTest.getLink(),
-                    newPublicTest.getCCPUserUsername(),
-                    newPublicTest.getTeacherUsername(),
+                    newPublicTest.getJuryPresidentUsername(),
+                    newPublicTest.getAdvisorUsername(),
                     newPublicTest.getOutsideTeacherName(),
                     newPublicTest.getOutsideTeacherEmail(),
                     newPublicTest.getStudentUsername());
             newPublicTest.reset();
 
-        } catch (Exception e) {
+        } catch (EntityAlreadyExistsException | EntityDoesNotExistException e) {
             FacesExceptionHandler.handleException(e, "Erro ao criar a prova pública!",
                     component, logger);
             return null;
@@ -283,6 +284,37 @@ public class AdministratorManager {
             FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!",
                     logger);
             return null;
+        }
+    }
+
+    public String updatePublicTest() {
+        try {
+            publicTestBean.update(
+                    currentPublicTest.getCode(),
+                    currentPublicTest.getTitle(),
+                    currentPublicTest.getTestDateTime(),
+                    currentPublicTest.getPlace(),
+                    currentPublicTest.getLink(),
+                    currentPublicTest.getJuryPresidentUsername(),
+                    currentPublicTest.getOutsideTeacherName(),
+                    currentPublicTest.getOutsideTeacherEmail());
+
+        } catch (EntityDoesNotExistException e) {
+            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
+            return null;
+        }
+        return "index?faces-redirect=true";
+    }
+
+    public void removePublicTest(ActionEvent event) {
+        try {
+            UIParameter param = (UIParameter) event.getComponent().findComponent("publicTestCode");
+            int code = Integer.parseInt(param.getValue().toString());
+            publicTestBean.remove(code);
+        } catch (EntityDoesNotExistException e) {
+            FacesExceptionHandler.handleException(e, e.getMessage(), logger);
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
         }
     }
 
@@ -302,6 +334,14 @@ public class AdministratorManager {
         this.dateNow = dateNow;
     }
 
+    public PublicTestDTO getCurrentPublicTest() {
+        return currentPublicTest;
+    }
+
+    public void setCurrentPublicTest(PublicTestDTO currentPublicTest) {
+        this.currentPublicTest = currentPublicTest;
+    }
+
     ///////////////////////////////////////////COURSES//////////////////////////////////////////
     public String createCourse() {
         try {
@@ -309,7 +349,7 @@ public class AdministratorManager {
                     newCourse.getCode(),
                     newCourse.getName());
             newCourse.reset();
-        } catch ( MyConstraintViolationException e) {
+        } catch (MyConstraintViolationException e) {
             FacesExceptionHandler.handleException(e, e.getMessage(), component, logger);
             return null;
         } catch (Exception e) {
