@@ -16,6 +16,7 @@ import exceptions.EntityDoesNotExistException;
 import exceptions.MyConstraintViolationException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
@@ -70,6 +71,8 @@ public class AdministratorManager {
      * ** Other ***
      */
     private ProjectProposalDTO currentProjectProposal;
+
+    private String search;
 
     private UIComponent component;
     private static final Logger logger = Logger.getLogger("web.AdministratorManager");
@@ -196,6 +199,31 @@ public class AdministratorManager {
         }
         return returnedTeachers;
     }
+    
+    public List<TeacherDTO> getAllTeachersCCPOnTop() {
+        List<TeacherDTO> returnedTeachers = null;
+        try {
+            returnedTeachers = client.target(baseUri)
+                    .path("/teachers/all")
+                    .request(MediaType.APPLICATION_XML)
+                    .get(new GenericType<List<TeacherDTO>>() {
+                    });
+            List<TeacherDTO> aux = new LinkedList<>(returnedTeachers);
+            for (TeacherDTO teacherDTO : aux) {
+                if (ccpUserBean.isCCPUser(teacherDTO.getEmail())){
+                    returnedTeachers.remove(teacherDTO);
+                    returnedTeachers.add(0,teacherDTO);
+                }
+            }
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            FacesExceptionHandler.handleException(e, "Erro inesperado no getAllTeachers AdministratorManager",
+                    logger);
+
+        }
+        return returnedTeachers;
+    }
 
     public TeacherDTO getCurrentTeacher() {
         return currentTeacher;
@@ -210,8 +238,8 @@ public class AdministratorManager {
             FacesExceptionHandler.handleException(e, e.getMessage(), logger);
         }
     }
-    
-     public String updateTeacher() {
+
+    public String updateTeacher() {
         try {
 
             client.target(baseUri)
@@ -226,8 +254,7 @@ public class AdministratorManager {
 
         return "index?faces-redirect=true";
     }
-    
-    
+
     public List<ProjectProposalDTO> getAllProjectProposals() {
         List<ProjectProposalDTO> returnedProjectProposals = null;
         try {
@@ -286,6 +313,18 @@ public class AdministratorManager {
             return null;
         }
     }
+
+    public List<PublicTestDTO> getSearchPublicTest() {
+        try {
+            List<PublicTestDTO> searchResults = publicTestBean.search(search);
+            return searchResults;
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
+            return null;
+        }
+    }
+    
+    
 
     public String updatePublicTest() {
         try {
@@ -443,6 +482,14 @@ public class AdministratorManager {
 
     public void setComponent(UIComponent component) {
         this.component = component;
+    }
+
+    public String getSearch() {
+        return search;
+    }
+
+    public void setSearch(String search) {
+        this.search = search;
     }
 
 }

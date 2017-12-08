@@ -100,6 +100,25 @@
             <br/>
             <br/>
 
+            <h:form>
+                <h:outputLabel for="search" value="Procurar Prova Pública: " />
+                <h:inputText 
+                    id="search"
+                    size="20"
+                    required="true"
+                    requiredMessage="Erro: campo não pode estar vazio!"
+                    value="#{administratorManager.search}"/>
+
+                <br></br>
+
+                <h:commandButton
+                    id="procurarPublicTest"
+                    value="Procurar"
+                    action="searchTest?facesredirect=true" />    
+                <h:message for="procurarPublicTest" style="color: red" />   
+                
+            </h:form> 
+            
             <em:dt 
                 title="Public Tests" 
                 headers="#{['code', 'title', 'testDateTime', 'place', 'link','student',
