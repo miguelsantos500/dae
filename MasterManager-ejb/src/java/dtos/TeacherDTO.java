@@ -10,6 +10,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class TeacherDTO extends UserDTO implements Serializable{
 
+   
     public TeacherDTO() {
     }
 
@@ -22,5 +23,7 @@ public class TeacherDTO extends UserDTO implements Serializable{
         super.reset(); 
     }
 
+   
+    
     
 }

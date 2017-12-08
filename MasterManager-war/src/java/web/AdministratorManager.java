@@ -82,6 +82,7 @@ public class AdministratorManager {
 
     public AdministratorManager() {
         newStudent = new StudentDTO();
+        newTeacher = new TeacherDTO();
         newCourse = new CourseDTO();
         newPublicTest = new PublicTestDTO();
         client = ClientBuilder.newClient();
@@ -198,6 +199,8 @@ public class AdministratorManager {
     public TeacherDTO getCurrentTeacher() {
         return currentTeacher;
     }
+    
+    
 
     public List<ProjectProposalDTO> getAllProjectProposals() {
         List<ProjectProposalDTO> returnedProjectProposals = null;
