@@ -33,48 +33,6 @@
         
         <br/>        
 
-        <h:dataTable
-            var="subject"
-            summary="List of all student's subjects"
-            value="#{administratorManager.currentStudentSubjects}"
-            rules="all"
-            cellpadding="5">
-
-            <f:facet name="header">
-                <h:outputText value="Student's Subjects" />
-            </f:facet>
-
-                <h:column>
-                    <f:facet name="header">
-                        <h:outputText value="Code" />
-                    </f:facet>
-                    <h:outputText value="#{subject.code}" />
-                    <!--Falta validar o formato-->
-                </h:column>
-
-                <h:column>
-                    <f:facet name="header">
-                        <h:outputText value="Name" />
-                    </f:facet>
-                    <h:outputText value="#{subject.name}" />
-                </h:column>
-
-                <h:column>
-                    <f:facet name="header">
-                        <h:outputText value="Course Year" />
-                    </f:facet>
-                    <h:outputText value="#{subject.courseYear}" />
-                </h:column>                        
-
-                <h:column>
-                    <f:facet name="header">
-                        <h:outputText value="Scholar Year" />
-                    </f:facet>
-                    <h:outputText value="#{subject.scholarYear}" />
-                </h:column>                        
-
-        </h:dataTable>
-
         <br/>
 
         <h:link value="Return" outcome="index"/>
