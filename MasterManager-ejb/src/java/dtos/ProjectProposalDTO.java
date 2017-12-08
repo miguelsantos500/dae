@@ -1,6 +1,7 @@
 package dtos;
 
 import entities.project.ProjectType;
+import entities.users.Proponent;
 import java.io.Serializable;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -17,35 +18,22 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class ProjectProposalDTO implements Serializable{
 
 
-    @Id
     private int code;
     
-    @NotNull
     private ProjectType projectType;
     
-    @NotNull
     private String title;
     
-    //Quem propos a proposta
-    //TODO: Classe que é super, ou interface, de quem pode Propor, ao invés de User?
-    @NotNull
-    @ManyToOne
-    @JoinColumn(name = "PREPONENT_CODE")
-    private User preponent;
+    private Proponent proponent;
     
-    @NotNull
     private String projectAbstract;
     
-    @NotNull
     private String workPlan;
-    
-    @NotNull
+
     private String workPlace;
     
-    @NotNull
     private String budget;
     
-    @NotNull
     private List<String> scientificAreas;
     
     
@@ -54,13 +42,13 @@ public class ProjectProposalDTO implements Serializable{
     }
 
     public ProjectProposalDTO(int code, ProjectType projectType, String title,
-            User preponent, String projectAbstract, 
+            Proponent proponent, String projectAbstract, 
             String workPlan, String workPlace, 
             String budget, List<String> scientificAreas) {
         this.code = code;
         this.projectType = projectType;
         this.title = title;
-        this.preponent = preponent;
+        this.proponent = proponent;
         this.projectAbstract = projectAbstract;
         this.workPlan = workPlan;
         this.workPlace = workPlace;
@@ -74,7 +62,7 @@ public class ProjectProposalDTO implements Serializable{
         this.code = 0;
         this.projectType = null;
         this.title = null;
-        this.preponent = null;
+        this.proponent = null;
         this.projectAbstract = null;
         this.workPlan = null;
         this.workPlace = null;
@@ -105,12 +93,12 @@ public class ProjectProposalDTO implements Serializable{
         this.title = title;
     }
 
-    public User getPreponent() {
-        return preponent;
+    public Proponent getProponent() {
+        return proponent;
     }
 
-    public void setPreponent(User preponent) {
-        this.preponent = preponent;
+    public void setProponent(Proponent proponent) {
+        this.proponent = proponent;
     }
 
     public String getProjectAbstract() {

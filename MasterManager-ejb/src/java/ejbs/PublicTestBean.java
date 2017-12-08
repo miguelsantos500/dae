@@ -67,7 +67,7 @@ public class PublicTestBean {
                 throw new EntityDoesNotExistException(
                         "Não existe nenhuma prova publica com esse código.");
             }
-            
+
             Teacher juryPresident = em.find(Teacher.class, teacherJuryUsername);
             if (juryPresident == null) {
                 throw new EntityDoesNotExistException(

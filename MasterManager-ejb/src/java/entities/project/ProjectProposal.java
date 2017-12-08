@@ -5,6 +5,7 @@
  */
 package entities.project;
 
+import entities.users.Proponent;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +16,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import entities.users.User;
 
 /**
  *
@@ -44,8 +44,8 @@ public class ProjectProposal implements Serializable {
     //TODO: Classe que é super, ou interface, de quem pode Propor, ao invés de User?
     @NotNull
     @ManyToOne
-    @JoinColumn(name = "PREPONENT_CODE")
-    private User preponent;
+    @JoinColumn(name = "PROPONENT_CODE")
+    private Proponent proponent;
     
     @NotNull
     private String projectAbstract;
@@ -80,7 +80,7 @@ public class ProjectProposal implements Serializable {
     
 
     public ProjectProposal(int code, ProjectType projectType, 
-            String title, List<String> scientificAreas, User preponent, 
+            String title, List<String> scientificAreas, Proponent proponent, 
             String projectAbstract, List<String> objectives, 
             ArrayList<String> bibliography, String workPlan, 
             String workPlace, List<String> successRequirements, 
@@ -90,7 +90,7 @@ public class ProjectProposal implements Serializable {
         this.projectType = projectType;
         this.title = title;
         this.scientificAreas = scientificAreas;
-        this.preponent = preponent;
+        this.proponent = proponent;
         this.projectAbstract = projectAbstract;
         this.objectives = objectives;
         this.bibliography = bibliography;
@@ -140,12 +140,12 @@ public class ProjectProposal implements Serializable {
         this.scientificAreas = scientificAreas;
     }
 
-    public User getPreponent() {
-        return preponent;
+    public Proponent getProponent() {
+        return proponent;
     }
 
-    public void setPreponent(User preponent) {
-        this.preponent = preponent;
+    public void setProponent(Proponent proponent) {
+        this.proponent = proponent;
     }
 
     public String getProjectAbstract() {

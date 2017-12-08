@@ -14,14 +14,13 @@ import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 
-
 @Singleton
 @Startup
 public class ConfigBean {
 
-    private static final Logger logger = Logger.getLogger("ejbs.ConfigBean");    
-    
-    @EJB 
+    private static final Logger logger = Logger.getLogger("ejbs.ConfigBean");
+
+    @EJB
     private CCPUserBean ccpUserBean;
     @EJB
     private CourseBean courseBean;
@@ -33,15 +32,15 @@ public class ConfigBean {
     private ProjectProposalBean projectProposalBean;
     @EJB
     private PublicTestBean publicTestBean;
-    
+
     @PostConstruct
     public void populateBD() {
 
         try {
-            
+
             ccpUserBean.create("c1", "c1", "Ricardo", "dae.ricardo.ipleiria@gmail.com");
             ccpUserBean.create("c2", "c2", "Tati", "dae.tati.ipleiria@gmail.com");
-           
+
             courseBean.create(1, "EI");
             courseBean.create(2, "IS");
             courseBean.create(3, "JDM");
@@ -57,7 +56,7 @@ public class ConfigBean {
             studentBean.create("6666666", "Joaquim", "Joaquim", "dae.ei.ipleiria@gmail.com", 3);
             studentBean.create("7777777", "Alzira", "Alzira", "dae.ei.ipleiria@gmail.com", 4);
             studentBean.create("8888888", "Pedro", "Pedro", "dae.ei.ipleiria@gmail.com", 4);
-            
+
             teacherBean.create("3243243", "José", "José", "dae.jose.ipleiria@gmail.com");
             teacherBean.create("2446546", "Tati", "Tati", "dae.tati.ipleiria@gmail.com");
             teacherBean.create("9473829", "Marco", "Marco", "dae.marco.ipleiria@gmail.com");
@@ -67,17 +66,17 @@ public class ConfigBean {
 
             projectProposalBean.create(1, "PROJECT", "My First Project",
                     new LinkedList<>(Arrays.asList("Programming", "Management")),
-                    "3243243", "This is my first abstract", 
+                    "3243243", "This is my first abstract",
                     new LinkedList<>(Arrays.asList("Pass", "Have more than 12")),
                     new ArrayList<>(Arrays.asList("Wikipedia", "Google")),
-                    "Do it the day before", "My Basement", 
+                    "Do it the day before", "My Basement",
                     new LinkedList<>(Arrays.asList("Pass", "Have more than 12")),
-                    "Literaly Zero Euros", 
+                    "Literaly Zero Euros",
                     new LinkedList<>(Arrays.asList("Mum", "Pops")));
-            
-            publicTestBean.create(1, "Title", new Date(2000,1,1), "Sala XXX", "www.link.com", "9473829", "3243243", "Pedro Oliveia", "xxx@gmail.com", "1111111");
-            
-        } catch(Exception e){
+
+            publicTestBean.create(1, "Title", new Date(2000, 1, 1), "Sala XXX", "www.link.com", "9473829", "3243243", "Pedro Oliveia", "xxx@gmail.com", "1111111");
+
+        } catch (Exception e) {
             e.printStackTrace();
             logger.severe(e.getMessage());
         }

@@ -33,7 +33,10 @@ public class TeacherBean {
                 throw new EntityAlreadyExistsException(
                         "Um utilizador já existe com esse username.");
             }
-            em.persist(new Teacher(username, password, name, email));
+            
+            
+            Teacher teacher =new Teacher(username, password, name, email);
+            em.persist(teacher);
         } catch (EntityAlreadyExistsException e) {
             throw e;
         } catch (Exception e) {

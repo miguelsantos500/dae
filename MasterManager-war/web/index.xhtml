@@ -17,12 +17,12 @@
                 list="#{administratorManager.allStudents}">
                 <p:column headerText="Actions">
                     <h:form>
-                        <h:commandLink value="Details" action="admin_students_details?facesredirect=true">
+                        <h:commandLink value="Details" action="admin_student_details?facesredirect=true">
                             <f:setPropertyActionListener
                                 target="#{administratorManager.currentStudent}" value="#{object}" />
                         </h:commandLink>
                         &nbsp;
-                        <h:commandLink value="Update" action="admin_students_update?facesredirect=true">
+                        <h:commandLink value="Update" action="students_update?facesredirect=true">
                             <f:setPropertyActionListener
                                 target="#{administratorManager.currentStudent}" value="#{object}" />
                         </h:commandLink>
@@ -35,6 +35,7 @@
                     </h:form>
                 </p:column>
             </em:dt>
+            <h:link value="Create Student" outcome="students_create"/>
 
             <br/>
             <br/>
@@ -48,7 +49,7 @@
                 list="#{administratorManager.allTeachers}">
                 <p:column headerText="Actions">
                     <h:form>
-                        <h:commandLink value="Details" action="admin_teachers_details?facesredirect=true">
+                        <h:commandLink value="Details" action="teacher_details?facesredirect=true">
                             <f:setPropertyActionListener
                                 target="#{administratorManager.currentTeacher}" value="#{object}" />
                         </h:commandLink>
@@ -66,11 +67,12 @@
                     </h:form>
                 </p:column>
             </em:dt>
-
+            <h:link value="Create Teacher" outcome="teacher_create"/>
+            <br/>
             <em:dt 
                 title="Project Proposals" 
-                headers="#{['projectType', 'title', 'preponent']}"
-                props="#{['projectType', 'title', 'preponent']}"
+                headers="#{['ProjectType', 'Title', 'Proponent']}"
+                props="#{['projectType', 'title', 'proponent']}"
                 list="#{administratorManager.allProjectProposals}">
                 <p:column headerText="Actions">
                     <h:form>
@@ -127,7 +129,7 @@
                     </h:form>
                 </p:column>
             </em:dt>
-            
+
             <h:link class="btn btn-primary" value="Criar Prova Pública" outcome="admin_publictest_create"/>
 
 
