@@ -2,6 +2,7 @@ package ejbs;
 
 import ejbs.users.CCPUserBean;
 import ejbs.users.CourseBean;
+import ejbs.users.InstitutionBean;
 import ejbs.users.StudentBean;
 import ejbs.users.TeacherBean;
 import java.util.ArrayList;
@@ -32,6 +33,8 @@ public class ConfigBean {
     private ProjectProposalBean projectProposalBean;
     @EJB
     private PublicTestBean publicTestBean;
+     @EJB
+    private InstitutionBean institutionBean;
 
     @PostConstruct
     public void populateBD() {
@@ -79,6 +82,14 @@ public class ConfigBean {
             publicTestBean.create(3, "Title3", new Date(2000, 1, 1), "Sala zzz", "www.link.com", "3243245", "3243246", "Joao Oliveia", "zzz@gmail.com", "3333333");
             publicTestBean.create(4, "Title4", new Date(2000, 1, 1), "Sala aaa", "www.link.com", "3243246", "3243243", "Ricado Tati", "aaa@gmail.com", "4444444");
 
+            institutionBean.create("xxx1", "ESTG", "ESTG", "estg.ipleiria@ipleiria.pt");
+            institutionBean.create("xxx2", "ESECS", "ESECS", "esecs.ipleiria@ipleiria.pt");
+            institutionBean.create("xxx3", "ARTES", "ARTES", "aartes.ipleiria@ipleiria.pt");
+            institutionBean.create("xxx4", "ENFIM", "ENFIM", "enfim.ipleiria@ipleiria.pt");
+            institutionBean.create("xxx5", "INSTITUICAO", "INSTITUICAO", "instituicao.ipleiria@ipleiria.pt");
+            
+            
+            
         } catch (Exception e) {
             e.printStackTrace();
             logger.severe(e.getMessage());

@@ -1,6 +1,7 @@
 package web;
 
 import dtos.CourseDTO;
+import dtos.InstitutionDTO;
 import dtos.ProjectProposalDTO;
 import dtos.PublicTestDTO;
 import dtos.StudentDTO;
@@ -57,6 +58,7 @@ public class AdministratorManager {
     private StudentDTO newStudent;
     private TeacherDTO newTeacher;
     private CourseDTO newCourse;
+    private InstitutionDTO newInstitution;
     private PublicTestDTO newPublicTest;
 
     /**
@@ -65,6 +67,7 @@ public class AdministratorManager {
     private StudentDTO currentStudent;
     private TeacherDTO currentTeacher;
     private CourseDTO currentCourse;
+    private InstitutionDTO currentInstitution;
     private PublicTestDTO currentPublicTest;
 
     /**
@@ -89,6 +92,7 @@ public class AdministratorManager {
         newTeacher = new TeacherDTO();
         newCourse = new CourseDTO();
         newPublicTest = new PublicTestDTO();
+        newInstitution = new InstitutionDTO();
         client = ClientBuilder.newClient();
     }
 
@@ -172,7 +176,7 @@ public class AdministratorManager {
                     newTeacher.getPassword(),
                     newTeacher.getName(),
                     newTeacher.getEmail());
-            newTeacher.reset();
+                    newTeacher.reset();
 
         } catch (Exception e) {
             FacesExceptionHandler.handleException(e, "Erro inesperado no createTeacher do AdministratorManager", component, logger);
@@ -380,6 +384,89 @@ public class AdministratorManager {
     public void setCurrentPublicTest(PublicTestDTO currentPublicTest) {
         this.currentPublicTest = currentPublicTest;
     }
+    
+        ///////////////////////////////////////////INSTITUTIONS//////////////////////////////////////////
+
+     public String createInstitution() {
+
+        try {
+            institutionBean.create(
+                    newInstitution.getUsername(),
+                    newInstitution.getPassword(),
+                    newInstitution.getName(),
+                    newInstitution.getEmail());
+            newInstitution.reset();
+
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Erro inesperado no createTeacher do AdministratorManager", component, logger);
+            e.printStackTrace();
+            return null;
+        }
+        return "index?faces-redirect=true";
+    }
+    
+     
+     public List<InstitutionDTO> getAllInstitutions() {
+        List<InstitutionDTO> returnedInstitutions = null;
+        try {
+            returnedInstitutions = client.target(baseUri)
+                    .path("/institutions/all")
+                    .request(MediaType.APPLICATION_XML)
+                    .get(new GenericType<List<InstitutionDTO>>() {
+                    });
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            FacesExceptionHandler.handleException(e, "Erro inesperado no getAllTeachers AdministratorManager",
+                    logger);
+
+        }
+        return returnedInstitutions;
+    }
+
+    public InstitutionDTO getNewInstitution() {
+        return newInstitution;
+    }
+
+    public void setNewInstitution(InstitutionDTO newInstitution) {
+        this.newInstitution = newInstitution;
+    }
+
+    public InstitutionDTO getCurrentInstitution() {
+        return currentInstitution;
+    }
+
+    public void setCurrentInstitution(InstitutionDTO currentInstitution) {
+        this.currentInstitution = currentInstitution;
+    }
+    
+    public void removeInstitution(ActionEvent event) {
+        try {
+            UIParameter param = (UIParameter) event.getComponent().findComponent("institutionUsername");
+            String id = param.getValue().toString();
+            institutionBean.remove(id);
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, e.getMessage(), logger);
+        }
+    }
+    
+    public String updateInstitution() {
+        try {
+
+            client.target(baseUri)
+                    .path("/institutions/update")
+                    .request(MediaType.APPLICATION_XML)
+                    .put(Entity.xml(currentInstitution));
+
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
+            return null;
+        }
+
+        return "index?faces-redirect=true";
+    }
+    
+    
 
     ///////////////////////////////////////////COURSES//////////////////////////////////////////
     public String createCourse() {
