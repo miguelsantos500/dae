@@ -1,22 +1,29 @@
 package web;
 
 import dtos.CourseDTO;
+import dtos.ProjectProposalDTO;
 import dtos.PublicTestDTO;
 import dtos.StudentDTO;
+import dtos.TeacherDTO;
 import dtos.UserDTO;
 import ejbs.PublicTestBean;
 import ejbs.users.CCPUserBean;
 import ejbs.users.InstitutionBean;
 import ejbs.users.StudentBean;
 import ejbs.users.TeacherBean;
+import exceptions.EntityAlreadyExistsException;
+import exceptions.EntityDoesNotExistException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.component.UIComponent;
+import javax.faces.component.UIParameter;
+import javax.faces.event.ActionEvent;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.GenericType;
@@ -26,6 +33,9 @@ import javax.ws.rs.core.MediaType;
 @SessionScoped
 public class AdministratorManager {
 
+    /**
+     * ** Beans ***
+     */
     @EJB
     private CCPUserBean ccpUserBean;
     @EJB
@@ -34,13 +44,31 @@ public class AdministratorManager {
     private StudentBean studentBean;
     @EJB
     private TeacherBean teacherBean;
+
+    /**
+     * ** newObjects ***
+     */
     @EJB
     private PublicTestBean publicTestBean;
 
     private StudentDTO newStudent;
+    private TeacherDTO newTeacher;
     private CourseDTO newCourse;
+
+    /**
+     * ** currentObjects ***
+     */
+    private StudentDTO currentStudent;
+    private TeacherDTO currentTeacher;
+    private CourseDTO currentCourse;
+
+    /**
+     * ** Other ***
+     */
     private PublicTestDTO newPublicTest;
     private PublicTestDTO currentPublicTest;
+    private ProjectProposalDTO currentProjectProposal;
+
     private UIComponent component;
     private static final Logger logger = Logger.getLogger("web.AdministratorManager");
 
@@ -98,24 +126,116 @@ public class AdministratorManager {
         return returnedStudents;
     }
 
+    ///////////////////////////////////////////TEACHERS//////////////////////////////////////////
+    public String createTeacher() {
+
+        try {
+            teacherBean.create(
+                    newTeacher.getUsername(),
+                    newTeacher.getPassword(),
+                    newTeacher.getName(),
+                    newTeacher.getEmail());
+            newTeacher.reset();
+
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Erro inesperado no createTeacher do AdministratorManager", component, logger);
+            e.printStackTrace();
+            return null;
+        }
+        return "index?faces-redirect=true";
+    }
+
+    public List<TeacherDTO> getAllTeachers() {
+        List<TeacherDTO> returnedTeachers = null;
+        try {
+            returnedTeachers = client.target(baseUri)
+                    .path("/teachers/all")
+                    .request(MediaType.APPLICATION_XML)
+                    .get(new GenericType<List<TeacherDTO>>() {
+                    });
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            FacesExceptionHandler.handleException(e, "Erro inesperado no getAllTeachers AdministratorManager",
+                    logger);
+
+        }
+        return returnedTeachers;
+    }
+    
+    public List<TeacherDTO> getAllTeachersOrder() {
+        List<TeacherDTO> returnedTeachers = null;
+        try {
+            returnedTeachers = client.target(baseUri)
+                    .path("/teachers/all")
+                    .request(MediaType.APPLICATION_XML)
+                    .get(new GenericType<List<TeacherDTO>>() {
+                    });
+            List<TeacherDTO> aux = new LinkedList<>(returnedTeachers);
+            for (TeacherDTO returnedTeacher : returnedTeachers) {
+                System.out.println("SOU CCPUSER ? [" + returnedTeacher.getName() + "]");
+                if(ccpUserBean.isCCPUser(returnedTeacher.getEmail())) {
+                    aux.remove(returnedTeacher);
+                    aux.add(0,returnedTeacher);
+                    System.out.println("SIM [" + returnedTeacher.getName() + "]");
+                } 
+            }
+            
+            returnedTeachers = aux;
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            FacesExceptionHandler.handleException(e, "Erro inesperado no getAllTeachers AdministratorManager",
+                    logger);
+
+        }
+        return returnedTeachers;
+    }
+    
+    
+
+    public List<ProjectProposalDTO> getAllProjectProposals() {
+        List<ProjectProposalDTO> returnedProjectProposals = null;
+        try {
+            returnedProjectProposals = client.target(baseUri)
+                    .path("/projectProposals/all")
+                    .request(MediaType.APPLICATION_XML)
+                    .get(new GenericType<List<ProjectProposalDTO>>() {
+                    });
+
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Erro inesperado", component, logger);
+
+        }
+        return returnedProjectProposals;
+    }
+
+    public ProjectProposalDTO getCurrentProjectProposal() {
+        return currentProjectProposal;
+    }
+
+    public void setCurrentProjectProposal(ProjectProposalDTO currentProjectProposal) {
+        this.currentProjectProposal = currentProjectProposal;
+    }
+
     ////////////// PUBLIC TEST ///////////////////
     public String createPublicTest() {
 
-        try {
+        try {    
             publicTestBean.create(
                     newPublicTest.getCode(),
                     newPublicTest.getTitle(),
                     newPublicTest.getTestDateTime(),
                     newPublicTest.getPlace(),
                     newPublicTest.getLink(),
-                    newPublicTest.getCcpUserUsername(),
-                    newPublicTest.getTeacherUsername(),
+                    newPublicTest.getJuryPresidentUsername(),
+                    newPublicTest.getAdvisorUsername(),
                     newPublicTest.getOutsideTeacherName(),
                     newPublicTest.getOutsideTeacherEmail(),
                     newPublicTest.getStudentUsername());
             newPublicTest.reset();
 
-        } catch (Exception e) {
+        } catch (EntityAlreadyExistsException | EntityDoesNotExistException e) {
             FacesExceptionHandler.handleException(e, "Erro ao criar a prova pública!",
                     component, logger);
             return null;
@@ -127,7 +247,7 @@ public class AdministratorManager {
         try {
             return publicTestBean.getAll();
         } catch (Exception e) {
-            FacesExceptionHandler.handleException(e, "Erro inesperado no getAllPublicTests AdministratorManager",
+            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!",
                     logger);
             return null;
         }
@@ -141,15 +261,27 @@ public class AdministratorManager {
                     currentPublicTest.getTestDateTime(),
                     currentPublicTest.getPlace(),
                     currentPublicTest.getLink(),
-                    currentPublicTest.getCcpUserUsername(),
+                    currentPublicTest.getJuryPresidentUsername(),
                     currentPublicTest.getOutsideTeacherName(),
                     currentPublicTest.getOutsideTeacherEmail());
 
-        } catch (Exception e) {
+        } catch (EntityDoesNotExistException e) {
             FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
             return null;
         }
         return "index?faces-redirect=true";
+    }
+
+    public void removePublicTest(ActionEvent event) {
+        try {
+            UIParameter param = (UIParameter) event.getComponent().findComponent("publicTestCode");
+            int code = Integer.parseInt(param.getValue().toString());
+            publicTestBean.remove(code);
+        } catch (EntityDoesNotExistException e) {
+            FacesExceptionHandler.handleException(e, e.getMessage(), logger);
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
+        }
     }
 
     public PublicTestDTO getNewPublicTest() {

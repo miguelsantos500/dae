@@ -1,0 +1,94 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:em="http://xmlns.jcp.org/jsf/composite/emcomp">
+    <h:body>
+
+        <ui:composition template="./templates/skeleton.xhtml">
+            <ui:define name="title">CCP</ui:define>
+            <ui:define name="main">
+
+
+                <h:panelGrid columns="2">
+
+                    <h:outputLabel for="code" value="Code: " />
+                    <h:outputText 
+                        id="code"
+                        value="#{administratorManager.currentProjectProposal.code}"/>
+
+                    <h:outputLabel for="projectType" value="ProjectType: " />
+                    <h:outputText 
+                        id="projectType"
+                        value="#{administratorManager.currentProjectProposal.projectType}"/>
+
+                    <h:outputLabel for="title" value="Title: " />
+                    <h:outputText 
+                        id="title"
+                        value="#{administratorManager.currentProjectProposal.title}"/>
+
+                    <h:outputLabel for="projectAbstract" value="ProjectAbstract: " />
+                    <h:outputText 
+                        id="projectAbstract"
+                        value="#{administratorManager.currentProjectProposal.projectAbstract}"/>
+
+                    <h:outputLabel for="workPlan" value="WorkPlan: " />
+                    <h:outputText 
+                        id="workPlan"
+                        value="#{administratorManager.currentProjectProposal.workPlan}"/>
+
+                    <h:outputLabel for="workPlace" value="WorkPlace: " />
+                    <h:outputText 
+                        id="workPlace"
+                        value="#{administratorManager.currentProjectProposal.workPlace}"/>
+
+
+                    <h:outputLabel for="budget" value="Budget: " />
+                    <h:outputText 
+                        id="budget"
+                        value="#{administratorManager.currentProjectProposal.budget}"/>
+
+                </h:panelGrid>
+
+                <em:dt 
+                    title="Preponent" 
+                    headers="#{['Username', 'Name', 'Email']}"
+                    props="#{['username', 'name', 'email']}"
+                    list="#{administratorManager.currentProjectProposal.preponent}">
+                    <p:column headerText="Actions">
+                        <h:form>
+                            <h:commandLink value="Details" action="admin_students_details?facesredirect=true">
+                                <f:setPropertyActionListener
+                                    target="#{administratorManager.currentPreponent}" value="#{object}" />
+                            </h:commandLink>
+                            &nbsp;
+                            <h:commandLink value="Update" action="admin_students_update?facesredirect=true">
+                                <f:setPropertyActionListener
+                                    target="#{administratorManager.currentPreponent}" value="#{object}" />
+                            </h:commandLink>
+                        </h:form>
+                    </p:column>
+                </em:dt>
+
+
+                <em:dt_list
+                    headers="#{['scientificAreas']}"
+                    list="#{administratorManager.currentProjectProposal.scientificAreas}">
+                    
+                    
+                </em:dt_list>
+                
+
+                <br/>
+
+                <h:link value="Return" outcome="index"/>
+
+                <h:messages errorStyle="color: red" />        
+
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>

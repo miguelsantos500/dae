@@ -14,8 +14,8 @@
                 <h:outputLabel for="code" value="Código: " />
                 <h:outputText 
                     id="code"
-                    value="#{administratorManager.currentPublicTest.code}"/>
-
+                    value="#{administratorManager.currentPublicTest.code}"/>     
+                <br></br>
 
                 <h:outputLabel for="title" value="Título: " />
                 <h:inputText
@@ -29,7 +29,6 @@
                 <h:outputLabel for="testDateTime" value="Data e Hora: " />
                 <p:calendar
                     id="testDateTime"
-                    showOn="button"
                     required="true"
                     requiredMessage="Erro: Data e Hora não pode estar vazio."  
                     pattern="dd/MM/yyyy HH:mm"
@@ -62,30 +61,31 @@
                 <h:outputText 
                     id="student"
                     value="#{administratorManager.currentPublicTest.studentName}"/>
+                <br></br>
 
                 <h:outputLabel for="ccp" value="Atual President do Júri(Membro da CCP): " />
                 <h:outputText 
                     id="ccp"
-                    value="#{administratorManager.currentPublicTest.ccpUserName}"/>F
+                    value="#{administratorManager.currentPublicTest.juryPresidentName}"/>
+                <br></br>
 
-                <h:outputLabel for="ccpUser" value="Novo Presidente do Júri(Membro da CCP): " />
+                <h:outputLabel for="juryPresident" value="Novo Presidente do Júri(Membro da CCP): " />
                 <p:selectOneMenu
-                    id="ccpUser"
-                    value="#{administratorManager.currentPublicTest.ccpUserUsername}"
-                    placeholder="Selécionar se pretender alterar">
+                    id="juryPresident"
+                    value="#{administratorManager.currentPublicTest.juryPresidentUsername}">
                     <f:selectItems
-                        value="#{administratorManager.allStudents}"
-                        noSelectionValue="#{null}"
-                        var="ccp"
-                        itemValue="#{ccp.username}"
-                        itemLabel="#{ccp.name}" />
+                        value="#{administratorManager.allTeachersOrder}"
+                        var="teacher"
+                        itemValue="#{teacher.username}"
+                        itemLabel="#{teacher.name}" />
                 </p:selectOneMenu>
+                <br></br>
 
                 <h:outputLabel for="teacher" value="Orientador(Membro do Júri): " />
                 <h:outputText 
                     id="teacher"
-                    value="#{administratorManager.currentPublicTest.teacherName}"/>
-
+                    value="#{administratorManager.currentPublicTest.advisorName}"/>
+                <br></br>
 
                 <h:outputLabel for="outsideTeacherName" value="Professore de fora(Membro do Júri): " />
                 <h:inputText
@@ -107,7 +107,7 @@
                 </h:inputText>
                 <h:message for="outsideTeacherEmail" errorStyle="color: red" /> 
 
-                <br></br>
+
 
                 <h:commandButton
                     id="submit"
@@ -115,7 +115,7 @@
                     binding="#{administratorManager.component}" 
                     action="#{administratorManager.updatePublicTest}" />
                 <h:message for="submit" style="color: red"/>
-            </h:panelGrid>                       
+            </h:panelGrid>                  
 
         </h:form>
     </h:body>

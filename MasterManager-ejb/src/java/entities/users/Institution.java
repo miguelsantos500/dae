@@ -7,7 +7,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name="INSTITUTIONS")
-public class Institution extends User implements Serializable {
+public class Institution extends Proponent implements Serializable {
 
     public Institution() {
     }

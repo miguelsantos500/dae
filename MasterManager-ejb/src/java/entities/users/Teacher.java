@@ -6,14 +6,19 @@ import java.util.LinkedList;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
 @Table(name="TEACHERS")
-public class Teacher extends User implements Serializable {
+@NamedQueries({
+    @NamedQuery(name = "getAllTeachers",
+    query = "SELECT t FROM Teacher t ORDER BY t.name")})
+public class Teacher extends Proponent implements Serializable {
     
-    @OneToMany(mappedBy = "advisor", cascade = CascadeType.REMOVE)
+    @OneToMany(cascade = CascadeType.REMOVE)
     private List<PublicTest> publicTests;
 
     public Teacher() {

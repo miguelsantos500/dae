@@ -11,10 +11,10 @@
         <ui:define name="main">
 
             <em:dt 
-                   title="Students" 
-                   headers="#{['Username', 'Name', 'Email', 'Course']}"
-                   props="#{['username', 'name', 'email', 'courseName']}"
-                   list="#{administratorManager.allStudents}">
+                title="Students" 
+                headers="#{['Username', 'Name', 'Email', 'Course']}"
+                props="#{['username', 'name', 'email', 'courseName']}"
+                list="#{administratorManager.allStudents}">
                 <p:column headerText="Actions">
                     <h:form>
                         <h:commandLink value="Details" action="admin_students_details?facesredirect=true">
@@ -35,7 +35,102 @@
                     </h:form>
                 </p:column>
             </em:dt>
+
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+
+            <em:dt 
+                title="Teachers" 
+                headers="#{['Username', 'Name', 'Email']}"
+                props="#{['username', 'name', 'email']}"
+                list="#{administratorManager.allTeachers}">
+                <p:column headerText="Actions">
+                    <h:form>
+                        <h:commandLink value="Details" action="admin_teachers_details?facesredirect=true">
+                            <f:setPropertyActionListener
+                                target="#{administratorManager.currentTeacher}" value="#{object}" />
+                        </h:commandLink>
+                        &nbsp;
+                        <h:commandLink value="Update" action="admin_students_update?facesredirect=true">
+                            <f:setPropertyActionListener
+                                target="#{administratorManager.currentTeacher}" value="#{object}" />
+                        </h:commandLink>
+                        &nbsp;
+                        <h:commandLink value="Remove"
+                                       actionListener="#{administratorManager.removeTeacher}">
+                            <f:param name="studentUsername" id="teacherUsername"
+                                     value="#{object.username}" />
+                        </h:commandLink>
+                    </h:form>
+                </p:column>
+            </em:dt>
+
+            <em:dt 
+                title="Project Proposals" 
+                headers="#{['projectType', 'title', 'preponent']}"
+                props="#{['projectType', 'title', 'preponent']}"
+                list="#{administratorManager.allProjectProposals}">
+                <p:column headerText="Actions">
+                    <h:form>
+                        <h:commandLink value="Details" action="admin_project_proposals_details?facesredirect=true">
+                            <f:setPropertyActionListener
+                                target="#{administratorManager.currentProjectProposal}" value="#{object}" />
+                        </h:commandLink>
+                        &nbsp;
+                        <h:commandLink value="Update" action="admin_students_update?facesredirect=true">
+                            <f:setPropertyActionListener
+                                target="#{administratorManager.currentProjectProposal}" value="#{object}" />
+                        </h:commandLink>
+                        &nbsp;
+                        <h:commandLink value="Remove"
+                                       actionListener="#{administratorManager.removeProjectProposal}">
+                            <f:param name="projectProposalCode" id="projectProposalCode"
+                                     value="#{object.code}" />
+                        </h:commandLink>
+                    </h:form>
+                </p:column>
+            </em:dt>
+
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+
+            <em:dt 
+                title="Public Tests" 
+                headers="#{['code', 'title', 'testDateTime', 'place', 'link','student',
+                           'juryPresident', 'advisor', 'outsideTeacherName', 
+                           'outsideTeacherEmail']}"
+                props="#{['code', 'title', 'testDateString', 'place', 'link','studentName',
+                         'juryPresidentName', 'advisorName', 'outsideTeacherName', 
+                         'outsideTeacherEmail']}"
+                list="#{administratorManager.allPublicTests}">
+                <p:column headerText="Actions">
+                    <h:form>
+                        <h:commandLink value="Details" action="admin_publictest_details?facesredirect=true">
+                            <f:setPropertyActionListener
+                                target="#{administratorManager.currentPublicTest}" value="#{object}" />
+                        </h:commandLink>
+                        &nbsp;
+                        <h:commandLink value="Update" action="admin_publictest_update?facesredirect=true">
+                            <f:setPropertyActionListener
+                                target="#{administratorManager.currentPublicTest}" value="#{object}" />
+                        </h:commandLink>
+                        &nbsp;
+                        <h:commandLink value="Remove"
+                                       actionListener="#{administratorManager.removePublicTest}">
+                            <f:param name="publicTestCode" id="publicTestCode"
+                                     value="#{object.code}" />
+                        </h:commandLink>
+                    </h:form>
+                </p:column>
+            </em:dt>
             
+            <h:link class="btn btn-primary" value="Criar Prova Pública" outcome="admin_publictest_create"/>
+
+
             <br/>
             <br/>
             <br/>

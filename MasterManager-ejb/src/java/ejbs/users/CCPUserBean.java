@@ -11,6 +11,7 @@ import entities.users.CCPUser;
 import entities.users.User;
 import exceptions.MyConstraintViolationException;
 import exceptions.Utils;
+import java.util.List;
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -78,6 +79,21 @@ public class CCPUserBean {
 
         } catch (EntityDoesNotExistException e) {
             throw e;
+        } catch (Exception e) {
+            throw new EJBException(e.getMessage());
+        }
+    }
+    
+    public boolean isCCPUser(String email) {
+        try {
+            List<CCPUser> ccpUsers = em.createNamedQuery("getAllCCPUsers").getResultList();
+            for (CCPUser ccpUser : ccpUsers) {
+                if (ccpUser.getEmail().equals(email)) {
+                    return true;
+                }
+            }
+            
+            return false;
         } catch (Exception e) {
             throw new EJBException(e.getMessage());
         }

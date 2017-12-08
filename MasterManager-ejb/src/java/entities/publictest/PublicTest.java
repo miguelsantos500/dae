@@ -1,10 +1,10 @@
 package entities.publictest;
 
-import entities.users.CCPUser;
 import entities.users.Student;
 import entities.users.Teacher;
 import java.io.File;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -45,13 +45,13 @@ public class PublicTest implements Serializable {
     private String link;
      
     @ManyToOne
-    @JoinColumn(name = "CCPUSER_USERNAME")
+    @JoinColumn(name = "JURYPRESI_USERNAME")
     @NotNull
-    private CCPUser juryPresident;
+    private Teacher juryPresident;
     
     @NotNull
     @ManyToOne
-    @JoinColumn(name = "TEACHER_USERNAME")
+    @JoinColumn(name = "ADVISOR_USERNAME")
     private Teacher advisor;
     
     @NotNull
@@ -75,7 +75,7 @@ public class PublicTest implements Serializable {
     }
 
     public PublicTest(int code, String title, Date testDateTime,
-            String place, String link, CCPUser juryPresident, 
+            String place, String link, Teacher juryPresident, 
             Teacher advisor, String outsideTeacherName, String outsideTeacherEmail,
             Student student) {
         this.code = code;
@@ -130,11 +130,11 @@ public class PublicTest implements Serializable {
         this.link = link;
     }
 
-    public CCPUser getJuryPresident() {
+    public Teacher getJuryPresident() {
         return juryPresident;
     }
 
-    public void setJuryPresident(CCPUser juryPresident) {
+    public void setJuryPresident(Teacher juryPresident) {
         this.juryPresident = juryPresident;
     }
 
@@ -178,5 +178,8 @@ public class PublicTest implements Serializable {
         this.student = student;
     }
  
-    
+    public String getTestDateTimeString(){
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+        return sdf.format(this.testDateTime);
+    }
 }

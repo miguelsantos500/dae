@@ -2,7 +2,6 @@ package ejbs;
 
 import dtos.PublicTestDTO;
 import entities.publictest.PublicTest;
-import entities.users.CCPUser;
 import entities.users.Student;
 import entities.users.Teacher;
 import exceptions.EntityAlreadyExistsException;
@@ -22,7 +21,7 @@ public class PublicTestBean {
     private EntityManager em;
 
     public void create(int code, String title, Date testDateTime,
-            String place, String link, String ccpUsername,
+            String place, String link, String teacherJuryUsername,
             String advisorUsername, String outsideTeacherName, String outsideTeacherEmail,
             String studentUsername) throws
             EntityAlreadyExistsException, EntityDoesNotExistException {
@@ -32,25 +31,25 @@ public class PublicTestBean {
                         "Uma prova publica já existe com esse código.");
             }
 
-            CCPUser ccpUser = em.find(CCPUser.class, ccpUsername);
-            if (ccpUser == null) {
-                throw new EntityDoesNotExistException(
-                        "Não existe nenhum ccpuser com esse username");
-            }
-
-            Teacher teacher = em.find(Teacher.class, advisorUsername);
-            if (teacher == null) {
+            Teacher juryPresident = em.find(Teacher.class, teacherJuryUsername);
+            if (juryPresident == null) {
                 throw new EntityDoesNotExistException(
                         "Não existe nenhum professore com esse username");
             }
 
-            Student student = em.find(Student.class, advisorUsername);
+            Teacher advisor = em.find(Teacher.class, advisorUsername);
+            if (advisor == null) {
+                throw new EntityDoesNotExistException(
+                        "Não existe nenhum professore com esse username");
+            }
+
+            Student student = em.find(Student.class, studentUsername);
             if (student == null) {
                 throw new EntityDoesNotExistException(
                         "Não existe nenhum estudante com esse username");
             }
             em.persist(new PublicTest(code, title, testDateTime,
-                    place, link, ccpUser, teacher, outsideTeacherName,
+                    place, link, juryPresident, advisor, outsideTeacherName,
                     outsideTeacherEmail, student));
         } catch (EntityAlreadyExistsException | EntityDoesNotExistException e) {
             throw e;
@@ -60,7 +59,7 @@ public class PublicTestBean {
     }
 
     public void update(int code, String title, Date testDateTime,
-            String place, String link, String ccpUserUsername,
+            String place, String link, String teacherJuryUsername,
             String outideTeacherName, String outsideTeacherEmail) throws EntityDoesNotExistException {
         try {
             PublicTest publicTest = em.find(PublicTest.class, code);
@@ -68,14 +67,13 @@ public class PublicTestBean {
                 throw new EntityDoesNotExistException(
                         "Não existe nenhuma prova publica com esse código.");
             }
-            if (ccpUserUsername != null) {
-                CCPUser ccpUser = em.find(CCPUser.class, ccpUserUsername);
-                if (publicTest == null) {
-                    throw new EntityDoesNotExistException(
-                            "Não existe nenhum CCPUser com esse username.");
-                } else {
-                    publicTest.setJuryPresident(ccpUser);
-                }
+            
+            Teacher juryPresident = em.find(Teacher.class, teacherJuryUsername);
+            if (juryPresident == null) {
+                throw new EntityDoesNotExistException(
+                        "Não existe nenhum professore com esse username.");
+            } else {
+                publicTest.setJuryPresident(juryPresident);
             }
 
             publicTest.setTitle(title);
@@ -84,7 +82,6 @@ public class PublicTestBean {
             publicTest.setLink(link);
             publicTest.setOutsideTeacherName(outideTeacherName);
             publicTest.setOutsideTeacherEmail(outsideTeacherEmail);
-            
 
             em.merge(publicTest);
         } catch (EntityDoesNotExistException e) {
@@ -142,6 +139,7 @@ public class PublicTestBean {
                 publicTest.getOutsideTeacherEmail(),
                 publicTest.getStudent().getUsername(),
                 publicTest.getStudent().getName(),
-                publicTest.getFileRecord());
+                publicTest.getFileRecord(),
+                publicTest.getTestDateTimeString());
     }
 }

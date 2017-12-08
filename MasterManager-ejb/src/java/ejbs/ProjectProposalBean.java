@@ -6,7 +6,6 @@
 package ejbs;
 
 import dtos.ProjectProposalDTO;
-import entities.project.Budget;
 import entities.project.ProjectProposal;
 import entities.project.ProjectType;
 import exceptions.EntityAlreadyExistsException;
@@ -22,11 +21,17 @@ import javax.persistence.PersistenceContext;
 import javax.validation.ConstraintViolationException;
 import entities.users.User;
 
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+
 /**
  *
  * @author Miguel
  */
 @Stateless
+@Path("/projectProposals")
 public class ProjectProposalBean {
 
     @PersistenceContext
@@ -37,7 +42,7 @@ public class ProjectProposalBean {
             String projectAbstract, List<String> objectives,
             ArrayList<String> bibliography, String workPlan,
             String workPlace, List<String> successRequirements,
-            Budget budget, List<String> supports)
+            String budget, List<String> supports)
             throws EntityAlreadyExistsException,
             EntityDoesNotExistException, MyConstraintViolationException {
 
@@ -70,7 +75,10 @@ public class ProjectProposalBean {
         }
 
     }
-
+    
+    @GET
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Path("all")
     public List<ProjectProposalDTO> getAll() {
         try {
             List<ProjectProposal> projectProposals = (List<ProjectProposal>) 
@@ -119,7 +127,9 @@ public class ProjectProposalBean {
                     projectProposal.getPreponent(),
                     projectProposal.getProjectAbstract(),
                     projectProposal.getWorkPlan(),
-                    projectProposal.getWorkPlace()));
+                    projectProposal.getWorkPlace(),
+                    projectProposal.getBudget(),
+                    projectProposal.getScientificAreas()));
         }
         return dtos;
     }

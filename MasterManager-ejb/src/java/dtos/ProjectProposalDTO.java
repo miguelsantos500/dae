@@ -7,7 +7,13 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 import entities.users.User;
+import java.util.List;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
+@XmlRootElement(name = "ProjectProposal")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class ProjectProposalDTO implements Serializable{
 
 
@@ -36,13 +42,21 @@ public class ProjectProposalDTO implements Serializable{
     @NotNull
     private String workPlace;
     
+    @NotNull
+    private String budget;
+    
+    @NotNull
+    private List<String> scientificAreas;
+    
+    
     
     public ProjectProposalDTO(){
     }
 
     public ProjectProposalDTO(int code, ProjectType projectType, String title,
             User preponent, String projectAbstract, 
-            String workPlan, String workPlace) {
+            String workPlan, String workPlace, 
+            String budget, List<String> scientificAreas) {
         this.code = code;
         this.projectType = projectType;
         this.title = title;
@@ -50,6 +64,8 @@ public class ProjectProposalDTO implements Serializable{
         this.projectAbstract = projectAbstract;
         this.workPlan = workPlan;
         this.workPlace = workPlace;
+        this.budget = budget;
+        this.scientificAreas = scientificAreas;
     }
     
     
@@ -62,6 +78,7 @@ public class ProjectProposalDTO implements Serializable{
         this.projectAbstract = null;
         this.workPlan = null;
         this.workPlace = null;
+        this.budget = null;
     }
 
     public int getCode() {
@@ -120,6 +137,23 @@ public class ProjectProposalDTO implements Serializable{
         this.workPlace = workPlace;
     }
 
+    public String getBudget() {
+        return budget;
+    }
+
+    public void setBudget(String budget) {
+        this.budget = budget;
+    }
+
+    public List<String> getScientificAreas() {
+        return scientificAreas;
+    }
+
+    public void setScientificAreas(List<String> scientificAreas) {
+        this.scientificAreas = scientificAreas;
+    }
+
+    
     
     
 }

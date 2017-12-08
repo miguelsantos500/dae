@@ -18,12 +18,13 @@ public class PublicTestDTO implements Serializable {
     private int code;
     private String title;
     private Date testDateTime;
+    private String testDateString;
     private String Place;
     private String link;
-    private String ccpUserUsername;
-    private String ccpUserName;
-    private String teacherUsername;
-    private String teacherName;
+    private String juryPresidentUsername;
+    private String juryPresidentName;
+    private String advisorUsername;
+    private String advisorName;
     private String outsideTeacherName;
     private String outsideTeacherEmail;
     private String studentUsername;
@@ -34,24 +35,25 @@ public class PublicTestDTO implements Serializable {
     }
 
     public PublicTestDTO(int code, String title, Date testDateTime,
-            String Place, String link, String ccpUserUsername, String ccpUserName, 
-            String teacherUsername, String teacherName, String outsideTeacherName, 
+            String Place, String link, String juryPresidentUsername, String juryPresidentName, 
+            String advisorUsername, String advisorName, String outsideTeacherName, 
             String outsideTeacherEmail, String studentUsername, String studentName,
-            File fileRecord) {
+            File fileRecord, String testDateString) {
         this.code = code;
         this.title = title;
         this.testDateTime = testDateTime;
         this.Place = Place;
         this.link = link;
-        this.ccpUserUsername = ccpUserUsername;
-        this.ccpUserName = ccpUserName;
-        this.teacherUsername = teacherUsername;
-        this.teacherName = teacherName;
+        this.juryPresidentUsername = juryPresidentUsername;
+        this.juryPresidentName = juryPresidentName;
+        this.advisorUsername = advisorUsername;
+        this.advisorName = advisorName;
         this.outsideTeacherName = outsideTeacherName;
         this.outsideTeacherEmail = outsideTeacherEmail;
         this.studentUsername = studentUsername;
         this.studentName = studentName;
         this.fileRecord = fileRecord;
+        this.testDateString = testDateString;
     }
     
     public void reset() {
@@ -60,8 +62,8 @@ public class PublicTestDTO implements Serializable {
         this.testDateTime = null;
         this.Place = null;
         this.link = null;
-        this.ccpUserUsername = null;
-        this.teacherUsername = null;
+        this.juryPresidentUsername = null;
+        this.advisorUsername = null;
         this.outsideTeacherName = null;
         this.outsideTeacherEmail = null;
         this.studentUsername = null;
@@ -108,12 +110,12 @@ public class PublicTestDTO implements Serializable {
         this.link = link;
     }
 
-    public String getTeacherUsername() {
-        return teacherUsername;
+    public String getAdvisorUsername() {
+        return advisorUsername;
     }
 
-    public void setTeacherUsername(String teacherUsername) {
-        this.teacherUsername = teacherUsername;
+    public void setAdvisorUsername(String advisorUsername) {
+        this.advisorUsername = advisorUsername;
     }
 
     public String getOutsideTeacherName() {
@@ -148,28 +150,28 @@ public class PublicTestDTO implements Serializable {
         this.fileRecord = fileRecord;
     }
 
-    public String getCcpUserUsername() {
-        return ccpUserUsername;
+    public String getJuryPresidentUsername() {
+        return juryPresidentUsername;
     }
 
-    public void setCcpUserUsername(String ccpUserUsername) {
-        this.ccpUserUsername = ccpUserUsername;
+    public void setJuryPresidentUsername(String juryPresidentUsername) {
+        this.juryPresidentUsername = juryPresidentUsername;
     }
 
-    public String getCcpUserName() {
-        return ccpUserName;
+    public String getJuryPresidentName() {
+        return juryPresidentName;
     }
 
-    public void setCcpUserName(String ccpUserName) {
-        this.ccpUserName = ccpUserName;
+    public void setJuryPresidentName(String juryPresidentName) {
+        this.juryPresidentName = juryPresidentName;
     }
 
-    public String getTeacherName() {
-        return teacherName;
+    public String getAdvisorName() {
+        return advisorName;
     }
 
-    public void setTeacherName(String teacherName) {
-        this.teacherName = teacherName;
+    public void setAdvisorName(String advisorName) {
+        this.advisorName = advisorName;
     }
 
     public String getStudentName() {
@@ -179,7 +181,13 @@ public class PublicTestDTO implements Serializable {
     public void setStudentName(String studentName) {
         this.studentName = studentName;
     }
-    
-    
+
+    public String getTestDateString() {
+        return testDateString;
+    }
+
+    public void setTestDateString(String testDateString) {
+        this.testDateString = testDateString;
+    }
     
 }
