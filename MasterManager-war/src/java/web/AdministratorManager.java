@@ -173,7 +173,7 @@ public class AdministratorManager {
                     newTeacher.getPassword(),
                     newTeacher.getName(),
                     newTeacher.getEmail());
-            newTeacher.reset();
+                    newTeacher.reset();
 
         } catch (Exception e) {
             FacesExceptionHandler.handleException(e, "Erro inesperado no createTeacher do AdministratorManager", component, logger);
@@ -366,6 +366,40 @@ public class AdministratorManager {
         return "index?faces-redirect=true";
     }
     
+     
+     public List<InstitutionDTO> getAllInstitutions() {
+        List<InstitutionDTO> returnedInstitutions = null;
+        try {
+            returnedInstitutions = client.target(baseUri)
+                    .path("/institutions/all")
+                    .request(MediaType.APPLICATION_XML)
+                    .get(new GenericType<List<InstitutionDTO>>() {
+                    });
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            FacesExceptionHandler.handleException(e, "Erro inesperado no getAllTeachers AdministratorManager",
+                    logger);
+
+        }
+        return returnedInstitutions;
+    }
+
+    public InstitutionDTO getNewInstitution() {
+        return newInstitution;
+    }
+
+    public void setNewInstitution(InstitutionDTO newInstitution) {
+        this.newInstitution = newInstitution;
+    }
+
+    public InstitutionDTO getCurrentInstitution() {
+        return currentInstitution;
+    }
+
+    public void setCurrentInstitution(InstitutionDTO currentInstitution) {
+        this.currentInstitution = currentInstitution;
+    }
     
     
     

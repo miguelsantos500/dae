@@ -1,19 +1,28 @@
 package ejbs.users;
 
+import dtos.InstitutionDTO;
+import dtos.TeacherDTO;
 import entities.users.Institution;
+import entities.users.Teacher;
 import entities.users.User;
 import exceptions.EntityAlreadyExistsException;
 import exceptions.EntityDoesNotExistException;
 import exceptions.MyConstraintViolationException;
 import exceptions.Utils;
+import java.util.ArrayList;
+import java.util.List;
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.validation.ConstraintViolationException;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 
 @Stateless
-
+@Path("/institutions")
 public class InstitutionBean {
 
     @PersistenceContext
@@ -75,4 +84,35 @@ public class InstitutionBean {
         }
     }
 
+    @GET
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Path("all")
+    public List<InstitutionDTO> getAll(){
+        try{
+            List<Institution> institutions = em.createNamedQuery("getAllInstitutions").getResultList();
+            return institutionsToDTOs(institutions);
+        } catch (Exception e){
+            e.printStackTrace();
+            throw new EJBException(e.getMessage());
+        }
+    }
+    
+    public InstitutionDTO institutionToDTO(Institution institution){
+        return new InstitutionDTO(
+                institution.getUsername(),
+                null,
+                institution.getName(),
+                institution.getEmail());
+    }
+    
+    public List<InstitutionDTO> institutionsToDTOs(List<Institution> institutions) {
+        List<InstitutionDTO> teacherdtos = new ArrayList<>();
+        
+        for(Institution i : institutions){
+            teacherdtos.add(institutionToDTO(i));
+        }
+        return teacherdtos;
+    }
+    
+    
 }
