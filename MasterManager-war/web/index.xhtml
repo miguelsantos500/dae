@@ -12,20 +12,23 @@
 
 
             <h:form>
-                <h:inputText id="search" value="#{administratorManager.searchableName}"></h:inputText>
-                <h:commandButton value="Search by name" action="#{administratorManager.searchStudent}">
-                </h:commandButton>
-                
-                <em:dt 
-                title="Students" 
-                headers="#{['Username', 'Name', 'Email', 'Course']}"
-                props="#{['username', 'name', 'email', 'courseName']}"
-                list="#{administratorManager.searchStudent}">
-                
-            </em:dt>
-            </h:form>
+                <h:outputLabel for="search" value="Procurar Estudante: " />
+                <h:inputText 
+                    id="searchStudents"
+                    size="20"
+                    required="true"
+                    requiredMessage="Erro: campo não pode estar vazio!"
+                    value="#{administratorManager.searchableStudent}"/>
 
+                <br></br>
 
+                <h:commandButton
+                    id="searchStudent"
+                    value="Procurar"
+                    action="search_student?facesredirect=true" />    
+                <h:message for="searchStudent" style="color: red" />   
+                
+            </h:form> 
             <em:dt 
                 title="Students" 
                 headers="#{['Username', 'Name', 'Email', 'Course']}"
@@ -123,7 +126,7 @@
                     size="20"
                     required="true"
                     requiredMessage="Erro: campo não pode estar vazio!"
-                    value="#{administratorManager.search}"/>
+                    value="#{administratorManager.searchablePublicTest}"/>
 
                 <br></br>
 
