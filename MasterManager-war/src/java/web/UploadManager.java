@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package web;
 
 import java.io.FileOutputStream;
@@ -10,45 +5,34 @@ import java.io.IOException;
 import java.io.InputStream;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import org.primefaces.model.UploadedFile;
+import util.URILookup;
 
-/**
- *
- * @author Migue
- */
 @ManagedBean
+@SessionScoped
 public class UploadManager {
 
-    private UploadedFile file;
-
-    private static final String FILE_PATH = 
-            "C:\\Users\\Migue\\Documents\\NetBeansProjects\\AcademicManagement_Aula\\AcademicManagement_Aula-war\\web\\resources\\files\\";
+    UploadedFile file;
     
-    /**
-     * Creates a new instance of UploadManager
-     */
+    String completePathFile;
+    String filename;
+
     public UploadManager() {
     }
 
-    public UploadedFile getFile() {
-        return file;
-    }
-
-    public void setFile(UploadedFile file) {
-        this.file = file;
-    }
-
     public void upload() {
+        
+        
         if (file != null) {
             try {
-                String filename
-                        = file.getFileName().substring(file.getFileName()
-                                .lastIndexOf("\\") + 1);
+                filename = file.getFileName().substring(file.getFileName().lastIndexOf("\\") + 1);
+
+                completePathFile = URILookup.getServerDocumentsFolder() + filename;
                 
                 InputStream in = file.getInputstream();
-                FileOutputStream out = new FileOutputStream(
-                        FILE_PATH + filename);
+                FileOutputStream out = new FileOutputStream(completePathFile);
 
                 byte[] b = new byte[1024];
                 int readBytes = in.read(b);
@@ -60,17 +44,40 @@ public class UploadManager {
 
                 in.close();
                 out.close();
-                FacesMessage message = new FacesMessage("File: " + 
-                        file.getFileName() + "uploaded successfully!");
-                
-                FacesContext.getCurrentInstance().addMessage(null, message);
-            } catch (IOException e) {
 
-                FacesMessage message = new FacesMessage("ERROR :: File: "
-                        + file.getFileName() + " not uploaded!");
+                FacesMessage message = new FacesMessage("File: " + file.getFileName() + " uploaded successfully!");
+                FacesContext.getCurrentInstance().addMessage(null, message);
+                
+            } catch (IOException e) {
+                FacesMessage message = new FacesMessage("ERROR :: File: " + file.getFileName() + " not uploaded!");
                 FacesContext.getCurrentInstance().addMessage(null, message);
             }
         }
     }
 
+    public UploadedFile getFile() {
+        return file;
+    }
+
+    public void setFile(UploadedFile file) {
+        this.file = file;
+    }
+
+    public String getCompletePathFile() {
+        return completePathFile;
+    }
+
+    public void setCompletePathFile(String completePathFile) {
+        this.completePathFile = completePathFile;
+    }
+
+    public String getFilename() {
+        return filename;
+    }
+
+    public void setFilename(String filename) {
+        this.filename = filename;
+    }
+    
+    
 }

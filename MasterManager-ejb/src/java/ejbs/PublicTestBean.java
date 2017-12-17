@@ -1,6 +1,8 @@
 package ejbs;
 
+import dtos.DocumentDTO;
 import dtos.PublicTestDTO;
+import entities.Document;
 import entities.publictest.PublicTest;
 import entities.users.Student;
 import entities.users.Teacher;
@@ -14,8 +16,14 @@ import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.core.MediaType;
 
 @Stateless
+@Path("/publictest")
 public class PublicTestBean {
 
     @PersistenceContext
@@ -173,7 +181,44 @@ public class PublicTestBean {
                 publicTest.getOutsideTeacherEmail(),
                 publicTest.getStudent().getUsername(),
                 publicTest.getStudent().getName(),
-                publicTest.getFileRecord(),
-                publicTest.getTestDateTimeString());
+                publicTest.getTestDateTimeString(),
+                publicTest.getFileRecord().getDesiredName());
     }
+    
+    @PUT
+    @Path("/addFileRecord/{code}")
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public void addFileRecord(@PathParam("code") String codeString, DocumentDTO doc)
+            throws EntityDoesNotExistException {
+        try {
+            int code = Integer.parseInt(codeString);
+            PublicTest publicTest = em.find(PublicTest.class, code);
+            if (publicTest == null) {
+                throw new EntityDoesNotExistException("Não existe nenhuma prova publica com esse código.");
+            }
+
+            Document document = new Document(doc.getFilepath(), doc.getDesiredName(), doc.getMimeType(), publicTest);
+            em.persist(document);
+            publicTest.setFileRecord(document);
+
+        } catch (EntityDoesNotExistException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new EJBException(e.getMessage());
+        }
+    }
+
+    public DocumentDTO getDocument(int code) throws EntityDoesNotExistException {
+        System.out.println("CODE: " + code);
+        PublicTest publicTest = em.find(PublicTest.class, code);
+            
+        if (publicTest == null)
+            throw new EntityDoesNotExistException();
+        
+        
+
+        return new DocumentDTO(publicTest.getFileRecord().getId(),publicTest.getFileRecord().getFilepath(),
+                publicTest.getFileRecord().getDesiredName(),publicTest.getFileRecord().getMimeType());
+    }
+    
 }
