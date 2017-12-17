@@ -9,6 +9,7 @@ import exceptions.EntityDoesNotExistException;
 import exceptions.MyConstraintViolationException;
 import exceptions.Utils;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
@@ -21,6 +22,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import sun.rmi.runtime.Log;
 
 
 @Stateless
@@ -29,6 +31,7 @@ public class StudentBean {
 
     @PersistenceContext
     private EntityManager em;
+    
 
    
     public void create(String username, String password, String name, String email, int courseCode)
@@ -130,6 +133,30 @@ public class StudentBean {
 
         return dtos;
     }
-    
 
+    public List<StudentDTO> search(String searchName) {
+        try{
+              /**********debug**/
+            System.out.println("DEBUG - entrou no StudentBean.search()");
+            List<Student> students = em.createNamedQuery("getAllStudents").getResultList();
+            List<Student> matchedStudents = new LinkedList<>();
+            
+            for(Student s: students){
+                if((s.getUsername().toLowerCase()).contains(searchName.toLowerCase())){
+                    matchedStudents.add(s);
+                }else if((s.getName().toLowerCase()).contains(searchName.toLowerCase())){
+                    matchedStudents.add(s);
+                }else if((s.getEmail().toLowerCase()).contains(searchName.toLowerCase())){
+                    matchedStudents.add(s);
+                }
+            }
+            /**********debug**/
+            System.out.println("DEBUG - entrou no StudentBean.search()");
+           return studentsToDTOs(matchedStudents);
+           
+        }catch(Exception ex){
+            throw new EJBException(ex.getMessage());
+        }
+    }
+ 
 }
