@@ -1,8 +1,8 @@
 package entities.publictest;
 
+import entities.Document;
 import entities.users.Student;
 import entities.users.Teacher;
-import java.io.File;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -66,7 +66,9 @@ public class PublicTest implements Serializable {
     @OneToOne(mappedBy = "publicTest")
     private Student student;
 
-    private File fileRecord;
+    @OneToOne
+    @JoinColumn(name = "FILE_ID")
+    private Document fileRecord;
 
     public PublicTest() {
 
@@ -136,11 +138,14 @@ public class PublicTest implements Serializable {
         this.juryPresident = juryPresident;
     }
 
-    public File getFileRecord() {
+    public Document getFileRecord() {
+        if (this.fileRecord == null) {
+            return new Document();
+        }
         return fileRecord;
     }
 
-    public void setFileRecord(File fileRecord) {
+    public void setFileRecord(Document fileRecord) {
         this.fileRecord = fileRecord;
     }
 

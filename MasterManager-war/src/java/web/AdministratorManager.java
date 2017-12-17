@@ -1,8 +1,10 @@
 package web;
 
 import dtos.CourseDTO;
+import dtos.DocumentDTO;
 import dtos.InstitutionDTO;
 import dtos.ProjectProposalDTO;
+import dtos.ProponentDTO;
 import dtos.PublicTestDTO;
 import dtos.StudentDTO;
 import dtos.TeacherDTO;
@@ -19,24 +21,25 @@ import exceptions.EntityDoesNotExistException;
 import exceptions.MyConstraintViolationException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.faces.component.UIComponent;
-import javax.faces.component.html.HtmlInputText;
-import javax.faces.component.html.HtmlOutputLabel;
 import javax.faces.component.html.HtmlPanelGrid;
-import javax.faces.context.FacesContext;
 import javax.faces.component.UIParameter;
+import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
+import util.URILookup;
 
 @ManagedBean
 @SessionScoped
@@ -93,6 +96,13 @@ public class AdministratorManager {
     /**
      * ** Other ***
      */
+    @ManagedProperty(value = "#{uploadManager}")
+    private UploadManager uploadManager;
+
+    private String scientificAreasString;
+
+    private String search;
+
     private UIComponent component;
     private static final Logger logger = Logger.getLogger("web.AdministratorManager");
 
@@ -111,6 +121,7 @@ public class AdministratorManager {
         newCourse = new CourseDTO();
         newPublicTest = new PublicTestDTO();
         newInstitution = new InstitutionDTO();
+        newProjectProposal = new ProjectProposalDTO();
         client = ClientBuilder.newClient();
     }
 
@@ -151,7 +162,6 @@ public class AdministratorManager {
         return returnedStudents;
     }
 
-    ///////////////////////////////////////////TEACHERS//////////////////////////////////////////
     public String updateStudent() {
         try {
 
@@ -289,6 +299,41 @@ public class AdministratorManager {
         return "index?faces-redirect=true";
     }
 
+    ////////////// PROJECT PROPOSAL ///////////////////
+    public String createProjectProposal() {
+
+        try {
+
+            logger.info(scientificAreasString);
+
+            
+
+            ArrayList<String> bibliography = new ArrayList<>();
+
+            projectProposalBean.create(
+                    newProjectProposal.getCode(), newProjectProposal.getProjectTypeString(),
+                    newProjectProposal.getTitle(),
+                    newProjectProposal.getScientificAreas(),
+                    newProjectProposal.getProponentUsername(),
+                    newProjectProposal.getProjectAbstract(),
+                    newProjectProposal.getScientificAreas(),//objectives,
+                    bibliography,//bibliography,
+                    newProjectProposal.getWorkPlan(),
+                    newProjectProposal.getWorkPlace(),
+                    newProjectProposal.getScientificAreas(),//successRequirements,
+                    newProjectProposal.getBudget(),
+                    newProjectProposal.getScientificAreas());//supports);
+
+        } catch (EntityAlreadyExistsException | EntityDoesNotExistException
+                | MyConstraintViolationException e) {
+            FacesExceptionHandler.handleException(e, "Error Creating Project Proposal!",
+                    component, logger);
+            return null;
+        }
+        return "index?faces-redirect=true";
+    }
+
+
     public List<TeacherDTO> getSearchTeacher() {
         try {
             List<TeacherDTO> foundTeachers = teacherBean.search(searchableTeacher);
@@ -324,12 +369,22 @@ public class AdministratorManager {
         return returnedProjectProposals;
     }
 
-    public ProjectProposalDTO getCurrentProjectProposal() {
-        return currentProjectProposal;
-    }
+    public List<ProponentDTO> getAllProponents() {
+        List<ProponentDTO> returnedProponents = null;
+        try {
+            returnedProponents = client.target(baseUri)
+                    .path("/proponents/all")
+                    .request(MediaType.APPLICATION_XML)
+                    .get(new GenericType<List<ProponentDTO>>() {
+                    });
 
-    public void setCurrentProjectProposal(ProjectProposalDTO currentProjectProposal) {
-        this.currentProjectProposal = currentProjectProposal;
+        } catch (Exception e) {
+            e.printStackTrace();
+            FacesExceptionHandler.handleException(e, "Erro inesperado no getAllProponents AdministratorManager",
+                    logger);
+
+        }
+        return returnedProponents;
     }
     
   
@@ -454,6 +509,27 @@ public class AdministratorManager {
             FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
         }
     }
+    
+    public void uploadFileRecord(UIComponent component) {
+        try {            
+            DocumentDTO document = new DocumentDTO(uploadManager.getCompletePathFile(), 
+                                                    uploadManager.getFilename(), 
+                                                    uploadManager.getFile().getContentType());
+             
+            UIParameter param = (UIParameter) component.findComponent("publicTestCode2");
+            String code = param.getValue().toString();
+           
+            
+            client.target(URILookup.getBaseAPI())
+                    .path("/publictest/addFileRecord")
+                    .path(code)
+                    .request(MediaType.APPLICATION_XML)
+                    .put(Entity.xml(document));
+
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Erro ao fazer o upload do ficheiro!", logger);
+        }
+    }
 
     public PublicTestDTO getNewPublicTest() {
         return newPublicTest;
@@ -461,14 +537,6 @@ public class AdministratorManager {
 
     public void setNewPublicTest(PublicTestDTO newPublicTest) {
         this.newPublicTest = newPublicTest;
-    }
-
-    public ProjectProposalDTO getNewProjectProposal() {
-        return newProjectProposal;
-    }
-
-    public void setNewProjectProposal(ProjectProposalDTO newProjectProposal) {
-        this.newProjectProposal = newProjectProposal;
     }
 
     public String getDateNow() {
@@ -615,6 +683,14 @@ public class AdministratorManager {
     
   
     ///////////////////////////////////////////Getters e setters tem que ser organizado//////////////////////////////////////////
+    public ProjectProposalDTO getNewProjectProposal() {
+        return newProjectProposal;
+    }
+
+    public void setNewProjectProposal(ProjectProposalDTO newProjectProposal) {
+        this.newProjectProposal = newProjectProposal;
+    }
+
     public CourseDTO getCurrentCourse() {
         return currentCourse;
     }
@@ -709,6 +785,30 @@ public class AdministratorManager {
 
     public ProjectType[] getAllProjectTypes() {
         return ProjectType.values();
+    }
+
+    public String getScientificAreasString() {
+        return scientificAreasString;
+    }
+
+    public void setScientificAreasString(String scientificAreasString) {
+        this.scientificAreasString = scientificAreasString;
+    }
+
+    public ProjectProposalDTO getCurrentProjectProposal() {
+        return currentProjectProposal;
+    }
+
+    public void setCurrentProjectProposal(ProjectProposalDTO currentProjectProposal) {
+        this.currentProjectProposal = currentProjectProposal;
+    }
+
+    public UploadManager getUploadManager() {
+        return uploadManager;
+    }
+
+    public void setUploadManager(UploadManager uploadManager) {
+        this.uploadManager = uploadManager;
     }
 
 }

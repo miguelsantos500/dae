@@ -5,14 +5,14 @@
  */
 package dtos;
 
-import java.io.File;
 import java.io.Serializable;
 import java.util.Date;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
-/**
- *
- * @author Armando
- */
+@XmlRootElement(name = "PublicTest")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class PublicTestDTO implements Serializable {
 
     private int code;
@@ -29,7 +29,7 @@ public class PublicTestDTO implements Serializable {
     private String outsideTeacherEmail;
     private String studentUsername;
     private String studentName;
-    private File fileRecord;
+    private String documentName;
 
     public PublicTestDTO() {
     }
@@ -38,7 +38,7 @@ public class PublicTestDTO implements Serializable {
             String Place, String link, String juryPresidentUsername, String juryPresidentName, 
             String advisorUsername, String advisorName, String outsideTeacherName, 
             String outsideTeacherEmail, String studentUsername, String studentName,
-            File fileRecord, String testDateString) {
+            String testDateString, String documentName) {
         this.code = code;
         this.title = title;
         this.testDateTime = testDateTime;
@@ -52,14 +52,15 @@ public class PublicTestDTO implements Serializable {
         this.outsideTeacherEmail = outsideTeacherEmail;
         this.studentUsername = studentUsername;
         this.studentName = studentName;
-        this.fileRecord = fileRecord;
         this.testDateString = testDateString;
+        this.documentName = documentName;
     }
     
     public void reset() {
         this.code = 0;
         this.title = null;
         this.testDateTime = null;
+        this.testDateString = null;
         this.Place = null;
         this.link = null;
         this.juryPresidentUsername = null;
@@ -67,7 +68,7 @@ public class PublicTestDTO implements Serializable {
         this.outsideTeacherName = null;
         this.outsideTeacherEmail = null;
         this.studentUsername = null;
-        this.fileRecord = null;
+        this.documentName = null;
     }
 
     public int getCode() {
@@ -141,15 +142,7 @@ public class PublicTestDTO implements Serializable {
     public void setStudentUsername(String studentUsername) {
         this.studentUsername = studentUsername;
     }
-
-    public File getFileRecord() {
-        return fileRecord;
-    }
-
-    public void setFileRecord(File fileRecord) {
-        this.fileRecord = fileRecord;
-    }
-
+    
     public String getJuryPresidentUsername() {
         return juryPresidentUsername;
     }
@@ -189,5 +182,14 @@ public class PublicTestDTO implements Serializable {
     public void setTestDateString(String testDateString) {
         this.testDateString = testDateString;
     }
+
+    public String getDocumentName() {
+        return documentName;
+    }
+
+    public void setDocumentName(String documentName) {
+        this.documentName = documentName;
+    }
+    
     
 }
