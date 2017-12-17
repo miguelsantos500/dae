@@ -19,6 +19,7 @@ import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 
 import javax.ws.rs.GET;
@@ -63,12 +64,13 @@ public class ProjectProposalBean {
                     projectAbstract, objectives, bibliography, workPlan, workPlace,
                     successRequirements, budget, supports);
             em.persist(projectProposal);
-
             //TODO
             //proponentUser.addProjectProposal(projectProposal);
         } catch (EntityAlreadyExistsException | EntityDoesNotExistException e) {
             throw e;
         } catch (ConstraintViolationException e) {
+            e.printStackTrace();
+            e.getConstraintViolations().forEach((obj) -> System.out.print(obj));
             throw new MyConstraintViolationException(Utils.getConstraintViolationMessages(e));
         } catch (Exception e) {
             throw new EJBException(e.getMessage());

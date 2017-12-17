@@ -298,23 +298,23 @@ public class AdministratorManager {
 
             logger.info(scientificAreasString);
 
-            List<String> scientificAreas = stringToList(scientificAreasString, ";");
+            
 
             ArrayList<String> bibliography = new ArrayList<>();
 
             projectProposalBean.create(
                     newProjectProposal.getCode(), newProjectProposal.getProjectTypeString(),
                     newProjectProposal.getTitle(),
-                    scientificAreas,
+                    newProjectProposal.getScientificAreas(),
                     newProjectProposal.getProponentUsername(),
                     newProjectProposal.getProjectAbstract(),
-                    scientificAreas,//objectives,
+                    newProjectProposal.getScientificAreas(),//objectives,
                     bibliography,//bibliography,
                     newProjectProposal.getWorkPlan(),
                     newProjectProposal.getWorkPlace(),
-                    scientificAreas,//successRequirements,
+                    newProjectProposal.getScientificAreas(),//successRequirements,
                     newProjectProposal.getBudget(),
-                    scientificAreas);//supports);
+                    newProjectProposal.getScientificAreas());//supports);
 
         } catch (EntityAlreadyExistsException | EntityDoesNotExistException
                 | MyConstraintViolationException e) {
@@ -325,15 +325,6 @@ public class AdministratorManager {
         return "index?faces-redirect=true";
     }
 
-    public List<String> stringToList(String string, String separator) {
-        String[] stringArray = scientificAreasString.split(separator);
-        List<String> stringList = new LinkedList<>();
-
-        for (int i = 0; i < stringArray.length - 1; i++) {
-            stringList.add(stringArray[i]);
-        }
-        return stringList;
-    }
 
     public List<TeacherDTO> getSearchTeacher() {
         try {

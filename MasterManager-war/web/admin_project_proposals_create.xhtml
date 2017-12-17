@@ -40,20 +40,6 @@
                         value="#{administratorManager.newProjectProposal.title}"/>
                     <h:message for="title" errorStyle="color: red" />                   
 
-                </h:panelGrid >    
-
-                <div id="scientificAreas">
-                    <h:inputHidden
-                        id="inputScientificAreas"
-                        required="true"
-                        requiredMessage="Erro: Tem de adicionar pelo menos uma área científica."
-                        value="#{administratorManager.scientificAreasString}" />
-                    <h:message for="inputScientificAreas" errorStyle="color: red" />      
-                </div >                     
-                <h:button id="addScientificArea" class="btn btn-primary"  value="Add Scientific Area" onclick="return false;"/>
-                <br></br>
-
-                <h:panelGrid columns="3">
 
                     <h:outputLabel for="proponent" value="Proponente: " />
                     <h:selectOneMenu
@@ -66,27 +52,67 @@
                             itemLabel="#{proponent.name}" />
                     </h:selectOneMenu>
                     <br></br>
+                    
+                    
+                    <h:outputLabel for="workPlan" value="Plano de Trabalho " />
+                    <h:inputText
+                        id="workPlan"
+                        size="50"
+                        required="true"
+                        requiredMessage="Erro: Plano de Trabalho não pode estar vazio."
+                        value="#{administratorManager.newProjectProposal.workPlan}"/>
+                    <h:message for="workPlan" errorStyle="color: red" />             
+                    
+                    
+                    <h:outputLabel for="projectAbstract" value="Resumo do Projecto: " />
+                    <h:inputText
+                        id="projectAbstract"
+                        size="50"
+                        required="true"
+                        requiredMessage="Erro: Resumo do Project não pode estar vazio."
+                        value="#{administratorManager.newProjectProposal.projectAbstract}"/>
+                    <h:message for="projectAbstract" errorStyle="color: red" />             
+                    
+                    
+                    <h:outputLabel for="budget" value="Orçamento: " />
+                    <h:inputText
+                        id="budget"
+                        size="50"
+                        required="true"
+                        requiredMessage="Erro: Orçamento não pode estar vazio."
+                        value="#{administratorManager.newProjectProposal.budget}"/>
+                    <h:message for="budget" errorStyle="color: red" />             
+                    
+                    
+                    <h:outputLabel for="workPlace" value="Local de Trabalho: " />
+                    <h:inputText
+                        id="workPlace"
+                        size="50"
+                        required="true"
+                        requiredMessage="Erro: Local de Trabalho não pode estar vazio."
+                        value="#{administratorManager.newProjectProposal.workPlace}"/>
+                    <h:message for="workPlace" errorStyle="color: red" />             
+                    
+                    
+                    
+                </h:panelGrid >    
+   
+
+                <div id="scientificAreas">
+                    <h:inputHidden
+                        id="inputScientificAreas"
+                        required="true"
+                        requiredMessage="Erro: Tem de adicionar pelo menos uma área científica."
+                        value="#{administratorManager.newProjectProposal.scientificAreasString}" />
+                    <h:message for="inputScientificAreas" errorStyle="color: red" />      
+                </div >                     
+                <h:button id="addScientificArea" class="btn btn-primary"  value="Add Scientific Area" onclick="return false;"/>
+                <br></br>
+
+                <h:panelGrid columns="3">
 
 
                 </h:panelGrid >    
-
-
-
-                <!--
-                    newProjectProposal.getCode(), newProjectProposal.getProjectTypeString(),
-                    newProjectProposal.getTitle(),
-                    scientificAreas,
-                    newProjectProposal.getProponentUsername(),
-                    newProjectProposal.getProjectAbstract(),
-                    scientificAreas,//objectives,
-                    bibliography,//bibliography,
-                    newProjectProposal.getWorkPlan(),
-                    newProjectProposal.getWorkPlace(),
-                    scientificAreas,//successRequirements,
-                    newProjectProposal.getBudget(),
-                    scientificAreas);//supports);
-                
-                -->
 
                 <h:commandButton
                     id="submit"
