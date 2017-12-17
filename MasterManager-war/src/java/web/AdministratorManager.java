@@ -300,21 +300,19 @@ public class AdministratorManager {
 
             
 
-            ArrayList<String> bibliography = new ArrayList<>();
-
             projectProposalBean.create(
                     newProjectProposal.getCode(), newProjectProposal.getProjectTypeString(),
                     newProjectProposal.getTitle(),
                     newProjectProposal.getScientificAreas(),
                     newProjectProposal.getProponentUsername(),
                     newProjectProposal.getProjectAbstract(),
-                    newProjectProposal.getScientificAreas(),//objectives,
-                    bibliography,//bibliography,
+                    newProjectProposal.getObjectives(),
+                    newProjectProposal.getBibliography(),
                     newProjectProposal.getWorkPlan(),
                     newProjectProposal.getWorkPlace(),
-                    newProjectProposal.getScientificAreas(),//successRequirements,
+                    newProjectProposal.getSuccessRequirements(),
                     newProjectProposal.getBudget(),
-                    newProjectProposal.getScientificAreas());//supports);
+                    newProjectProposal.getSupports());
 
         } catch (EntityAlreadyExistsException | EntityDoesNotExistException
                 | MyConstraintViolationException e) {

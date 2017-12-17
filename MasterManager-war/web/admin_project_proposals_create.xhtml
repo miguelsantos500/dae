@@ -106,13 +106,59 @@
                         value="#{administratorManager.newProjectProposal.scientificAreasString}" />
                     <h:message for="inputScientificAreas" errorStyle="color: red" />      
                 </div >                     
-                <h:button id="addScientificArea" class="btn btn-primary"  value="Add Scientific Area" onclick="return false;"/>
+                <h:button id="addScientificArea" class="btn btn-primary"  value="Adicionar Área Científica" onclick="return false;"/>
                 <br></br>
+                
 
-                <h:panelGrid columns="3">
+                <div id="objectives">
+                    <h:inputHidden
+                        id="inputObjectives"
+                        required="true"
+                        requiredMessage="Erro: Tem de adicionar pelo menos um objectivo."
+                        value="#{administratorManager.newProjectProposal.objectivesString}" />
+                    <h:message for="inputObjectives" errorStyle="color: red" />      
+                </div >                     
+                <h:button id="addObjective" class="btn btn-primary"  value="Adicionar Objectivo" onclick="return false;"/>
+                <br></br>
+                
+                
 
+                <div id="bibliographyItems">
+                    <h:inputHidden
+                        id="inputBibliographyItems"
+                        required="true"
+                        requiredMessage="Erro: Tem de adicionar pelo menos um Item de Bibliografia."
+                        value="#{administratorManager.newProjectProposal.bibliographyString}" />
+                    <h:message for="inputBibliographyItems" errorStyle="color: red" />      
+                </div >                     
+                <h:button id="addBibliographyItem" class="btn btn-primary"  value="Adicionar Item de Bibliografia" onclick="return false;"/>
+                <br></br>
+                
+                
 
-                </h:panelGrid >    
+                <div id="successRequirements">
+                    <h:inputHidden
+                        id="inputSuccessRequirements"
+                        required="true"
+                        requiredMessage="Erro: Tem de adicionar pelo menos um Requisito de Sucesso."
+                        value="#{administratorManager.newProjectProposal.successRequirementsString}" />
+                    <h:message for="inputSuccessRequirements" errorStyle="color: red" />      
+                </div >                     
+                <h:button id="addSuccessRequirement" class="btn btn-primary"  value="Adicionar Requisito de Sucesso" onclick="return false;"/>
+                <br></br>
+                
+                
+
+                <div id="supports">
+                    <h:inputHidden
+                        id="inputSupports"
+                        required="true"
+                        requiredMessage="Erro: Tem de adicionar pelo menos um Apoio."
+                        value="#{administratorManager.newProjectProposal.supportsString}" />
+                    <h:message for="inputSupports" errorStyle="color: red" />      
+                </div >                     
+                <h:button id="addSupport" class="btn btn-primary"  value="Adicionar Apoio" onclick="return false;"/>
+                <br></br>
 
                 <h:commandButton
                     id="submit"

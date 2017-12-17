@@ -41,7 +41,7 @@ public class ProjectProposalBean {
     public void create(int code, String projectTypeString,
             String title, List<String> scientificAreas, String proponentUsername,
             String projectAbstract, List<String> objectives,
-            ArrayList<String> bibliography, String workPlan,
+            List<String> bibliography, String workPlan,
             String workPlace, List<String> successRequirements,
             String budget, List<String> supports)
             throws EntityAlreadyExistsException,
@@ -131,8 +131,13 @@ public class ProjectProposalBean {
                     projectProposal.getWorkPlan(),
                     projectProposal.getWorkPlace(),
                     projectProposal.getBudget(),
-                    projectProposal.getScientificAreas()));
+                    projectProposal.getScientificAreas(),
+                    projectProposal.getObjectives(),
+                    projectProposal.getBibliography(),
+                    projectProposal.getSuccessRequirements(),
+                    projectProposal.getSupports()));
         }
         return dtos;
+        
     }
 }

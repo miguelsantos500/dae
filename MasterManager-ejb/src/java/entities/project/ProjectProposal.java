@@ -53,9 +53,9 @@ public class ProjectProposal implements Serializable {
     @NotNull
     private List<String> objectives;
     
-    //ArrayList porque é no máximo 5.
+    //No máximo 5.
     @NotNull
-    private ArrayList<String> bibliography;
+    private List<String> bibliography;
     
     @NotNull
     private String workPlan;
@@ -82,7 +82,7 @@ public class ProjectProposal implements Serializable {
     public ProjectProposal(int code, ProjectType projectType, 
             String title, List<String> scientificAreas, Proponent proponent, 
             String projectAbstract, List<String> objectives, 
-            ArrayList<String> bibliography, String workPlan, 
+            List<String> bibliography, String workPlan, 
             String workPlace, List<String> successRequirements, 
             String budget, List<String> supports) {
         
@@ -164,11 +164,11 @@ public class ProjectProposal implements Serializable {
         this.objectives = objectives;
     }
 
-    public ArrayList<String> getBibliography() {
+    public List<String> getBibliography() {
         return bibliography;
     }
 
-    public void setBibliography(ArrayList<String> bibliography) {
+    public void setBibliography(List<String> bibliography) {
         this.bibliography = bibliography;
     }
 
