@@ -83,6 +83,8 @@ public class AdministratorManager {
     private String searchablePublicTest;
     private String searchableStudent;
     private String searchableTeacher;
+    private String searchableCourse;
+    private String searchableInstitution;
 
     /**
      * ** Other ***
@@ -512,7 +514,26 @@ public class AdministratorManager {
 
         return "index?faces-redirect=true";
     }
+    
+    public List<InstitutionDTO> getSearchInstitution() {
+        try {
+            List<InstitutionDTO> foundInstitutions = institutionBean.search(searchableInstitution);
+            return foundInstitutions;
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Unexpected error on getSearchStudent()!", logger);
+            return null;
+        }
+    }
 
+    public String getSearchableInstitution() {
+        return searchableInstitution;
+    }
+
+    public void setSearchableInstitution(String searchableInstitution) {
+        this.searchableInstitution = searchableInstitution;
+    }
+
+    
     ///////////////////////////////////////////COURSES//////////////////////////////////////////
     public String createCourse() {
         try {

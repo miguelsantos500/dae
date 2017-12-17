@@ -201,6 +201,24 @@
             <br/>
             <br/>
 
+            <h:form>
+                <h:outputLabel for="search" value="Procurar instituições: " />
+                <h:inputText 
+                    id="searchInstitutions"
+                    size="20"
+                    required="true"
+                    requiredMessage="Erro: campo não pode estar vazio!"
+                    value="#{administratorManager.searchableInstitution}"/>
+
+                <br></br>
+
+                <h:commandButton
+                    id="searchInstitution"
+                    value="Procurar"
+                    action="search_institution?facesredirect=true" />    
+                <h:message for="searchInstitution" style="color: red" />   
+                
+            </h:form>
             <em:dt 
                 title="Instituições" 
                 headers="#{['Username', 'Nome', 'Email']}"

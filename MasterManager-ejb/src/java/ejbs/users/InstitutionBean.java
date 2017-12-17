@@ -8,6 +8,7 @@ import exceptions.EntityDoesNotExistException;
 import exceptions.MyConstraintViolationException;
 import exceptions.Utils;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
@@ -135,6 +136,29 @@ public class InstitutionBean {
             throw e;
         }
 
+    }
+
+    public List<InstitutionDTO> search(String searchableInstitution) {
+       
+        try{
+            List<Institution> institutions = em.createNamedQuery("getAllInstitutions").getResultList();
+            List<Institution> matchedInstitutions = new LinkedList<>();
+            
+            for(Institution i: institutions){
+                if((i.getUsername().toLowerCase()).contains(searchableInstitution.toLowerCase())){
+                    matchedInstitutions.add(i);
+                }else if((i.getName().toLowerCase()).contains(searchableInstitution.toLowerCase())){
+                    matchedInstitutions.add(i);
+                }else if((i.getEmail().toLowerCase()).contains(searchableInstitution.toLowerCase())){
+                    matchedInstitutions.add(i);
+                }
+            }
+            
+            return institutionsToDTOs(matchedInstitutions);
+        }catch(Exception e){
+            throw e;
+        }
+        
     }
 
 }
