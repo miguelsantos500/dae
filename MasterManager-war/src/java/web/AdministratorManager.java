@@ -6,6 +6,7 @@ import dtos.ProjectProposalDTO;
 import dtos.PublicTestDTO;
 import dtos.StudentDTO;
 import dtos.TeacherDTO;
+import ejbs.ProjectProposalBean;
 import ejbs.PublicTestBean;
 import ejbs.users.CCPUserBean;
 import ejbs.users.CourseBean;
@@ -56,6 +57,8 @@ public class AdministratorManager {
     private CourseBean courseBean;
     @EJB
     private PublicTestBean publicTestBean;
+    @EJB
+    private ProjectProposalBean projectProposalBean;
 
     /**
      * ** newObjects ***
@@ -85,6 +88,7 @@ public class AdministratorManager {
     private String searchableTeacher;
     private String searchableCourse;
     private String searchableInstitution;
+    private String searchableProjectProposal;
 
     /**
      * ** Other ***
@@ -327,7 +331,54 @@ public class AdministratorManager {
     public void setCurrentProjectProposal(ProjectProposalDTO currentProjectProposal) {
         this.currentProjectProposal = currentProjectProposal;
     }
+    
+  
+    public void removeProjectProposal(ActionEvent event){
+        
+        try{
+            UIParameter param = (UIParameter) event.getComponent().findComponent("projectProposalCode");
+            int code = (int) param.getValue();
+            projectProposalBean.remove(code);
+            } catch(Exception e) {
+            FacesExceptionHandler.handleException(e, e.getMessage(), logger);
+        }
+        
+    }
+    
 
+    public String updateProjectProposal(){
+        try{
+            client.target(baseUri)
+                    .path("projectProposals/update")
+                    .request(MediaType.APPLICATION_XML)
+                    .put(Entity.xml(currentProjectProposal));
+            
+        } catch (Exception e){
+             FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
+            return null;
+        }
+        
+        return "index?faces-redirect=true";
+    }
+
+    public String getSearchableProjectProposal() {
+        return searchableProjectProposal;
+    }
+
+    public void setSearchableProjectProposal(String searchableProjectProposal) {
+        this.searchableProjectProposal = searchableProjectProposal;
+    }
+    
+    public List<ProjectProposalDTO> getSearchProjectProposal() {
+        try {
+            List<ProjectProposalDTO> foundProjectProposals = projectProposalBean.search(searchableProjectProposal);
+            return foundProjectProposals;
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Unexpected error on getSearchProjectProposal()!", logger);
+            return null;
+        }
+    }
+    
     ////////////// PUBLIC TEST ///////////////////
     public String createPublicTest() {
 
@@ -559,7 +610,10 @@ public class AdministratorManager {
             return null;
         }
     }
-
+    
+    
+    
+  
     ///////////////////////////////////////////Getters e setters tem que ser organizado//////////////////////////////////////////
     public CourseDTO getCurrentCourse() {
         return currentCourse;
@@ -653,7 +707,7 @@ public class AdministratorManager {
         this.searchableStudent = searchableStudent;
     }
 
-    public ProjectType[] getProjectTypes() {
+    public ProjectType[] getAllProjectTypes() {
         return ProjectType.values();
     }
 
