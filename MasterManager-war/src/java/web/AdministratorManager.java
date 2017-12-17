@@ -19,6 +19,10 @@ import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.component.UIComponent;
+import javax.faces.component.html.HtmlInputText;
+import javax.faces.component.html.HtmlOutputLabel;
+import javax.faces.component.html.HtmlPanelGrid;
+import javax.faces.context.FacesContext;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.GenericType;
@@ -28,7 +32,9 @@ import javax.ws.rs.core.MediaType;
 @SessionScoped
 public class AdministratorManager {
 
-    /**** Beans ****/
+    /**
+     * ** Beans ***
+     */
     @EJB
     private CCPUserBean ccpUserBean;
     @EJB
@@ -38,21 +44,26 @@ public class AdministratorManager {
     @EJB
     private TeacherBean teacherBean;
 
-     /**** newObjects ****/
+    /**
+     * ** newObjects ***
+     */
     @EJB
     private PublicTestBean publicTestBean;
 
     private StudentDTO newStudent;
     private TeacherDTO newTeacher;
     private CourseDTO newCourse;
-    
-     /**** currentObjects ****/
+
+    /**
+     * ** currentObjects ***
+     */
     private StudentDTO currentStudent;
     private TeacherDTO currentTeacher;
     private CourseDTO currentCourse;
-    
-     /**** Other ****/
 
+    /**
+     * ** Other ***
+     */
     private ProjectProposalDTO currentProjectProposal;
     private ProjectProposalDTO newProjectProposal;
 
@@ -68,25 +79,28 @@ public class AdministratorManager {
     private final String baseUri
             = "http://localhost:8080/MasterManager-war/webapi";
 
+    private HtmlPanelGrid mainGrid;
+
     public AdministratorManager() {
         newStudent = new StudentDTO();
         newCourse = new CourseDTO();
         newPublicTest = new PublicTestDTO();
         client = ClientBuilder.newClient();
     }
+
     ///////////////////////////////////////////STUDENTS//////////////////////////////////////////
-    public String createStudent(){
-        
-        try{
-          studentBean.create(
-                  newStudent.getUsername(),
-                  newStudent.getPassword(),
-                  newStudent.getName(),
-                  newStudent.getEmail(),
-                  newStudent.getCourseCode());
-          newStudent.reset();
-        
-        }catch(Exception e){
+    public String createStudent() {
+
+        try {
+            studentBean.create(
+                    newStudent.getUsername(),
+                    newStudent.getPassword(),
+                    newStudent.getName(),
+                    newStudent.getEmail(),
+                    newStudent.getCourseCode());
+            newStudent.reset();
+
+        } catch (Exception e) {
             FacesExceptionHandler.handleException(e, "Erro inesperado no createStudent do AdministratorManager", component, logger);
             e.printStackTrace();
             return null;
@@ -105,51 +119,50 @@ public class AdministratorManager {
 
         } catch (Exception e) {
             e.printStackTrace();
-            FacesExceptionHandler.handleException(e, "Erro inesperado no getAllStudents AdministratorManager", 
-                     logger);
-           
+            FacesExceptionHandler.handleException(e, "Erro inesperado no getAllStudents AdministratorManager",
+                    logger);
+
         }
         return returnedStudents;
     }
-    
-    
-        ///////////////////////////////////////////TEACHERS//////////////////////////////////////////
-    public String createTeacher(){
-        
-        try{
-          teacherBean.create(
-                  newTeacher.getUsername(),
-                  newTeacher.getPassword(),
-                  newTeacher.getName(),
-                  newTeacher.getEmail());
-          newTeacher.reset();
-        
-        }catch(Exception e){
+
+    ///////////////////////////////////////////TEACHERS//////////////////////////////////////////
+    public String createTeacher() {
+
+        try {
+            teacherBean.create(
+                    newTeacher.getUsername(),
+                    newTeacher.getPassword(),
+                    newTeacher.getName(),
+                    newTeacher.getEmail());
+            newTeacher.reset();
+
+        } catch (Exception e) {
             FacesExceptionHandler.handleException(e, "Erro inesperado no createTeacher do AdministratorManager", component, logger);
             e.printStackTrace();
             return null;
         }
         return "index?faces-redirect=true";
     }
-    
+
     public List<TeacherDTO> getAllTeachers() {
         List<TeacherDTO> returnedTeachers = null;
         try {
             returnedTeachers = client.target(baseUri)
                     .path("/teachers/all")
                     .request(MediaType.APPLICATION_XML)
-                    .get(new GenericType<List<TeacherDTO>>(){
+                    .get(new GenericType<List<TeacherDTO>>() {
                     });
 
         } catch (Exception e) {
             e.printStackTrace();
-            FacesExceptionHandler.handleException(e, "Erro inesperado no getAllTeachers AdministratorManager", 
-                     logger);
-           
+            FacesExceptionHandler.handleException(e, "Erro inesperado no getAllTeachers AdministratorManager",
+                    logger);
+
         }
         return returnedTeachers;
     }
-        
+
     public List<ProjectProposalDTO> getAllProjectProposals() {
         List<ProjectProposalDTO> returnedProjectProposals = null;
         try {
@@ -209,6 +222,7 @@ public class AdministratorManager {
         }
     }
 
+
     public PublicTestDTO getNewPublicTest() {
         return newPublicTest;
     }
@@ -225,8 +239,6 @@ public class AdministratorManager {
         this.newProjectProposal = newProjectProposal;
     }
 
-    
-    
     public String getDateNow() {
         return dateNow;
     }
@@ -238,8 +250,6 @@ public class AdministratorManager {
     public ProjectType[] getProjectTypes() {
         return ProjectType.values();
     }
-    
-    
-    
-    
+
+
 }
