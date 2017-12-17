@@ -1,6 +1,7 @@
 package web;
 
 import dtos.CourseDTO;
+import dtos.DocumentDTO;
 import dtos.InstitutionDTO;
 import dtos.ProjectProposalDTO;
 import dtos.ProponentDTO;
@@ -26,16 +27,19 @@ import java.util.List;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.component.html.HtmlPanelGrid;
 import javax.faces.component.UIParameter;
+import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
+import util.URILookup;
 
 @ManagedBean
 @SessionScoped
@@ -87,10 +91,14 @@ public class AdministratorManager {
     private String searchableTeacher;
     private String searchableCourse;
     private String searchableInstitution;
+    private String searchableProjectProposal;
 
     /**
      * ** Other ***
      */
+    @ManagedProperty(value = "#{uploadManager}")
+    private UploadManager uploadManager;
+
     private String scientificAreasString;
 
     private String search;
@@ -376,7 +384,54 @@ public class AdministratorManager {
         }
         return returnedProponents;
     }
+    
+  
+    public void removeProjectProposal(ActionEvent event){
+        
+        try{
+            UIParameter param = (UIParameter) event.getComponent().findComponent("projectProposalCode");
+            int code = (int) param.getValue();
+            projectProposalBean.remove(code);
+            } catch(Exception e) {
+            FacesExceptionHandler.handleException(e, e.getMessage(), logger);
+        }
+        
+    }
+    
 
+    public String updateProjectProposal(){
+        try{
+            client.target(baseUri)
+                    .path("projectProposals/update")
+                    .request(MediaType.APPLICATION_XML)
+                    .put(Entity.xml(currentProjectProposal));
+            
+        } catch (Exception e){
+             FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
+            return null;
+        }
+        
+        return "index?faces-redirect=true";
+    }
+
+    public String getSearchableProjectProposal() {
+        return searchableProjectProposal;
+    }
+
+    public void setSearchableProjectProposal(String searchableProjectProposal) {
+        this.searchableProjectProposal = searchableProjectProposal;
+    }
+    
+    public List<ProjectProposalDTO> getSearchProjectProposal() {
+        try {
+            List<ProjectProposalDTO> foundProjectProposals = projectProposalBean.search(searchableProjectProposal);
+            return foundProjectProposals;
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Unexpected error on getSearchProjectProposal()!", logger);
+            return null;
+        }
+    }
+    
     ////////////// PUBLIC TEST ///////////////////
     public String createPublicTest() {
 
@@ -450,6 +505,27 @@ public class AdministratorManager {
             FacesExceptionHandler.handleException(e, e.getMessage(), logger);
         } catch (Exception e) {
             FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
+        }
+    }
+    
+    public void uploadFileRecord(UIComponent component) {
+        try {            
+            DocumentDTO document = new DocumentDTO(uploadManager.getCompletePathFile(), 
+                                                    uploadManager.getFilename(), 
+                                                    uploadManager.getFile().getContentType());
+             
+            UIParameter param = (UIParameter) component.findComponent("publicTestCode2");
+            String code = param.getValue().toString();
+           
+            
+            client.target(URILookup.getBaseAPI())
+                    .path("/publictest/addFileRecord")
+                    .path(code)
+                    .request(MediaType.APPLICATION_XML)
+                    .put(Entity.xml(document));
+
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Erro ao fazer o upload do ficheiro!", logger);
         }
     }
 
@@ -600,7 +676,10 @@ public class AdministratorManager {
             return null;
         }
     }
-
+    
+    
+    
+  
     ///////////////////////////////////////////Getters e setters tem que ser organizado//////////////////////////////////////////
     public ProjectProposalDTO getNewProjectProposal() {
         return newProjectProposal;
@@ -702,7 +781,7 @@ public class AdministratorManager {
         this.searchableStudent = searchableStudent;
     }
 
-    public ProjectType[] getProjectTypes() {
+    public ProjectType[] getAllProjectTypes() {
         return ProjectType.values();
     }
 
@@ -720,6 +799,14 @@ public class AdministratorManager {
 
     public void setCurrentProjectProposal(ProjectProposalDTO currentProjectProposal) {
         this.currentProjectProposal = currentProjectProposal;
+    }
+
+    public UploadManager getUploadManager() {
+        return uploadManager;
+    }
+
+    public void setUploadManager(UploadManager uploadManager) {
+        this.uploadManager = uploadManager;
     }
 
 }

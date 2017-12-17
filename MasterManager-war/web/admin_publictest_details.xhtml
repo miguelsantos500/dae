@@ -41,11 +41,6 @@
                         id="link"
                         value="#{administratorManager.currentPublicTest.link}"/>
 
-                    <h:outputLabel for="place" value="Local: " />
-                    <h:outputText 
-                        id="place"
-                        value="#{administratorManager.currentPublicTest.place}"/>
-
                     <h:outputLabel for="student" value="Estudante: " />
                     <h:outputText 
                         id="student"
@@ -72,6 +67,24 @@
                         value="#{administratorManager.currentPublicTest.outsideTeacherEmail}"/>
 
                 </h:panelGrid>
+
+
+                <h:form rendered="${not empty administratorManager.currentPublicTest.documentName}">
+
+                    <h:outputLabel for="document" value="Ata (Nome do ficheiro): " />
+                    <h:outputText 
+                        id="document"
+                        value="#{administratorManager.currentPublicTest.documentName}">
+                        <f:param name="code" id="codeParam"
+                                     value="#{administratorManager.currentPublicTest.code}" />
+                    </h:outputText>
+                    <br></br>
+
+                    <p:commandButton value="Download" ajax="false">
+                        <p:fileDownload value="#{downloadManager.file}" />
+                    </p:commandButton>
+                </h:form>
+
                 <br/>       
                 <br/>
 
