@@ -133,12 +133,23 @@ public class ProjectProposalBean {
             ProjectProposal projectProposal = em.find(ProjectProposal.class, projectProposalDTO.getCode());
             if (projectProposal == null) {
                 throw new EntityDoesNotExistException(
-                        "Não existe uma Proposta de Trabalho com esse código");
+                        "Não existe uma Proposta de Trabalho com o código: "
+                +projectProposalDTO.getCode());
             }
+            
+            Proponent proponent = em.find(Proponent.class, projectProposalDTO.getProponentUsername());
+            if(proponent == null) {
+                throw new EntityDoesNotExistException(
+                        "Não existe um Proponente com o Username:"
+                +projectProposalDTO.getProponentUsername());
+            }
+            
+            
             //todo: actualizar bibliography e outras listas???, successRequirements, supports, scientificAreas
-            projectProposal.setProjectType(projectProposalDTO.getProjectType());
+            ProjectType projectType = ProjectType.valueOf(projectProposalDTO.getProjectTypeString());
+            projectProposal.setProjectType(projectType);
             projectProposal.setTitle(projectProposalDTO.getTitle());
-            projectProposal.setProponent(projectProposalDTO.getProponent());
+            projectProposal.setProponent(proponent);
             projectProposal.setProjectAbstract(projectProposalDTO.getProjectAbstract());
             projectProposal.setWorkPlan(projectProposalDTO.getWorkPlan());
             projectProposal.setWorkPlace(projectProposalDTO.getWorkPlace());
