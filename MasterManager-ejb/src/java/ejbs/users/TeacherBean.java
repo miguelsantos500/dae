@@ -14,7 +14,9 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.validation.ConstraintViolationException;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
@@ -33,7 +35,10 @@ public class TeacherBean {
                 throw new EntityAlreadyExistsException(
                         "Um utilizador já existe com esse username.");
             }
-            em.persist(new Teacher(username, password, name, email));
+            
+            
+            Teacher teacher =new Teacher(username, password, name, email);
+            em.persist(teacher);
         } catch (EntityAlreadyExistsException e) {
             throw e;
         } catch (Exception e) {
@@ -41,28 +46,27 @@ public class TeacherBean {
         }
     }
 
-    public void update(String username, String password, String name, String email)
-            throws EntityDoesNotExistException, MyConstraintViolationException,
-            MyConstraintViolationException {
-        try {
-            Teacher teacher = em.find(Teacher.class, username);
-            if (teacher == null) {
-                throw new EntityDoesNotExistException(
-                        "Não existe um utilizador Professore com esse username");
-            }
-            teacher.setName(name);
-            teacher.setEmail(email);
+    @PUT
+    @Path("/update")
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public void updateTeacher(TeacherDTO teacherDTO)
+            throws MyConstraintViolationException {
 
+        try {
+            Teacher teacher = em.find(Teacher.class, teacherDTO.getUsername());
+            if (teacher == null) {
+                //  throw new EntityDoesNotExistsException("There is no student with that username.");
+            }
+
+            teacher.setPassword(teacherDTO.getPassword());
+            teacher.setName(teacherDTO.getName());
+            teacher.setEmail(teacherDTO.getEmail());
             em.merge(teacher);
 
-        } catch (EntityDoesNotExistException e) {
-            throw e;
-        } catch (ConstraintViolationException e) {
-            throw new MyConstraintViolationException(
-                    Utils.getConstraintViolationMessages(e));
         } catch (Exception e) {
-            throw new EJBException(e.getMessage());
+            throw e;
         }
+
     }
 
     public void remove(String username) throws EntityDoesNotExistException {

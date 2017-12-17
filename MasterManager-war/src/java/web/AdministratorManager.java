@@ -1,18 +1,24 @@
 package web;
 
 import dtos.CourseDTO;
+import dtos.InstitutionDTO;
 import dtos.ProjectProposalDTO;
 import dtos.PublicTestDTO;
 import dtos.StudentDTO;
 import dtos.TeacherDTO;
 import ejbs.PublicTestBean;
 import ejbs.users.CCPUserBean;
+import ejbs.users.CourseBean;
 import ejbs.users.InstitutionBean;
 import ejbs.users.StudentBean;
 import ejbs.users.TeacherBean;
 import entities.project.ProjectType;
+import exceptions.EntityAlreadyExistsException;
+import exceptions.EntityDoesNotExistException;
+import exceptions.MyConstraintViolationException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
@@ -23,8 +29,11 @@ import javax.faces.component.html.HtmlInputText;
 import javax.faces.component.html.HtmlOutputLabel;
 import javax.faces.component.html.HtmlPanelGrid;
 import javax.faces.context.FacesContext;
+import javax.faces.component.UIParameter;
+import javax.faces.event.ActionEvent;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 
@@ -43,16 +52,19 @@ public class AdministratorManager {
     private StudentBean studentBean;
     @EJB
     private TeacherBean teacherBean;
+    @EJB
+    private CourseBean courseBean;
+    @EJB
+    private PublicTestBean publicTestBean;
 
     /**
      * ** newObjects ***
      */
-    @EJB
-    private PublicTestBean publicTestBean;
-
     private StudentDTO newStudent;
     private TeacherDTO newTeacher;
     private CourseDTO newCourse;
+    private InstitutionDTO newInstitution;
+    private PublicTestDTO newPublicTest;
 
     /**
      * ** currentObjects ***
@@ -60,6 +72,8 @@ public class AdministratorManager {
     private StudentDTO currentStudent;
     private TeacherDTO currentTeacher;
     private CourseDTO currentCourse;
+    private InstitutionDTO currentInstitution;
+    private PublicTestDTO currentPublicTest;
 
     /**
      * ** Other ***
@@ -67,7 +81,7 @@ public class AdministratorManager {
     private ProjectProposalDTO currentProjectProposal;
     private ProjectProposalDTO newProjectProposal;
 
-    private PublicTestDTO newPublicTest;
+    private String search;
 
     private UIComponent component;
     private static final Logger logger = Logger.getLogger("web.AdministratorManager");
@@ -83,8 +97,10 @@ public class AdministratorManager {
 
     public AdministratorManager() {
         newStudent = new StudentDTO();
+        newTeacher = new TeacherDTO();
         newCourse = new CourseDTO();
         newPublicTest = new PublicTestDTO();
+        newInstitution = new InstitutionDTO();
         client = ClientBuilder.newClient();
     }
 
@@ -116,7 +132,6 @@ public class AdministratorManager {
                     .request(MediaType.APPLICATION_XML)
                     .get(new GenericType<List<StudentDTO>>() {
                     });
-
         } catch (Exception e) {
             e.printStackTrace();
             FacesExceptionHandler.handleException(e, "Erro inesperado no getAllStudents AdministratorManager",
@@ -124,6 +139,41 @@ public class AdministratorManager {
 
         }
         return returnedStudents;
+    }
+
+    ///////////////////////////////////////////TEACHERS//////////////////////////////////////////
+    public String updateStudent() {
+        try {
+
+            client.target(baseUri)
+                    .path("/students/update")
+                    .request(MediaType.APPLICATION_XML)
+                    .put(Entity.xml(currentStudent));
+
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
+            return null;
+        }
+
+        return "index?faces-redirect=true";
+    }
+
+    public void removeStudent(ActionEvent event) {
+        try {
+            UIParameter param = (UIParameter) event.getComponent().findComponent("studentUsername");
+            String id = param.getValue().toString();
+            studentBean.remove(id);
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, e.getMessage(), logger);
+        }
+    }
+
+    public StudentDTO getCurrentStudent() {
+        return currentStudent;
+    }
+
+    public void setCurrentStudent(StudentDTO currentStudent) {
+        this.currentStudent = currentStudent;
     }
 
     ///////////////////////////////////////////TEACHERS//////////////////////////////////////////
@@ -163,6 +213,61 @@ public class AdministratorManager {
         return returnedTeachers;
     }
 
+    public List<TeacherDTO> getAllTeachersCCPOnTop() {
+        List<TeacherDTO> returnedTeachers = null;
+        try {
+            returnedTeachers = client.target(baseUri)
+                    .path("/teachers/all")
+                    .request(MediaType.APPLICATION_XML)
+                    .get(new GenericType<List<TeacherDTO>>() {
+                    });
+            List<TeacherDTO> aux = new LinkedList<>(returnedTeachers);
+            for (TeacherDTO teacherDTO : aux) {
+                if (ccpUserBean.isCCPUser(teacherDTO.getEmail())) {
+                    returnedTeachers.remove(teacherDTO);
+                    returnedTeachers.add(0, teacherDTO);
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            FacesExceptionHandler.handleException(e, "Erro inesperado no getAllTeachers AdministratorManager",
+                    logger);
+
+        }
+        return returnedTeachers;
+    }
+
+    public TeacherDTO getCurrentTeacher() {
+        return currentTeacher;
+    }
+
+    public void removeTeacher(ActionEvent event) {
+        try {
+            UIParameter param = (UIParameter) event.getComponent().findComponent("teacherUsername");
+            String id = param.getValue().toString();
+            teacherBean.remove(id);
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, e.getMessage(), logger);
+        }
+    }
+
+    public String updateTeacher() {
+        try {
+
+            client.target(baseUri)
+                    .path("/teachers/update")
+                    .request(MediaType.APPLICATION_XML)
+                    .put(Entity.xml(currentTeacher));
+
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
+            return null;
+        }
+
+        return "index?faces-redirect=true";
+    }
+
     public List<ProjectProposalDTO> getAllProjectProposals() {
         List<ProjectProposalDTO> returnedProjectProposals = null;
         try {
@@ -197,14 +302,14 @@ public class AdministratorManager {
                     newPublicTest.getTestDateTime(),
                     newPublicTest.getPlace(),
                     newPublicTest.getLink(),
-                    newPublicTest.getCCPUserUsername(),
-                    newPublicTest.getTeacherUsername(),
+                    newPublicTest.getJuryPresidentUsername(),
+                    newPublicTest.getAdvisorUsername(),
                     newPublicTest.getOutsideTeacherName(),
                     newPublicTest.getOutsideTeacherEmail(),
                     newPublicTest.getStudentUsername());
             newPublicTest.reset();
 
-        } catch (Exception e) {
+        } catch (EntityAlreadyExistsException | EntityDoesNotExistException e) {
             FacesExceptionHandler.handleException(e, "Erro ao criar a prova pública!",
                     component, logger);
             return null;
@@ -222,6 +327,46 @@ public class AdministratorManager {
         }
     }
 
+    public List<PublicTestDTO> getSearchPublicTest() {
+        try {
+            List<PublicTestDTO> searchResults = publicTestBean.search(search);
+            return searchResults;
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
+            return null;
+        }
+    }
+
+    public String updatePublicTest() {
+        try {
+            publicTestBean.update(
+                    currentPublicTest.getCode(),
+                    currentPublicTest.getTitle(),
+                    currentPublicTest.getTestDateTime(),
+                    currentPublicTest.getPlace(),
+                    currentPublicTest.getLink(),
+                    currentPublicTest.getJuryPresidentUsername(),
+                    currentPublicTest.getOutsideTeacherName(),
+                    currentPublicTest.getOutsideTeacherEmail());
+
+        } catch (EntityDoesNotExistException e) {
+            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
+            return null;
+        }
+        return "index?faces-redirect=true";
+    }
+
+    public void removePublicTest(ActionEvent event) {
+        try {
+            UIParameter param = (UIParameter) event.getComponent().findComponent("publicTestCode");
+            int code = Integer.parseInt(param.getValue().toString());
+            publicTestBean.remove(code);
+        } catch (EntityDoesNotExistException e) {
+            FacesExceptionHandler.handleException(e, e.getMessage(), logger);
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
+        }
+    }
 
     public PublicTestDTO getNewPublicTest() {
         return newPublicTest;
@@ -247,9 +392,206 @@ public class AdministratorManager {
         this.dateNow = dateNow;
     }
 
+    public PublicTestDTO getCurrentPublicTest() {
+        return currentPublicTest;
+    }
+
+    public void setCurrentPublicTest(PublicTestDTO currentPublicTest) {
+        this.currentPublicTest = currentPublicTest;
+    }
+
+    ///////////////////////////////////////////INSTITUTIONS//////////////////////////////////////////
+    public String createInstitution() {
+
+        try {
+            institutionBean.create(
+                    newInstitution.getUsername(),
+                    newInstitution.getPassword(),
+                    newInstitution.getName(),
+                    newInstitution.getEmail());
+            newInstitution.reset();
+
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Erro inesperado no createInstitution do AdministratorManager", component, logger);
+            e.printStackTrace();
+            return null;
+        }
+        return "index?faces-redirect=true";
+    }
+
+    public List<InstitutionDTO> getAllInstitutions() {
+        List<InstitutionDTO> returnedInstitutions = null;
+        try {
+            returnedInstitutions = client.target(baseUri)
+                    .path("/institutions/all")
+                    .request(MediaType.APPLICATION_XML)
+                    .get(new GenericType<List<InstitutionDTO>>() {
+                    });
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            FacesExceptionHandler.handleException(e, "Erro inesperado no getAllTeachers AdministratorManager",
+                    logger);
+
+        }
+        return returnedInstitutions;
+    }
+
+    public InstitutionDTO getNewInstitution() {
+        return newInstitution;
+    }
+
+    public void setNewInstitution(InstitutionDTO newInstitution) {
+        this.newInstitution = newInstitution;
+    }
+
+    public InstitutionDTO getCurrentInstitution() {
+        return currentInstitution;
+    }
+
+    public void setCurrentInstitution(InstitutionDTO currentInstitution) {
+        this.currentInstitution = currentInstitution;
+    }
+
+    public void removeInstitution(ActionEvent event) {
+        try {
+            UIParameter param = (UIParameter) event.getComponent().findComponent("institutionUsername");
+            String id = param.getValue().toString();
+            institutionBean.remove(id);
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, e.getMessage(), logger);
+        }
+    }
+
+    public String updateInstitution() {
+        try {
+
+            client.target(baseUri)
+                    .path("/institutions/update")
+                    .request(MediaType.APPLICATION_XML)
+                    .put(Entity.xml(currentInstitution));
+
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
+            return null;
+        }
+
+        return "index?faces-redirect=true";
+    }
+
+    ///////////////////////////////////////////COURSES//////////////////////////////////////////
+    public String createCourse() {
+        try {
+            courseBean.create(
+                    newCourse.getCode(),
+                    newCourse.getName());
+            newCourse.reset();
+        } catch (MyConstraintViolationException e) {
+            FacesExceptionHandler.handleException(e, e.getMessage(), component, logger);
+            return null;
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", component, logger);
+            return null;
+        }
+        return "index?faces-redirect=true";
+    }
+
+    public List<CourseDTO> getAllCourses() {
+        try {
+            return courseBean.getAll();
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
+            return null;
+        }
+    }
+
+    ///////////////////////////////////////////Getters e setters tem que ser organizado//////////////////////////////////////////
+    public CourseDTO getCurrentCourse() {
+        return currentCourse;
+    }
+
+    public void setCurrentTeacher(TeacherDTO currentTeacher) {
+        this.currentTeacher = currentTeacher;
+    }
+
+    public void setCurrentCourse(CourseDTO currentCourse) {
+        this.currentCourse = currentCourse;
+    }
+
+    public StudentDTO getNewStudent() {
+        return newStudent;
+    }
+
+    public void setNewStudent(StudentDTO newStudent) {
+        this.newStudent = newStudent;
+    }
+
+    public TeacherDTO getNewTeacher() {
+        return newTeacher;
+    }
+
+    public void setNewTeacher(TeacherDTO newTeacher) {
+        this.newTeacher = newTeacher;
+    }
+
+    public CourseDTO getNewCourse() {
+        return newCourse;
+    }
+
+    public void setNewCourse(CourseDTO newCourse) {
+        this.newCourse = newCourse;
+    }
+
+    public InstitutionBean getInstitutionBean() {
+        return institutionBean;
+    }
+
+    public void setInstitutionBean(InstitutionBean institutionBean) {
+        this.institutionBean = institutionBean;
+    }
+
+    public StudentBean getStudentBean() {
+        return studentBean;
+    }
+
+    public void setStudentBean(StudentBean studentBean) {
+        this.studentBean = studentBean;
+    }
+
+    public TeacherBean getTeacherBean() {
+        return teacherBean;
+    }
+
+    public void setTeacherBean(TeacherBean teacherBean) {
+        this.teacherBean = teacherBean;
+    }
+
+    public CourseBean getCourseBean() {
+        return courseBean;
+    }
+
+    public void setCourseBean(CourseBean courseBean) {
+        this.courseBean = courseBean;
+    }
+
+    public UIComponent getComponent() {
+        return component;
+    }
+
+    public void setComponent(UIComponent component) {
+        this.component = component;
+    }
+
+    public String getSearch() {
+        return search;
+    }
+
+    public void setSearch(String search) {
+        this.search = search;
+    }
+
     public ProjectType[] getProjectTypes() {
         return ProjectType.values();
     }
-
 
 }

@@ -2,13 +2,13 @@ package ejbs;
 
 import dtos.PublicTestDTO;
 import entities.publictest.PublicTest;
-import entities.users.CCPUser;
 import entities.users.Student;
 import entities.users.Teacher;
 import exceptions.EntityAlreadyExistsException;
 import exceptions.EntityDoesNotExistException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
@@ -22,7 +22,7 @@ public class PublicTestBean {
     private EntityManager em;
 
     public void create(int code, String title, Date testDateTime,
-            String place, String link, String ccpUsername,
+            String place, String link, String teacherJuryUsername,
             String advisorUsername, String outsideTeacherName, String outsideTeacherEmail,
             String studentUsername) throws
             EntityAlreadyExistsException, EntityDoesNotExistException {
@@ -32,25 +32,25 @@ public class PublicTestBean {
                         "Uma prova publica já existe com esse código.");
             }
 
-            CCPUser ccpUser = em.find(CCPUser.class, ccpUsername);
-            if (ccpUser == null) {
-                throw new EntityDoesNotExistException(
-                        "Não existe nenhum ccpuser com esse username");
-            }
-
-            Teacher teacher = em.find(Teacher.class, advisorUsername);
-            if (teacher == null) {
+            Teacher juryPresident = em.find(Teacher.class, teacherJuryUsername);
+            if (juryPresident == null) {
                 throw new EntityDoesNotExistException(
                         "Não existe nenhum professore com esse username");
             }
 
-            Student student = em.find(Student.class, advisorUsername);
+            Teacher advisor = em.find(Teacher.class, advisorUsername);
+            if (advisor == null) {
+                throw new EntityDoesNotExistException(
+                        "Não existe nenhum professore com esse username");
+            }
+
+            Student student = em.find(Student.class, studentUsername);
             if (student == null) {
                 throw new EntityDoesNotExistException(
                         "Não existe nenhum estudante com esse username");
             }
             em.persist(new PublicTest(code, title, testDateTime,
-                    place, link, ccpUser, teacher, outsideTeacherName,
+                    place, link, juryPresident, advisor, outsideTeacherName,
                     outsideTeacherEmail, student));
         } catch (EntityAlreadyExistsException | EntityDoesNotExistException e) {
             throw e;
@@ -60,7 +60,8 @@ public class PublicTestBean {
     }
 
     public void update(int code, String title, Date testDateTime,
-            String place, String link) throws EntityDoesNotExistException {
+            String place, String link, String teacherJuryUsername,
+            String outideTeacherName, String outsideTeacherEmail) throws EntityDoesNotExistException {
         try {
             PublicTest publicTest = em.find(PublicTest.class, code);
             if (publicTest == null) {
@@ -68,10 +69,20 @@ public class PublicTestBean {
                         "Não existe nenhuma prova publica com esse código.");
             }
 
+            Teacher juryPresident = em.find(Teacher.class, teacherJuryUsername);
+            if (juryPresident == null) {
+                throw new EntityDoesNotExistException(
+                        "Não existe nenhum professore com esse username.");
+            } else {
+                publicTest.setJuryPresident(juryPresident);
+            }
+
             publicTest.setTitle(title);
             publicTest.setTestDateTime(testDateTime);
             publicTest.setPlace(place);
             publicTest.setLink(link);
+            publicTest.setOutsideTeacherName(outideTeacherName);
+            publicTest.setOutsideTeacherEmail(outsideTeacherEmail);
 
             em.merge(publicTest);
         } catch (EntityDoesNotExistException e) {
@@ -105,6 +116,39 @@ public class PublicTestBean {
             throw new EJBException(e.getMessage());
         }
     }
+    
+    public List<PublicTestDTO> search(String searchValue) {
+        try {
+            List<PublicTest> publicTests = (List<PublicTest>) em.createNamedQuery("getAllPublicTests").getResultList();
+            List<PublicTest> aux = new LinkedList<>();
+            for (PublicTest publicTest : publicTests) {
+                if (Integer.toString(publicTest.getCode()).contains(searchValue)){
+                    aux.add(publicTest);
+                } else if (publicTest.getTitle().toLowerCase().
+                        contains(searchValue.toLowerCase())){
+                    aux.add(publicTest);
+                } else if (publicTest.getPlace().toLowerCase().
+                        contains(searchValue.toLowerCase())){
+                    aux.add(publicTest);
+                } else if (publicTest.getJuryPresident().getName().toLowerCase().
+                        contains(searchValue.toLowerCase())){
+                    aux.add(publicTest);
+                } else if (publicTest.getAdvisor().getName().toLowerCase().
+                        contains(searchValue.toLowerCase())){
+                    aux.add(publicTest);
+                } else if (publicTest.getOutsideTeacherName().toLowerCase().
+                        contains(searchValue.toLowerCase())){
+                    aux.add(publicTest);
+                } else if (publicTest.getStudent().getName().toLowerCase().
+                        contains(searchValue.toLowerCase())){
+                    aux.add(publicTest);
+                }
+            }
+            return publicTestsToDTOs(aux);
+        } catch (Exception e) {
+            throw new EJBException(e.getMessage());
+        }
+    }
 
     private List<PublicTestDTO> publicTestsToDTOs(List<PublicTest> publicTests) {
         List<PublicTestDTO> dtos = new ArrayList<>();
@@ -122,10 +166,14 @@ public class PublicTestBean {
                 publicTest.getPlace(),
                 publicTest.getLink(),
                 publicTest.getJuryPresident().getUsername(),
+                publicTest.getJuryPresident().getName(),
                 publicTest.getAdvisor().getUsername(),
+                publicTest.getAdvisor().getName(),
                 publicTest.getOutsideTeacherName(),
                 publicTest.getOutsideTeacherEmail(),
                 publicTest.getStudent().getUsername(),
-                publicTest.getFileRecord());
+                publicTest.getStudent().getName(),
+                publicTest.getFileRecord(),
+                publicTest.getTestDateTimeString());
     }
 }

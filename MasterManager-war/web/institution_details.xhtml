@@ -12,22 +12,17 @@
             <h:outputLabel for="username" value="Username: " />
             <h:outputText 
                 id="username"
-                value="#{administratorManager.currentStudent.username}"/>
+                value="#{administratorManager.currentInstitution.username}"/>
 
             <h:outputLabel for="name" value="Name: " />
             <h:outputText 
                 id="name"
-                value="#{administratorManager.currentStudent.name}"/>
+                value="#{administratorManager.currentInstitution.name}"/>
 
             <h:outputLabel for="email" value="Email: " />
             <h:outputText 
                 id="email"
-                value="#{administratorManager.currentStudent.email}"/>
-
-            <h:outputLabel for="course" value="Course: " />
-            <h:outputText 
-                id="course"
-                value="#{administratorManager.currentStudent.courseName}"/>
+                value="#{administratorManager.currentInstitution.email}"/>
 
         </h:panelGrid>
         

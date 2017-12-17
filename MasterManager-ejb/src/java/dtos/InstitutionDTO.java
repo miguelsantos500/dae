@@ -6,15 +6,14 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement(name = "Teacher")
+@XmlRootElement(name = "Institution")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class TeacherDTO extends ProponentDTO implements Serializable{
+public class InstitutionDTO extends ProponentDTO implements Serializable {
 
-   
-    public TeacherDTO() {
+    public InstitutionDTO() {
     }
 
-    public TeacherDTO(String username, String password, String name, String email) {
+    public InstitutionDTO(String username, String password, String name, String email) {
         super(username, password, name, email);
     }
 
@@ -23,5 +22,6 @@ public class TeacherDTO extends ProponentDTO implements Serializable{
         super.reset(); 
     }
 
-   
+    
+    
 }
