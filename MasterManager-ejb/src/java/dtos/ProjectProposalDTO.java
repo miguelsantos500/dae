@@ -3,11 +3,7 @@ package dtos;
 import entities.project.ProjectType;
 import entities.users.Proponent;
 import java.io.Serializable;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.validation.constraints.NotNull;
-import entities.users.User;
+import java.util.LinkedList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -15,58 +11,64 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "ProjectProposal")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class ProjectProposalDTO implements Serializable{
-
+public class ProjectProposalDTO implements Serializable {
 
     private int code;
-    
-    private ProjectType projectType;
-    
+
+    private String projectTypeString;
+
     private String title;
-    
-    private Proponent proponent;
-    
+
+    private String proponentUsername;
+
     private String projectAbstract;
-    
+
     private String workPlan;
 
     private String workPlace;
-    
+
     private String budget;
-    
+
     private List<String> scientificAreas;
-    
-    
-    
-    public ProjectProposalDTO(){
+    private String scientificAreasString;
+
+    public ProjectProposalDTO() {
     }
 
-    public ProjectProposalDTO(int code, ProjectType projectType, String title,
-            Proponent proponent, String projectAbstract, 
-            String workPlan, String workPlace, 
-            String budget, List<String> scientificAreas) {
+    public ProjectProposalDTO(int code, String projectTypeString, String title,
+            String proponentUsername, String projectAbstract, String workPlan,
+            String workPlace, String budget, List<String> scientificAreas) {
         this.code = code;
-        this.projectType = projectType;
+        this.projectTypeString = projectTypeString;
         this.title = title;
-        this.proponent = proponent;
+        this.proponentUsername = proponentUsername;
         this.projectAbstract = projectAbstract;
         this.workPlan = workPlan;
         this.workPlace = workPlace;
         this.budget = budget;
         this.scientificAreas = scientificAreas;
     }
-    
-    
-    
-    public void reset(){
+
+    public void reset() {
         this.code = 0;
-        this.projectType = null;
         this.title = null;
-        this.proponent = null;
         this.projectAbstract = null;
         this.workPlan = null;
         this.workPlace = null;
         this.budget = null;
+    }
+
+    public List<String> stringToList(String string, String separator) {
+        if (scientificAreasString != null) {
+            String[] stringArray = scientificAreasString.split(separator);
+            List<String> stringList = new LinkedList<>();
+
+            for (int i = 0; i < stringArray.length; i++) {
+                stringList.add(stringArray[i]);
+            }
+            return stringList;
+        }
+        return scientificAreas;
     }
 
     public int getCode() {
@@ -77,28 +79,12 @@ public class ProjectProposalDTO implements Serializable{
         this.code = code;
     }
 
-    public ProjectType getProjectType() {
-        return projectType;
-    }
-
-    public void setProjectType(ProjectType projectType) {
-        this.projectType = projectType;
-    }
-
     public String getTitle() {
         return title;
     }
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public Proponent getProponent() {
-        return proponent;
-    }
-
-    public void setProponent(Proponent proponent) {
-        this.proponent = proponent;
     }
 
     public String getProjectAbstract() {
@@ -134,14 +120,36 @@ public class ProjectProposalDTO implements Serializable{
     }
 
     public List<String> getScientificAreas() {
-        return scientificAreas;
+        //return scientificAreas;
+        return stringToList(scientificAreasString, ";");
     }
 
     public void setScientificAreas(List<String> scientificAreas) {
         this.scientificAreas = scientificAreas;
     }
 
-    
-    
-    
+    public String getProponentUsername() {
+        return proponentUsername;
+    }
+
+    public void setProponentUsername(String proponentUsername) {
+        this.proponentUsername = proponentUsername;
+    }
+
+    public String getProjectTypeString() {
+        return projectTypeString;
+    }
+
+    public void setProjectTypeString(String projectTypeString) {
+        this.projectTypeString = projectTypeString;
+    }
+
+    public String getScientificAreasString() {
+        return scientificAreasString;
+    }
+
+    public void setScientificAreasString(String scientificAreasString) {
+        this.scientificAreasString = scientificAreasString;
+    }
+
 }

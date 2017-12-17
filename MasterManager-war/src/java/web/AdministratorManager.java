@@ -4,20 +4,24 @@ import dtos.CourseDTO;
 import dtos.DocumentDTO;
 import dtos.InstitutionDTO;
 import dtos.ProjectProposalDTO;
+import dtos.ProponentDTO;
 import dtos.PublicTestDTO;
 import dtos.StudentDTO;
 import dtos.TeacherDTO;
+import ejbs.ProjectProposalBean;
 import ejbs.PublicTestBean;
 import ejbs.users.CCPUserBean;
 import ejbs.users.CourseBean;
 import ejbs.users.InstitutionBean;
 import ejbs.users.StudentBean;
 import ejbs.users.TeacherBean;
+import entities.project.ProjectType;
 import exceptions.EntityAlreadyExistsException;
 import exceptions.EntityDoesNotExistException;
 import exceptions.MyConstraintViolationException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -26,6 +30,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.faces.component.UIComponent;
+import javax.faces.component.html.HtmlPanelGrid;
 import javax.faces.component.UIParameter;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
@@ -55,6 +60,8 @@ public class AdministratorManager {
     private CourseBean courseBean;
     @EJB
     private PublicTestBean publicTestBean;
+    @EJB
+    private ProjectProposalBean projectProposalBean;
 
     /**
      * ** newObjects ***
@@ -64,6 +71,7 @@ public class AdministratorManager {
     private CourseDTO newCourse;
     private InstitutionDTO newInstitution;
     private PublicTestDTO newPublicTest;
+    private ProjectProposalDTO newProjectProposal;
 
     /**
      * ** currentObjects ***
@@ -73,15 +81,25 @@ public class AdministratorManager {
     private CourseDTO currentCourse;
     private InstitutionDTO currentInstitution;
     private PublicTestDTO currentPublicTest;
+    private ProjectProposalDTO currentProjectProposal;
+
+    /**
+     * ***Searchable objects******
+     */
+    private String searchablePublicTest;
+    private String searchableStudent;
+    private String searchableTeacher;
+    private String searchableCourse;
+    private String searchableInstitution;
 
     /**
      * ** Other ***
      */
-    private ProjectProposalDTO currentProjectProposal;
-    
     @ManagedProperty(value = "#{uploadManager}")
     private UploadManager uploadManager;
-    
+
+    private String scientificAreasString;
+
     private String search;
 
     private UIComponent component;
@@ -94,12 +112,15 @@ public class AdministratorManager {
     private final String baseUri
             = "http://localhost:8080/MasterManager-war/webapi";
 
+    private HtmlPanelGrid mainGrid;
+
     public AdministratorManager() {
         newStudent = new StudentDTO();
         newTeacher = new TeacherDTO();
         newCourse = new CourseDTO();
         newPublicTest = new PublicTestDTO();
         newInstitution = new InstitutionDTO();
+        newProjectProposal = new ProjectProposalDTO();
         client = ClientBuilder.newClient();
     }
 
@@ -174,6 +195,17 @@ public class AdministratorManager {
         this.currentStudent = currentStudent;
     }
 
+    public List<StudentDTO> getSearchStudent() {
+        try {
+            System.out.println("entrou no getSearchStudent()");
+            List<StudentDTO> foundStudents = studentBean.search(searchableStudent);
+            return foundStudents;
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Unexpected error on getSearchStudent()!", logger);
+            return null;
+        }
+    }
+
     ///////////////////////////////////////////TEACHERS//////////////////////////////////////////
     public String createTeacher() {
 
@@ -183,7 +215,7 @@ public class AdministratorManager {
                     newTeacher.getPassword(),
                     newTeacher.getName(),
                     newTeacher.getEmail());
-                    newTeacher.reset();
+            newTeacher.reset();
 
         } catch (Exception e) {
             FacesExceptionHandler.handleException(e, "Erro inesperado no createTeacher do AdministratorManager", component, logger);
@@ -210,7 +242,7 @@ public class AdministratorManager {
         }
         return returnedTeachers;
     }
-    
+
     public List<TeacherDTO> getAllTeachersCCPOnTop() {
         List<TeacherDTO> returnedTeachers = null;
         try {
@@ -221,12 +253,12 @@ public class AdministratorManager {
                     });
             List<TeacherDTO> aux = new LinkedList<>(returnedTeachers);
             for (TeacherDTO teacherDTO : aux) {
-                if (ccpUserBean.isCCPUser(teacherDTO.getEmail())){
+                if (ccpUserBean.isCCPUser(teacherDTO.getEmail())) {
                     returnedTeachers.remove(teacherDTO);
-                    returnedTeachers.add(0,teacherDTO);
+                    returnedTeachers.add(0, teacherDTO);
                 }
             }
-            
+
         } catch (Exception e) {
             e.printStackTrace();
             FacesExceptionHandler.handleException(e, "Erro inesperado no getAllTeachers AdministratorManager",
@@ -266,6 +298,60 @@ public class AdministratorManager {
         return "index?faces-redirect=true";
     }
 
+    ////////////// PROJECT PROPOSAL ///////////////////
+    public String createProjectProposal() {
+
+        try {
+
+            logger.info(scientificAreasString);
+
+            
+
+            ArrayList<String> bibliography = new ArrayList<>();
+
+            projectProposalBean.create(
+                    newProjectProposal.getCode(), newProjectProposal.getProjectTypeString(),
+                    newProjectProposal.getTitle(),
+                    newProjectProposal.getScientificAreas(),
+                    newProjectProposal.getProponentUsername(),
+                    newProjectProposal.getProjectAbstract(),
+                    newProjectProposal.getScientificAreas(),//objectives,
+                    bibliography,//bibliography,
+                    newProjectProposal.getWorkPlan(),
+                    newProjectProposal.getWorkPlace(),
+                    newProjectProposal.getScientificAreas(),//successRequirements,
+                    newProjectProposal.getBudget(),
+                    newProjectProposal.getScientificAreas());//supports);
+
+        } catch (EntityAlreadyExistsException | EntityDoesNotExistException
+                | MyConstraintViolationException e) {
+            FacesExceptionHandler.handleException(e, "Error Creating Project Proposal!",
+                    component, logger);
+            return null;
+        }
+        return "index?faces-redirect=true";
+    }
+
+
+    public List<TeacherDTO> getSearchTeacher() {
+        try {
+            List<TeacherDTO> foundTeachers = teacherBean.search(searchableTeacher);
+            return foundTeachers;
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Unexpected error on getSearchStudent()!", logger);
+            return null;
+        }
+    }
+
+    public String getSearchableTeacher() {
+        return searchableTeacher;
+    }
+
+    public void setSearchableTeacher(String searchableTeacher) {
+        this.searchableTeacher = searchableTeacher;
+    }
+
+    /////////////////////////////////////////////PROJECT PROPOSALS/////////////////////////////////
     public List<ProjectProposalDTO> getAllProjectProposals() {
         List<ProjectProposalDTO> returnedProjectProposals = null;
         try {
@@ -282,12 +368,22 @@ public class AdministratorManager {
         return returnedProjectProposals;
     }
 
-    public ProjectProposalDTO getCurrentProjectProposal() {
-        return currentProjectProposal;
-    }
+    public List<ProponentDTO> getAllProponents() {
+        List<ProponentDTO> returnedProponents = null;
+        try {
+            returnedProponents = client.target(baseUri)
+                    .path("/proponents/all")
+                    .request(MediaType.APPLICATION_XML)
+                    .get(new GenericType<List<ProponentDTO>>() {
+                    });
 
-    public void setCurrentProjectProposal(ProjectProposalDTO currentProjectProposal) {
-        this.currentProjectProposal = currentProjectProposal;
+        } catch (Exception e) {
+            e.printStackTrace();
+            FacesExceptionHandler.handleException(e, "Erro inesperado no getAllProponents AdministratorManager",
+                    logger);
+
+        }
+        return returnedProponents;
     }
 
     ////////////// PUBLIC TEST ///////////////////
@@ -327,15 +423,13 @@ public class AdministratorManager {
 
     public List<PublicTestDTO> getSearchPublicTest() {
         try {
-            List<PublicTestDTO> searchResults = publicTestBean.search(search);
+            List<PublicTestDTO> searchResults = publicTestBean.search(searchablePublicTest);
             return searchResults;
         } catch (Exception e) {
-            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
+            FacesExceptionHandler.handleException(e, "Unexpected error no getSearchPublicTest!", logger);
             return null;
         }
     }
-    
-    
 
     public String updatePublicTest() {
         try {
@@ -412,10 +506,9 @@ public class AdministratorManager {
     public void setCurrentPublicTest(PublicTestDTO currentPublicTest) {
         this.currentPublicTest = currentPublicTest;
     }
-    
-        ///////////////////////////////////////////INSTITUTIONS//////////////////////////////////////////
 
-     public String createInstitution() {
+    ///////////////////////////////////////////INSTITUTIONS//////////////////////////////////////////
+    public String createInstitution() {
 
         try {
             institutionBean.create(
@@ -426,15 +519,14 @@ public class AdministratorManager {
             newInstitution.reset();
 
         } catch (Exception e) {
-            FacesExceptionHandler.handleException(e, "Erro inesperado no createTeacher do AdministratorManager", component, logger);
+            FacesExceptionHandler.handleException(e, "Erro inesperado no createInstitution do AdministratorManager", component, logger);
             e.printStackTrace();
             return null;
         }
         return "index?faces-redirect=true";
     }
-    
-     
-     public List<InstitutionDTO> getAllInstitutions() {
+
+    public List<InstitutionDTO> getAllInstitutions() {
         List<InstitutionDTO> returnedInstitutions = null;
         try {
             returnedInstitutions = client.target(baseUri)
@@ -467,7 +559,7 @@ public class AdministratorManager {
     public void setCurrentInstitution(InstitutionDTO currentInstitution) {
         this.currentInstitution = currentInstitution;
     }
-    
+
     public void removeInstitution(ActionEvent event) {
         try {
             UIParameter param = (UIParameter) event.getComponent().findComponent("institutionUsername");
@@ -477,7 +569,7 @@ public class AdministratorManager {
             FacesExceptionHandler.handleException(e, e.getMessage(), logger);
         }
     }
-    
+
     public String updateInstitution() {
         try {
 
@@ -494,8 +586,25 @@ public class AdministratorManager {
         return "index?faces-redirect=true";
     }
     
-    
+    public List<InstitutionDTO> getSearchInstitution() {
+        try {
+            List<InstitutionDTO> foundInstitutions = institutionBean.search(searchableInstitution);
+            return foundInstitutions;
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Unexpected error on getSearchStudent()!", logger);
+            return null;
+        }
+    }
 
+    public String getSearchableInstitution() {
+        return searchableInstitution;
+    }
+
+    public void setSearchableInstitution(String searchableInstitution) {
+        this.searchableInstitution = searchableInstitution;
+    }
+
+    
     ///////////////////////////////////////////COURSES//////////////////////////////////////////
     public String createCourse() {
         try {
@@ -523,6 +632,14 @@ public class AdministratorManager {
     }
 
     ///////////////////////////////////////////Getters e setters tem que ser organizado//////////////////////////////////////////
+    public ProjectProposalDTO getNewProjectProposal() {
+        return newProjectProposal;
+    }
+
+    public void setNewProjectProposal(ProjectProposalDTO newProjectProposal) {
+        this.newProjectProposal = newProjectProposal;
+    }
+
     public CourseDTO getCurrentCourse() {
         return currentCourse;
     }
@@ -599,12 +716,40 @@ public class AdministratorManager {
         this.component = component;
     }
 
-    public String getSearch() {
-        return search;
+    public String getSearchablePublicTest() {
+        return searchablePublicTest;
     }
 
-    public void setSearch(String search) {
-        this.search = search;
+    public void setSearchablePublicTest(String searchablePublicTest) {
+        this.searchablePublicTest = searchablePublicTest;
+    }
+
+    public String getSearchableStudent() {
+        return searchableStudent;
+    }
+
+    public void setSearchableStudent(String searchableStudent) {
+        this.searchableStudent = searchableStudent;
+    }
+
+    public ProjectType[] getProjectTypes() {
+        return ProjectType.values();
+    }
+
+    public String getScientificAreasString() {
+        return scientificAreasString;
+    }
+
+    public void setScientificAreasString(String scientificAreasString) {
+        this.scientificAreasString = scientificAreasString;
+    }
+
+    public ProjectProposalDTO getCurrentProjectProposal() {
+        return currentProjectProposal;
+    }
+
+    public void setCurrentProjectProposal(ProjectProposalDTO currentProjectProposal) {
+        this.currentProjectProposal = currentProjectProposal;
     }
 
     public UploadManager getUploadManager() {
