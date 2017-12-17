@@ -77,7 +77,8 @@ public class AdministratorManager {
      */
     private ProjectProposalDTO currentProjectProposal;
 
-    private String search;
+    private String searchablePublicTest;
+    private String searchableStudent;
 
     private UIComponent component;
     private static final Logger logger = Logger.getLogger("web.AdministratorManager");
@@ -168,42 +169,20 @@ public class AdministratorManager {
     public void setCurrentStudent(StudentDTO currentStudent) {
         this.currentStudent = currentStudent;
     }
-/*
-    public List<StudentDTO> getSearchStudent() {
 
-        List<StudentDTO> returnedStudents = null;
-        List<StudentDTO> foundStudents = null;
+        public List<StudentDTO> getSearchStudent() {
         try {
-            returnedStudents = client.target(baseUri)
-                    .path("/students/all")
-                    .request(MediaType.APPLICATION_XML)
-                    .get(new GenericType<List<StudentDTO>>() {
-                    });
-
-            for (StudentDTO s : returnedStudents) {
-                if (searchableName.trim().equals(s.getName())) {
-                    foundStudents.add(s);
-                }
-
-            }
-
+            System.out.println("entrou no getSearchStudent()");
+            List<StudentDTO> foundStudents = studentBean.search(searchableStudent);
+            return foundStudents;
         } catch (Exception e) {
-            e.printStackTrace();
-            FacesExceptionHandler.handleException(e, "Erro inesperado no getSearchStudents AdministratorManager",
-                    logger);
-
+            FacesExceptionHandler.handleException(e, "Unexpected error on getSearchStudent()!", logger);
+            return null;
         }
-        return foundStudents;
     }
-
-    public String getSearchableName() {
-        return searchableName;
-    }
-
-    public void setSearchableName(String searchableName) {
-        this.searchableName = searchableName;
-    }
-*/
+        
+        
+        
     ///////////////////////////////////////////TEACHERS//////////////////////////////////////////
     public String createTeacher() {
 
@@ -357,10 +336,10 @@ public class AdministratorManager {
 
     public List<PublicTestDTO> getSearchPublicTest() {
         try {
-            List<PublicTestDTO> searchResults = publicTestBean.search(search);
+            List<PublicTestDTO> searchResults = publicTestBean.search(searchablePublicTest);
             return searchResults;
         } catch (Exception e) {
-            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
+            FacesExceptionHandler.handleException(e, "Unexpected error no getSearchPublicTest!", logger);
             return null;
         }
     }
@@ -604,12 +583,20 @@ public class AdministratorManager {
         this.component = component;
     }
 
-    public String getSearch() {
-        return search;
+    public String getSearchablePublicTest() {
+        return searchablePublicTest;
     }
 
-    public void setSearch(String search) {
-        this.search = search;
+    public void setSearchablePublicTest(String searchablePublicTest) {
+        this.searchablePublicTest = searchablePublicTest;
+    }
+
+    public String getSearchableStudent() {
+        return searchableStudent;
+    }
+
+    public void setSearchableStudent(String searchableStudent) {
+        this.searchableStudent = searchableStudent;
     }
 
 }
