@@ -3,9 +3,11 @@ package web;
 import dtos.CourseDTO;
 import dtos.InstitutionDTO;
 import dtos.ProjectProposalDTO;
+import dtos.ProponentDTO;
 import dtos.PublicTestDTO;
 import dtos.StudentDTO;
 import dtos.TeacherDTO;
+import ejbs.ProjectProposalBean;
 import ejbs.PublicTestBean;
 import ejbs.users.CCPUserBean;
 import ejbs.users.CourseBean;
@@ -18,6 +20,7 @@ import exceptions.EntityDoesNotExistException;
 import exceptions.MyConstraintViolationException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -25,10 +28,7 @@ import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.component.UIComponent;
-import javax.faces.component.html.HtmlInputText;
-import javax.faces.component.html.HtmlOutputLabel;
 import javax.faces.component.html.HtmlPanelGrid;
-import javax.faces.context.FacesContext;
 import javax.faces.component.UIParameter;
 import javax.faces.event.ActionEvent;
 import javax.ws.rs.client.Client;
@@ -56,6 +56,8 @@ public class AdministratorManager {
     private CourseBean courseBean;
     @EJB
     private PublicTestBean publicTestBean;
+    @EJB
+    private ProjectProposalBean projectProposalBean;
 
     /**
      * ** newObjects ***
@@ -65,6 +67,7 @@ public class AdministratorManager {
     private CourseDTO newCourse;
     private InstitutionDTO newInstitution;
     private PublicTestDTO newPublicTest;
+    private ProjectProposalDTO newProjectProposal;
 
     /**
      * ** currentObjects ***
@@ -74,12 +77,12 @@ public class AdministratorManager {
     private CourseDTO currentCourse;
     private InstitutionDTO currentInstitution;
     private PublicTestDTO currentPublicTest;
+    private ProjectProposalDTO currentProjectProposal;
 
     /**
      * ** Other ***
      */
-    private ProjectProposalDTO currentProjectProposal;
-    private ProjectProposalDTO newProjectProposal;
+    private String scientificAreasString;
 
     private String search;
 
@@ -101,6 +104,7 @@ public class AdministratorManager {
         newCourse = new CourseDTO();
         newPublicTest = new PublicTestDTO();
         newInstitution = new InstitutionDTO();
+        newProjectProposal = new ProjectProposalDTO();
         client = ClientBuilder.newClient();
     }
 
@@ -141,7 +145,6 @@ public class AdministratorManager {
         return returnedStudents;
     }
 
-    ///////////////////////////////////////////TEACHERS//////////////////////////////////////////
     public String updateStudent() {
         try {
 
@@ -268,6 +271,50 @@ public class AdministratorManager {
         return "index?faces-redirect=true";
     }
 
+    ////////////// PROJECT PROPOSAL ///////////////////
+    public String createProjectProposal() {
+
+        try {
+
+            logger.info(scientificAreasString);
+
+            List<String> scientificAreas = stringToList(scientificAreasString, ";");
+
+            ArrayList<String> bibliography = new ArrayList<>();
+
+            projectProposalBean.create(
+                    newProjectProposal.getCode(), newProjectProposal.getProjectTypeString(),
+                    newProjectProposal.getTitle(),
+                    scientificAreas,
+                    newProjectProposal.getProponentUsername(),
+                    newProjectProposal.getProjectAbstract(),
+                    scientificAreas,//objectives,
+                    bibliography,//bibliography,
+                    newProjectProposal.getWorkPlan(),
+                    newProjectProposal.getWorkPlace(),
+                    scientificAreas,//successRequirements,
+                    newProjectProposal.getBudget(),
+                    scientificAreas);//supports);
+
+        } catch (EntityAlreadyExistsException | EntityDoesNotExistException
+                | MyConstraintViolationException e) {
+            FacesExceptionHandler.handleException(e, "Error Creating Project Proposal!",
+                    component, logger);
+            return null;
+        }
+        return "index?faces-redirect=true";
+    }
+
+    public List<String> stringToList(String string, String separator) {
+        String[] stringArray = scientificAreasString.split(separator);
+        List<String> stringList = new LinkedList<>();
+
+        for (int i = 0; i < stringArray.length - 1; i++) {
+            stringList.add(stringArray[i]);
+        }
+        return stringList;
+    }
+
     public List<ProjectProposalDTO> getAllProjectProposals() {
         List<ProjectProposalDTO> returnedProjectProposals = null;
         try {
@@ -284,12 +331,22 @@ public class AdministratorManager {
         return returnedProjectProposals;
     }
 
-    public ProjectProposalDTO getCurrentProjectProposal() {
-        return currentProjectProposal;
-    }
+    public List<ProponentDTO> getAllProponents() {
+        List<ProponentDTO> returnedProponents = null;
+        try {
+            returnedProponents = client.target(baseUri)
+                    .path("/proponents/all")
+                    .request(MediaType.APPLICATION_XML)
+                    .get(new GenericType<List<ProponentDTO>>() {
+                    });
 
-    public void setCurrentProjectProposal(ProjectProposalDTO currentProjectProposal) {
-        this.currentProjectProposal = currentProjectProposal;
+        } catch (Exception e) {
+            e.printStackTrace();
+            FacesExceptionHandler.handleException(e, "Erro inesperado no getAllProponents AdministratorManager",
+                    logger);
+
+        }
+        return returnedProponents;
     }
 
     ////////////// PUBLIC TEST ///////////////////
@@ -374,14 +431,6 @@ public class AdministratorManager {
 
     public void setNewPublicTest(PublicTestDTO newPublicTest) {
         this.newPublicTest = newPublicTest;
-    }
-
-    public ProjectProposalDTO getNewProjectProposal() {
-        return newProjectProposal;
-    }
-
-    public void setNewProjectProposal(ProjectProposalDTO newProjectProposal) {
-        this.newProjectProposal = newProjectProposal;
     }
 
     public String getDateNow() {
@@ -506,6 +555,14 @@ public class AdministratorManager {
     }
 
     ///////////////////////////////////////////Getters e setters tem que ser organizado//////////////////////////////////////////
+    public ProjectProposalDTO getNewProjectProposal() {
+        return newProjectProposal;
+    }
+
+    public void setNewProjectProposal(ProjectProposalDTO newProjectProposal) {
+        this.newProjectProposal = newProjectProposal;
+    }
+
     public CourseDTO getCurrentCourse() {
         return currentCourse;
     }
@@ -592,6 +649,22 @@ public class AdministratorManager {
 
     public ProjectType[] getProjectTypes() {
         return ProjectType.values();
+    }
+
+    public String getScientificAreasString() {
+        return scientificAreasString;
+    }
+
+    public void setScientificAreasString(String scientificAreasString) {
+        this.scientificAreasString = scientificAreasString;
+    }
+
+    public ProjectProposalDTO getCurrentProjectProposal() {
+        return currentProjectProposal;
+    }
+
+    public void setCurrentProjectProposal(ProjectProposalDTO currentProjectProposal) {
+        this.currentProjectProposal = currentProjectProposal;
     }
 
 }

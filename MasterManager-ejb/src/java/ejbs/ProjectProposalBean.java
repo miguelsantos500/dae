@@ -122,9 +122,9 @@ public class ProjectProposalBean {
         List<ProjectProposalDTO> dtos = new ArrayList<>();
         for (ProjectProposal projectProposal : projectProposals) {
             dtos.add(new ProjectProposalDTO(projectProposal.getCode(),
-                    projectProposal.getProjectType(),
+                    projectProposal.getProjectType().name(),
                     projectProposal.getTitle(),
-                    projectProposal.getProponent(),
+                    projectProposal.getProponent().getUsername(),
                     projectProposal.getProjectAbstract(),
                     projectProposal.getWorkPlan(),
                     projectProposal.getWorkPlace(),

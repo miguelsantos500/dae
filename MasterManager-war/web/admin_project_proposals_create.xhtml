@@ -10,7 +10,7 @@
         <ui:define name="main">
 
             <h:form>                    
-                <h:panelGrid columns="3" id="mainGrid" binding="#{projectProposalManager.mainGrid}">
+                <h:panelGrid columns="3">
 
                     <h:outputLabel for="code" value="Código: " />
                     <h:inputText 
@@ -18,15 +18,15 @@
                         size="10"
                         required="true"
                         requiredMessage="Erro: Código não pode estar vazio."
-                        value="#{projectProposalManager.newProjectProposal.code}"/>
+                        value="#{administratorManager.newProjectProposal.code}"/>
                     <h:message for="code" errorStyle="color: red" />
 
                     <h:outputLabel for="projectType" value="Project Types: " />
                     <h:selectOneMenu
                         id="projectType"
-                        value="#{projectProposalManager.newProjectProposal.projectType}" >
+                        value="#{administratorManager.newProjectProposal.projectTypeString}" >
                         <f:selectItems
-                            value="#{projectProposalManager.projectTypes}"
+                            value="#{administratorManager.projectTypes}"
                             var="ccp"/>
                     </h:selectOneMenu>
                     <h:message for="projectType" errorStyle="color: red" />
@@ -37,30 +37,68 @@
                         size="50"
                         required="true"
                         requiredMessage="Erro: Título não pode estar vazio."
-                        value="#{projectProposalManager.newProjectProposal.title}"/>
-                    <h:message for="title" errorStyle="color: red" />                        
+                        value="#{administratorManager.newProjectProposal.title}"/>
+                    <h:message for="title" errorStyle="color: red" />                   
 
-                    <h:panelGrid id="scientificAreas" columns="3">
-                </h:panelGrid >        
-                        
-                <h:commandButton class="btn btn-primary"  value="Add Scientific Area"  
-                           onclick="return #{projectProposalManager.addInputText()}"/>
-                <h:commandButton class="btn btn-primary"  value="Add Scientific Area"  
-                           action="#{projectProposalManager.addInputText()}"/>
-                    <h:button class="btn btn-primary"  value="Add Scientific Area" 
-                           onclick="return #{projectProposalManager.addInputText()}"/>
-                    
-                    <p:commandButton value="Submit" ajax="false" actionListener="#{projectProposalManager.addInputText()}"/>
-                     <p:commandButton value="Save" actionListener="#{projectProposalManager.addInputText()}" icon="ui-icon-check" />
+                </h:panelGrid >    
+
+                <div id="scientificAreas">
+                    <h:inputHidden
+                        id="inputScientificAreas"
+                        required="true"
+                        requiredMessage="Erro: Tem de adicionar pelo menos uma área científica."
+                        value="#{administratorManager.scientificAreasString}" />
+                    <h:message for="inputScientificAreas" errorStyle="color: red" />      
+                </div >                     
+                <h:button id="addScientificArea" class="btn btn-primary"  value="Add Scientific Area" onclick="return false;"/>
+                <br></br>
+
+                <h:panelGrid columns="3">
+
+                    <h:outputLabel for="proponent" value="Proponente: " />
+                    <h:selectOneMenu
+                        id="teacher"
+                        value="#{administratorManager.newProjectProposal.proponentUsername}" >
+                        <f:selectItems
+                            value="#{administratorManager.allProponents}"
+                            var="proponent"
+                            itemValue="#{proponent.username}"
+                            itemLabel="#{proponent.name}" />
+                    </h:selectOneMenu>
                     <br></br>
 
-                </h:panelGrid >                       
 
+                </h:panelGrid >    
+
+
+
+                <!--
+                    newProjectProposal.getCode(), newProjectProposal.getProjectTypeString(),
+                    newProjectProposal.getTitle(),
+                    scientificAreas,
+                    newProjectProposal.getProponentUsername(),
+                    newProjectProposal.getProjectAbstract(),
+                    scientificAreas,//objectives,
+                    bibliography,//bibliography,
+                    newProjectProposal.getWorkPlan(),
+                    newProjectProposal.getWorkPlace(),
+                    scientificAreas,//successRequirements,
+                    newProjectProposal.getBudget(),
+                    scientificAreas);//supports);
+                
+                -->
+
+                <h:commandButton
+                    id="submit"
+                    value="Criar"
+                    binding="#{administratorManager.component}" 
+                    action="#{administratorManager.createProjectProposal}" />
+                <h:message for="submit" style="color: red"/>
             </h:form>
-            
-            
-        <h:outputScript library="js" name="addInputText.js" />
-            
+
+
+            <h:outputScript library="js" name="addInputText.js" />
+
         </ui:define>
     </ui:composition>
 </html>

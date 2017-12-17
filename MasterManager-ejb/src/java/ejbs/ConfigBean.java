@@ -65,7 +65,7 @@ public class ConfigBean {
             teacherBean.create("9473829", "Marco", "Marco", "dae.marco.ipleiria@gmail.com");
             teacherBean.create("3243244", "Carlos", "Carlos", "dae.carlos.ipleiria@gmail.com");
             teacherBean.create("3243245", "Leonel", "Leonel", "dae.leonel.ipleiria@gmail.com");
-            teacherBean.create("3243246", "Ricardo", "Ricardo", "dae.ricardo.ipleiria@gmail.com");
+            teacherBean.create("3243247", "Ricardo", "Ricardo", "dae.ricardo.ipleiria@gmail.com");
 
             projectProposalBean.create(1, "PROJECT", "My First Project",
                     new LinkedList<>(Arrays.asList("Programming", "Management")),

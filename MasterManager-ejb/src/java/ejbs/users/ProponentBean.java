@@ -1,19 +1,17 @@
 package ejbs.users;
 
-import dtos.TeacherDTO;
-import entities.users.Teacher;
+import dtos.ProponentDTO;
+import entities.users.Proponent;
 import entities.users.User;
 import exceptions.EntityAlreadyExistsException;
 import exceptions.EntityDoesNotExistException;
 import exceptions.MyConstraintViolationException;
-import exceptions.Utils;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.validation.ConstraintViolationException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
@@ -22,8 +20,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 @Stateless
-@Path("/teachers")
-public class TeacherBean {
+@Path("/proponents")
+public class ProponentBean {
 
     @PersistenceContext
     private EntityManager em;
@@ -37,8 +35,8 @@ public class TeacherBean {
             }
             
             
-            Teacher teacher =new Teacher(username, password, name, email);
-            em.persist(teacher);
+            Proponent proponent = new Proponent(username, password, name, email);
+            em.persist(proponent);
         } catch (EntityAlreadyExistsException e) {
             throw e;
         } catch (Exception e) {
@@ -49,19 +47,19 @@ public class TeacherBean {
     @PUT
     @Path("/update")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void updateTeacher(TeacherDTO teacherDTO)
+    public void update(ProponentDTO proponentDTO)
             throws MyConstraintViolationException, EntityDoesNotExistException {
 
         try {
-            Teacher teacher = em.find(Teacher.class, teacherDTO.getUsername());
-            if (teacher == null) {
-                throw new EntityDoesNotExistException("There is no teacher with that username.");
+            Proponent proponent = em.find(Proponent.class, proponentDTO.getUsername());
+            if (proponent == null) {
+                 throw new EntityDoesNotExistException("There is no proponent with that username.");
             }
 
-            teacher.setPassword(teacherDTO.getPassword());
-            teacher.setName(teacherDTO.getName());
-            teacher.setEmail(teacherDTO.getEmail());
-            em.merge(teacher);
+            proponent.setPassword(proponentDTO.getPassword());
+            proponent.setName(proponentDTO.getName());
+            proponent.setEmail(proponentDTO.getEmail());
+            em.merge(proponent);
 
         } catch (EntityDoesNotExistException e) {
             throw e;
@@ -71,13 +69,13 @@ public class TeacherBean {
 
     public void remove(String username) throws EntityDoesNotExistException {
         try {
-            Teacher teacher = em.find(Teacher.class, username);
-            if (teacher == null) {
+            Proponent proponent = em.find(Proponent.class, username);
+            if (proponent == null) {
                 throw new EntityDoesNotExistException(
-                        "Não existe um utilizador Professore com esse username.");
+                        "Não existe um utilizador Proponente com esse username.");
             }
 
-            em.remove(teacher);
+            em.remove(proponent);
 
         } catch (EntityDoesNotExistException e) {
             throw e;
@@ -89,31 +87,31 @@ public class TeacherBean {
     @GET
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Path("all")
-    public List<TeacherDTO> getAll(){
+    public List<ProponentDTO> getAll(){
         try{
-            List<Teacher> teachers = em.createNamedQuery("getAllTeachers").getResultList();
-            return teachersToDTOs(teachers);
+            List<Proponent> proponents = em.createNamedQuery("getAllProponents").getResultList();
+            return proponentsToDTOs(proponents);
         } catch (Exception e){
             e.printStackTrace();
             throw new EJBException(e.getMessage());
         }
     }
 
-    public TeacherDTO teacherToDTO(Teacher teacher){
-        return new TeacherDTO(
-                teacher.getUsername(),
+    public ProponentDTO proponentToDTO(Proponent proponent){
+        return new ProponentDTO(
+                proponent.getUsername(),
                 null,
-                teacher.getName(),
-                teacher.getEmail());
+                proponent.getName(),
+                proponent.getEmail());
     }
     
-    public List<TeacherDTO> teachersToDTOs(List<Teacher> teachers) {
-        List<TeacherDTO> teacherdtos = new ArrayList<>();
+    public List<ProponentDTO> proponentsToDTOs(List<Proponent> proponents) {
+        List<ProponentDTO> proponentdtos = new ArrayList<>();
         
-        for(Teacher t : teachers){
-            teacherdtos.add(teacherToDTO(t));
+        for(Proponent p : proponents){
+            proponentdtos.add( proponentToDTO(p));
         }
-        return teacherdtos;
+        return proponentdtos;
     }
 
 }
