@@ -60,6 +60,8 @@ public class AdministratorManager {
     private InstitutionDTO newInstitution;
     private PublicTestDTO newPublicTest;
 
+    private String searchableName;
+
     /**
      * ** currentObjects ***
      */
@@ -163,7 +165,42 @@ public class AdministratorManager {
     public void setCurrentStudent(StudentDTO currentStudent) {
         this.currentStudent = currentStudent;
     }
+/*
+    public List<StudentDTO> getSearchStudent() {
 
+        List<StudentDTO> returnedStudents = null;
+        List<StudentDTO> foundStudents = null;
+        try {
+            returnedStudents = client.target(baseUri)
+                    .path("/students/all")
+                    .request(MediaType.APPLICATION_XML)
+                    .get(new GenericType<List<StudentDTO>>() {
+                    });
+
+            for (StudentDTO s : returnedStudents) {
+                if (searchableName.trim().equals(s.getName())) {
+                    foundStudents.add(s);
+                }
+
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            FacesExceptionHandler.handleException(e, "Erro inesperado no getSearchStudents AdministratorManager",
+                    logger);
+
+        }
+        return foundStudents;
+    }
+
+    public String getSearchableName() {
+        return searchableName;
+    }
+
+    public void setSearchableName(String searchableName) {
+        this.searchableName = searchableName;
+    }
+*/
     ///////////////////////////////////////////TEACHERS//////////////////////////////////////////
     public String createTeacher() {
 
@@ -173,7 +210,7 @@ public class AdministratorManager {
                     newTeacher.getPassword(),
                     newTeacher.getName(),
                     newTeacher.getEmail());
-                    newTeacher.reset();
+            newTeacher.reset();
 
         } catch (Exception e) {
             FacesExceptionHandler.handleException(e, "Erro inesperado no createTeacher do AdministratorManager", component, logger);
@@ -214,8 +251,8 @@ public class AdministratorManager {
             FacesExceptionHandler.handleException(e, e.getMessage(), logger);
         }
     }
-    
-     public String updateTeacher() {
+
+    public String updateTeacher() {
         try {
 
             client.target(baseUri)
@@ -230,8 +267,7 @@ public class AdministratorManager {
 
         return "index?faces-redirect=true";
     }
-    
-    
+
     public List<ProjectProposalDTO> getAllProjectProposals() {
         List<ProjectProposalDTO> returnedProjectProposals = null;
         try {
@@ -345,10 +381,9 @@ public class AdministratorManager {
     public void setCurrentPublicTest(PublicTestDTO currentPublicTest) {
         this.currentPublicTest = currentPublicTest;
     }
-    
-        ///////////////////////////////////////////INSTITUTIONS//////////////////////////////////////////
 
-     public String createInstitution() {
+    ///////////////////////////////////////////INSTITUTIONS//////////////////////////////////////////
+    public String createInstitution() {
 
         try {
             institutionBean.create(
@@ -365,9 +400,8 @@ public class AdministratorManager {
         }
         return "index?faces-redirect=true";
     }
-    
-     
-     public List<InstitutionDTO> getAllInstitutions() {
+
+    public List<InstitutionDTO> getAllInstitutions() {
         List<InstitutionDTO> returnedInstitutions = null;
         try {
             returnedInstitutions = client.target(baseUri)
@@ -400,7 +434,7 @@ public class AdministratorManager {
     public void setCurrentInstitution(InstitutionDTO currentInstitution) {
         this.currentInstitution = currentInstitution;
     }
-    
+
     public void removeInstitution(ActionEvent event) {
         try {
             UIParameter param = (UIParameter) event.getComponent().findComponent("institutionUsername");
@@ -410,7 +444,7 @@ public class AdministratorManager {
             FacesExceptionHandler.handleException(e, e.getMessage(), logger);
         }
     }
-    
+
     public String updateInstitution() {
         try {
 
@@ -426,8 +460,6 @@ public class AdministratorManager {
 
         return "index?faces-redirect=true";
     }
-    
-    
 
     ///////////////////////////////////////////COURSES//////////////////////////////////////////
     public String createCourse() {
