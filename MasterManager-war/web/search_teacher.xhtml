@@ -10,25 +10,25 @@
         <ui:define name="title">CCP</ui:define>
         <ui:define name="main">
             <em:dt 
-                title="Estudantes encontrados" 
-               headers="#{['Username', 'Name', 'Email', 'Course']}"
-                props="#{['username', 'name', 'email', 'courseName']}"
-                list="#{administratorManager.searchStudent}">
+                title="Professores encontrados" 
+               headers="#{['Username', 'Nome', 'Email']}"
+                props="#{['username', 'name', 'email']}"
+                list="#{administratorManager.searchTeacher}">
                 <p:column headerText="Actions">
                     <h:form>
-                        <h:commandLink value="Detalhes" action="admin_student_details?facesredirect=true">
+                        <h:commandLink value="Detalhes" action="teacher_details?facesredirect=true">
                             <f:setPropertyActionListener
-                                target="#{administratorManager.currentStudent}" value="#{object}" />
+                                target="#{administratorManager.currentTeacher}" value="#{object}" />
                         </h:commandLink>
                         &nbsp;
-                        <h:commandLink value="Update" action="students_update?facesredirect=true">
+                        <h:commandLink value="Actualizar" action="teacher_update?facesredirect=true">
                             <f:setPropertyActionListener
-                                target="#{administratorManager.currentStudent}" value="#{object}" />
+                                target="#{administratorManager.currentTeacher}" value="#{object}" />
                         </h:commandLink>
                         &nbsp;
                         <h:commandLink value="Remove"
-                                       actionListener="#{administratorManager.removeStudent}">
-                            <f:param name="studentUsername" id="studentUsername"
+                                       actionListener="#{administratorManager.removeTeacher}">
+                            <f:param name="teacherUsername" id="teacherUsername"
                                      value="#{object.username}" />
                         </h:commandLink>
                     </h:form>
@@ -37,3 +37,4 @@
         </ui:define>
     </ui:composition>
 </html>
+

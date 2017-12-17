@@ -134,39 +134,6 @@ public class StudentBean {
         return dtos;
     }
 
-    /* public List<PublicTestDTO> search(String searchValue) {
-        try {
-            List<PublicTest> publicTests = (List<PublicTest>) em.createNamedQuery("getAllPublicTests").getResultList();
-            List<PublicTest> aux = new LinkedList<>();
-            for (PublicTest publicTest : publicTests) {
-                if (Integer.toString(publicTest.getCode()).contains(searchValue)){
-                    aux.add(publicTest);
-                } else if (publicTest.getTitle().toLowerCase().
-                        contains(searchValue.toLowerCase())){
-                    aux.add(publicTest);
-                } else if (publicTest.getPlace().toLowerCase().
-                        contains(searchValue.toLowerCase())){
-                    aux.add(publicTest);
-                } else if (publicTest.getJuryPresident().getName().toLowerCase().
-                        contains(searchValue.toLowerCase())){
-                    aux.add(publicTest);
-                } else if (publicTest.getAdvisor().getName().toLowerCase().
-                        contains(searchValue.toLowerCase())){
-                    aux.add(publicTest);
-                } else if (publicTest.getOutsideTeacherName().toLowerCase().
-                        contains(searchValue.toLowerCase())){
-                    aux.add(publicTest);
-                } else if (publicTest.getStudent().getName().toLowerCase().
-                        contains(searchValue.toLowerCase())){
-                    aux.add(publicTest);
-                }
-            }
-            return publicTestsToDTOs(aux);
-        } catch (Exception e) {
-            throw new EJBException(e.getMessage());
-        }
-    }  */
-    
     public List<StudentDTO> search(String searchName) {
         try{
               /**********debug**/

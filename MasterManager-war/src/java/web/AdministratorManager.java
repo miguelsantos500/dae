@@ -65,8 +65,7 @@ public class AdministratorManager {
     private CourseDTO newCourse;
     private InstitutionDTO newInstitution;
     private PublicTestDTO newPublicTest;
-
-    private String searchableName;
+    private ProjectProposalDTO newProjectProposal;
 
     /**
      * ** currentObjects ***
@@ -76,16 +75,18 @@ public class AdministratorManager {
     private CourseDTO currentCourse;
     private InstitutionDTO currentInstitution;
     private PublicTestDTO currentPublicTest;
+    private ProjectProposalDTO currentProjectProposal;
+
+    /**
+     * ***Searchable objects******
+     */
+    private String searchablePublicTest;
+    private String searchableStudent;
+    private String searchableTeacher;
 
     /**
      * ** Other ***
      */
-    private ProjectProposalDTO currentProjectProposal;
-    private ProjectProposalDTO newProjectProposal;
-
-    private String searchablePublicTest;
-    private String searchableStudent;
-
     private UIComponent component;
     private static final Logger logger = Logger.getLogger("web.AdministratorManager");
 
@@ -179,7 +180,7 @@ public class AdministratorManager {
         this.currentStudent = currentStudent;
     }
 
-        public List<StudentDTO> getSearchStudent() {
+    public List<StudentDTO> getSearchStudent() {
         try {
             System.out.println("entrou no getSearchStudent()");
             List<StudentDTO> foundStudents = studentBean.search(searchableStudent);
@@ -189,9 +190,7 @@ public class AdministratorManager {
             return null;
         }
     }
-        
-        
-        
+
     ///////////////////////////////////////////TEACHERS//////////////////////////////////////////
     public String createTeacher() {
 
@@ -284,6 +283,25 @@ public class AdministratorManager {
         return "index?faces-redirect=true";
     }
 
+    public List<TeacherDTO> getSearchTeacher() {
+        try {
+            List<TeacherDTO> foundTeachers = teacherBean.search(searchableTeacher);
+            return foundTeachers;
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Unexpected error on getSearchStudent()!", logger);
+            return null;
+        }
+    }
+
+    public String getSearchableTeacher() {
+        return searchableTeacher;
+    }
+
+    public void setSearchableTeacher(String searchableTeacher) {
+        this.searchableTeacher = searchableTeacher;
+    }
+
+    /////////////////////////////////////////////PROJECT PROPOSALS/////////////////////////////////
     public List<ProjectProposalDTO> getAllProjectProposals() {
         List<ProjectProposalDTO> returnedProjectProposals = null;
         try {

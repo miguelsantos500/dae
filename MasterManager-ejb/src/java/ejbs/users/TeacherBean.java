@@ -8,6 +8,7 @@ import exceptions.EntityDoesNotExistException;
 import exceptions.MyConstraintViolationException;
 import exceptions.Utils;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
@@ -35,9 +36,8 @@ public class TeacherBean {
                 throw new EntityAlreadyExistsException(
                         "Um utilizador já existe com esse username.");
             }
-            
-            
-            Teacher teacher =new Teacher(username, password, name, email);
+
+            Teacher teacher = new Teacher(username, password, name, email);
             em.persist(teacher);
         } catch (EntityAlreadyExistsException e) {
             throw e;
@@ -85,35 +85,59 @@ public class TeacherBean {
             throw new EJBException(e.getMessage());
         }
     }
-    
+
     @GET
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Path("all")
-    public List<TeacherDTO> getAll(){
-        try{
+    public List<TeacherDTO> getAll() {
+        try {
             List<Teacher> teachers = em.createNamedQuery("getAllTeachers").getResultList();
             return teachersToDTOs(teachers);
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             throw new EJBException(e.getMessage());
         }
     }
 
-    public TeacherDTO teacherToDTO(Teacher teacher){
+    public TeacherDTO teacherToDTO(Teacher teacher) {
         return new TeacherDTO(
                 teacher.getUsername(),
                 null,
                 teacher.getName(),
                 teacher.getEmail());
     }
-    
+
     public List<TeacherDTO> teachersToDTOs(List<Teacher> teachers) {
         List<TeacherDTO> teacherdtos = new ArrayList<>();
-        
-        for(Teacher t : teachers){
+
+        for (Teacher t : teachers) {
             teacherdtos.add(teacherToDTO(t));
         }
         return teacherdtos;
+    }
+
+   
+    public List<TeacherDTO> search(String searchableTeacher) {
+
+        try {
+            List<Teacher> teachers = em.createNamedQuery("getAllTeachers").getResultList();
+            List<Teacher> matchedTeachers = new LinkedList<Teacher>();
+
+            for (Teacher t : teachers) {
+                if ((t.getUsername().toLowerCase()).contains(searchableTeacher.toLowerCase())) {
+                    matchedTeachers.add(t);
+                } else if ((t.getName().toLowerCase()).contains(searchableTeacher.toLowerCase())) {
+                    matchedTeachers.add(t);
+                } else if ((t.getEmail().toLowerCase()).contains(searchableTeacher.toLowerCase())) {
+                    matchedTeachers.add(t);
+                }
+            }
+
+            return teachersToDTOs(matchedTeachers);
+            
+        } catch (Exception e) {
+            throw new EJBException(e.getMessage());
+        }
     }
 
 }
