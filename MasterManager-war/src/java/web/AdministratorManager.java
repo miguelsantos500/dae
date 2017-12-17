@@ -12,6 +12,7 @@ import ejbs.users.CourseBean;
 import ejbs.users.InstitutionBean;
 import ejbs.users.StudentBean;
 import ejbs.users.TeacherBean;
+import entities.project.ProjectType;
 import exceptions.EntityAlreadyExistsException;
 import exceptions.EntityDoesNotExistException;
 import exceptions.MyConstraintViolationException;
@@ -24,6 +25,10 @@ import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.component.UIComponent;
+import javax.faces.component.html.HtmlInputText;
+import javax.faces.component.html.HtmlOutputLabel;
+import javax.faces.component.html.HtmlPanelGrid;
+import javax.faces.context.FacesContext;
 import javax.faces.component.UIParameter;
 import javax.faces.event.ActionEvent;
 import javax.ws.rs.client.Client;
@@ -76,6 +81,7 @@ public class AdministratorManager {
      * ** Other ***
      */
     private ProjectProposalDTO currentProjectProposal;
+    private ProjectProposalDTO newProjectProposal;
 
     private String searchablePublicTest;
     private String searchableStudent;
@@ -89,6 +95,8 @@ public class AdministratorManager {
     private Client client;
     private final String baseUri
             = "http://localhost:8080/MasterManager-war/webapi";
+
+    private HtmlPanelGrid mainGrid;
 
     public AdministratorManager() {
         newStudent = new StudentDTO();
@@ -136,6 +144,7 @@ public class AdministratorManager {
         return returnedStudents;
     }
 
+    ///////////////////////////////////////////TEACHERS//////////////////////////////////////////
     public String updateStudent() {
         try {
 
@@ -219,7 +228,7 @@ public class AdministratorManager {
         }
         return returnedTeachers;
     }
-    
+
     public List<TeacherDTO> getAllTeachersCCPOnTop() {
         List<TeacherDTO> returnedTeachers = null;
         try {
@@ -230,12 +239,12 @@ public class AdministratorManager {
                     });
             List<TeacherDTO> aux = new LinkedList<>(returnedTeachers);
             for (TeacherDTO teacherDTO : aux) {
-                if (ccpUserBean.isCCPUser(teacherDTO.getEmail())){
+                if (ccpUserBean.isCCPUser(teacherDTO.getEmail())) {
                     returnedTeachers.remove(teacherDTO);
-                    returnedTeachers.add(0,teacherDTO);
+                    returnedTeachers.add(0, teacherDTO);
                 }
             }
-            
+
         } catch (Exception e) {
             e.printStackTrace();
             FacesExceptionHandler.handleException(e, "Erro inesperado no getAllTeachers AdministratorManager",
@@ -343,8 +352,6 @@ public class AdministratorManager {
             return null;
         }
     }
-    
-    
 
     public String updatePublicTest() {
         try {
@@ -385,6 +392,14 @@ public class AdministratorManager {
         this.newPublicTest = newPublicTest;
     }
 
+    public ProjectProposalDTO getNewProjectProposal() {
+        return newProjectProposal;
+    }
+
+    public void setNewProjectProposal(ProjectProposalDTO newProjectProposal) {
+        this.newProjectProposal = newProjectProposal;
+    }
+
     public String getDateNow() {
         return dateNow;
     }
@@ -413,7 +428,7 @@ public class AdministratorManager {
             newInstitution.reset();
 
         } catch (Exception e) {
-            FacesExceptionHandler.handleException(e, "Erro inesperado no createTeacher do AdministratorManager", component, logger);
+            FacesExceptionHandler.handleException(e, "Erro inesperado no createInstitution do AdministratorManager", component, logger);
             e.printStackTrace();
             return null;
         }
@@ -597,6 +612,10 @@ public class AdministratorManager {
 
     public void setSearchableStudent(String searchableStudent) {
         this.searchableStudent = searchableStudent;
+    }
+
+    public ProjectType[] getProjectTypes() {
+        return ProjectType.values();
     }
 
 }
