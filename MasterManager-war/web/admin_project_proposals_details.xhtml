@@ -60,10 +60,25 @@
 
 
                 <em:dt_list
-                    headers="#{['scientificAreas']}"
+                    headers="#{['Áreas Científicas']}"
                     list="#{administratorManager.currentProjectProposal.scientificAreas}">
+                </em:dt_list>
 
-
+                <em:dt_list
+                    headers="#{['Objetivos']}"
+                    list="#{administratorManager.currentProjectProposal.objectives}">
+                </em:dt_list>
+                <em:dt_list
+                    headers="#{['Bibliografia']}"
+                    list="#{administratorManager.currentProjectProposal.bibliography}">
+                </em:dt_list>
+                <em:dt_list
+                    headers="#{['Requesitos de Sucesso']}"
+                    list="#{administratorManager.currentProjectProposal.successRequirements}">
+                </em:dt_list>
+                <em:dt_list
+                    headers="#{['Apoios']}"
+                    list="#{administratorManager.currentProjectProposal.supports}">
                 </em:dt_list>
 
 

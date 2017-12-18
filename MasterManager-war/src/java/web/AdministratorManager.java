@@ -90,6 +90,7 @@ public class AdministratorManager {
     private String searchableTeacher;
     private String searchableCourse;
     private String searchableInstitution;
+    private String searchableProjectProposal;
 
     /**
      * ** Other ***
@@ -304,7 +305,6 @@ public class AdministratorManager {
 
             logger.info(scientificAreasString);
 
-            ArrayList<String> bibliography = new ArrayList<>();
 
             projectProposalBean.create(
                     newProjectProposal.getCode(), newProjectProposal.getProjectTypeString(),
@@ -312,13 +312,13 @@ public class AdministratorManager {
                     newProjectProposal.getScientificAreas(),
                     newProjectProposal.getProponentUsername(),
                     newProjectProposal.getProjectAbstract(),
-                    newProjectProposal.getScientificAreas(),//objectives,
-                    bibliography,//bibliography,
+                    newProjectProposal.getObjectives(),
+                    newProjectProposal.getBibliography(),
                     newProjectProposal.getWorkPlan(),
                     newProjectProposal.getWorkPlace(),
-                    newProjectProposal.getScientificAreas(),//successRequirements,
+                    newProjectProposal.getSuccessRequirements(),
                     newProjectProposal.getBudget(),
-                    newProjectProposal.getScientificAreas());//supports);
+                    newProjectProposal.getSupports());
 
         } catch (EntityAlreadyExistsException | EntityDoesNotExistException
                 | MyConstraintViolationException e) {
@@ -381,7 +381,54 @@ public class AdministratorManager {
         }
         return returnedProponents;
     }
+    
+  
+    public void removeProjectProposal(ActionEvent event){
+        
+        try{
+            UIParameter param = (UIParameter) event.getComponent().findComponent("projectProposalCode");
+            int code = (int) param.getValue();
+            projectProposalBean.remove(code);
+            } catch(Exception e) {
+            FacesExceptionHandler.handleException(e, e.getMessage(), logger);
+        }
+        
+    }
+    
 
+    public String updateProjectProposal(){
+        try{
+            client.target(baseUri)
+                    .path("projectProposals/update")
+                    .request(MediaType.APPLICATION_XML)
+                    .put(Entity.xml(currentProjectProposal));
+            
+        } catch (Exception e){
+             FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
+            return null;
+        }
+        
+        return "index?faces-redirect=true";
+    }
+
+    public String getSearchableProjectProposal() {
+        return searchableProjectProposal;
+    }
+
+    public void setSearchableProjectProposal(String searchableProjectProposal) {
+        this.searchableProjectProposal = searchableProjectProposal;
+    }
+    
+    public List<ProjectProposalDTO> getSearchProjectProposal() {
+        try {
+            List<ProjectProposalDTO> foundProjectProposals = projectProposalBean.search(searchableProjectProposal);
+            return foundProjectProposals;
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Unexpected error on getSearchProjectProposal()!", logger);
+            return null;
+        }
+    }
+    
     ////////////// PUBLIC TEST ///////////////////
     public String createPublicTest() {
 
@@ -639,7 +686,10 @@ public class AdministratorManager {
             return null;
         }
     }
-
+    
+    
+    
+  
     ///////////////////////////////////////////Getters e setters tem que ser organizado//////////////////////////////////////////
     public ProjectProposalDTO getNewProjectProposal() {
         return newProjectProposal;
@@ -741,7 +791,7 @@ public class AdministratorManager {
         this.searchableStudent = searchableStudent;
     }
 
-    public ProjectType[] getProjectTypes() {
+    public ProjectType[] getAllProjectTypes() {
         return ProjectType.values();
     }
 

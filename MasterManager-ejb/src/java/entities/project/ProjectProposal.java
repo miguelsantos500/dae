@@ -5,17 +5,24 @@
  */
 package entities.project;
 
+import entities.users.Institution;
 import entities.users.Proponent;
+import exceptions.EntityDoesNotExistException;
+import exceptions.MyConstraintViolationException;
+import exceptions.Utils;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import javax.ejb.EJBException;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.validation.ConstraintViolationException;
 import javax.validation.constraints.NotNull;
+import javax.ws.rs.Path;
 
 /**
  *
@@ -53,9 +60,9 @@ public class ProjectProposal implements Serializable {
     @NotNull
     private List<String> objectives;
     
-    //ArrayList porque é no máximo 5.
+    //No máximo 5.
     @NotNull
-    private ArrayList<String> bibliography;
+    private List<String> bibliography;
     
     @NotNull
     private String workPlan;
@@ -82,7 +89,7 @@ public class ProjectProposal implements Serializable {
     public ProjectProposal(int code, ProjectType projectType, 
             String title, List<String> scientificAreas, Proponent proponent, 
             String projectAbstract, List<String> objectives, 
-            ArrayList<String> bibliography, String workPlan, 
+            List<String> bibliography, String workPlan, 
             String workPlace, List<String> successRequirements, 
             String budget, List<String> supports) {
         
@@ -101,11 +108,6 @@ public class ProjectProposal implements Serializable {
         this.supports = supports;
     }
 
-    
-    
-    
-    
-    
     //GETTERS AND SETTERS
     
     public int getCode() {
@@ -164,11 +166,11 @@ public class ProjectProposal implements Serializable {
         this.objectives = objectives;
     }
 
-    public ArrayList<String> getBibliography() {
+    public List<String> getBibliography() {
         return bibliography;
     }
 
-    public void setBibliography(ArrayList<String> bibliography) {
+    public void setBibliography(List<String> bibliography) {
         this.bibliography = bibliography;
     }
 
@@ -211,13 +213,6 @@ public class ProjectProposal implements Serializable {
     public void setSupports(List<String> supports) {
         this.supports = supports;
     }
-    
-    
-    
-    
-    
-    
-    
     
     
     

@@ -118,7 +118,7 @@
                                 target="#{administratorManager.currentProjectProposal}" value="#{object}" />
                         </h:commandLink>
                         &nbsp;
-                        <h:commandLink value="Actualizar" action="admin_students_update?facesredirect=true">
+                        <h:commandLink value="Actualizar" action="project_proposals_update?facesredirect=true">
                             <f:setPropertyActionListener
                                 target="#{administratorManager.currentProjectProposal}" value="#{object}" />
                         </h:commandLink>
@@ -136,7 +136,24 @@
             <br/>
 
             <h:link class="btn btn-primary" value="Nova proposta de projecto" outcome="admin_project_proposals_create"/>
+            <h:form>
+                <h:outputLabel for="search" value="Procurar proposta: " />
+                <h:inputText 
+                    id="searchProjectProposals"
+                    size="20"
+                    required="true"
+                    requiredMessage="Erro: campo não pode estar vazio!"
+                    value="#{administratorManager.searchableProjectProposal}"/>
 
+                <br></br>
+
+                <h:commandButton
+                    id="searchProjectProposal"
+                    value="Procurar"
+                    action="search_project_proposal?facesredirect=true" />    
+                <h:message for="searchProjectProposal" style="color: red" />   
+
+            </h:form> 
 
 
             <br/>
