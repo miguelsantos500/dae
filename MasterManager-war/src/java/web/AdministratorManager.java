@@ -32,7 +32,6 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.component.html.HtmlPanelGrid;
 import javax.faces.component.UIParameter;
-import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -305,8 +304,6 @@ public class AdministratorManager {
 
             logger.info(scientificAreasString);
 
-            
-
             ArrayList<String> bibliography = new ArrayList<>();
 
             projectProposalBean.create(
@@ -331,7 +328,6 @@ public class AdministratorManager {
         }
         return "index?faces-redirect=true";
     }
-
 
     public List<TeacherDTO> getSearchTeacher() {
         try {
@@ -413,7 +409,11 @@ public class AdministratorManager {
 
     public List<PublicTestDTO> getAllPublicTests() {
         try {
-            return publicTestBean.getAll();
+            return client.target(URILookup.getBaseAPI()).
+                    path("/publictests/all").
+                    request(MediaType.APPLICATION_XML).
+                    get(new GenericType<List<PublicTestDTO>>() {
+                    });
         } catch (Exception e) {
             FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!",
                     logger);
@@ -423,8 +423,12 @@ public class AdministratorManager {
 
     public List<PublicTestDTO> getSearchPublicTest() {
         try {
-            List<PublicTestDTO> searchResults = publicTestBean.search(searchablePublicTest);
-            return searchResults;
+            return client.target(URILookup.getBaseAPI()).
+                    path("/publictests/search").
+                    path(searchablePublicTest).
+                    request(MediaType.APPLICATION_XML).
+                    get(new GenericType<List<PublicTestDTO>>() {
+                    });
         } catch (Exception e) {
             FacesExceptionHandler.handleException(e, "Unexpected error no getSearchPublicTest!", logger);
             return null;
@@ -433,17 +437,12 @@ public class AdministratorManager {
 
     public String updatePublicTest() {
         try {
-            publicTestBean.update(
-                    currentPublicTest.getCode(),
-                    currentPublicTest.getTitle(),
-                    currentPublicTest.getTestDateTime(),
-                    currentPublicTest.getPlace(),
-                    currentPublicTest.getLink(),
-                    currentPublicTest.getJuryPresidentUsername(),
-                    currentPublicTest.getOutsideTeacherName(),
-                    currentPublicTest.getOutsideTeacherEmail());
+            client.target(URILookup.getBaseAPI())
+                    .path("/publictests/updateREST")
+                    .request(MediaType.APPLICATION_XML)
+                    .put(Entity.xml(currentPublicTest));
 
-        } catch (EntityDoesNotExistException e) {
+        } catch (Exception e) {
             FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
             return null;
         }
@@ -461,25 +460,36 @@ public class AdministratorManager {
             FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
         }
     }
-    
+
     public void uploadFileRecord(UIComponent component) {
-        try {            
-            DocumentDTO document = new DocumentDTO(uploadManager.getCompletePathFile(), 
-                                                    uploadManager.getFilename(), 
-                                                    uploadManager.getFile().getContentType());
-             
+        try {
+            DocumentDTO document = new DocumentDTO(uploadManager.getCompletePathFile(),
+                    uploadManager.getFilename(),
+                    uploadManager.getFile().getContentType());
+
             UIParameter param = (UIParameter) component.findComponent("publicTestCode2");
             String code = param.getValue().toString();
-           
-            
+
             client.target(URILookup.getBaseAPI())
-                    .path("/publictest/addFileRecord")
+                    .path("/publictests/addFileRecord")
                     .path(code)
                     .request(MediaType.APPLICATION_XML)
                     .put(Entity.xml(document));
 
         } catch (Exception e) {
             FacesExceptionHandler.handleException(e, "Erro ao fazer o upload do ficheiro!", logger);
+        }
+    }
+
+    public void removeFileRecord(ActionEvent event) {
+        try {
+            UIParameter param = (UIParameter) event.getComponent().findComponent("publicTestCode3");
+            int code = Integer.parseInt(param.getValue().toString());
+            publicTestBean.removeFileRecord(code);
+        } catch (EntityDoesNotExistException e) {
+            FacesExceptionHandler.handleException(e, e.getMessage(), logger);
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
         }
     }
 
@@ -585,7 +595,7 @@ public class AdministratorManager {
 
         return "index?faces-redirect=true";
     }
-    
+
     public List<InstitutionDTO> getSearchInstitution() {
         try {
             List<InstitutionDTO> foundInstitutions = institutionBean.search(searchableInstitution);
@@ -604,7 +614,6 @@ public class AdministratorManager {
         this.searchableInstitution = searchableInstitution;
     }
 
-    
     ///////////////////////////////////////////COURSES//////////////////////////////////////////
     public String createCourse() {
         try {

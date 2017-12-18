@@ -79,8 +79,8 @@ public class ConfigBean {
 
             publicTestBean.create(1, "Title1", new Date(2000, 1, 1), "Sala yyy", "www.link.com", "2446546", "3243243", "Pedro Oliveia", "yyy@gmail.com", "1111111");
             publicTestBean.create(2, "Title2", new Date(2000, 1, 1), "Sala xxx", "www.link.com", "9473829", "3243244", "Pedro Silva", "xxx@gmail.com", "2222222");
-            publicTestBean.create(3, "Title3", new Date(2000, 1, 1), "Sala zzz", "www.link.com", "3243245", "3243246", "Joao Oliveia", "zzz@gmail.com", "3333333");
-            publicTestBean.create(4, "Title4", new Date(2000, 1, 1), "Sala aaa", "www.link.com", "3243246", "3243243", "Ricado Tati", "aaa@gmail.com", "4444444");
+            publicTestBean.create(3, "Title3", new Date(2000, 1, 1), "Sala zzz", "www.link.com", "3243245", "3243247", "Joao Oliveia", "zzz@gmail.com", "3333333");
+            publicTestBean.create(4, "Title4", new Date(2000, 1, 1), "Sala aaa", "www.link.com", "3243247", "3243244", "Ricado Tati", "aaa@gmail.com", "4444444");
 
             institutionBean.create("xxx1", "ESTG", "ESTG", "estg.ipleiria@ipleiria.pt");
             institutionBean.create("xxx2", "ESECS", "ESECS", "esecs.ipleiria@ipleiria.pt");

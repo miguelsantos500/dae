@@ -15,7 +15,7 @@ import util.URILookup;
 public class UploadManager {
 
     UploadedFile file;
-    
+
     String completePathFile;
     String filename;
 
@@ -23,14 +23,13 @@ public class UploadManager {
     }
 
     public void upload() {
-        
-        
-        if (file != null) {
+
+        if (file.getSize() != 0) {
             try {
                 filename = file.getFileName().substring(file.getFileName().lastIndexOf("\\") + 1);
 
                 completePathFile = URILookup.getServerDocumentsFolder() + filename;
-                
+
                 InputStream in = file.getInputstream();
                 FileOutputStream out = new FileOutputStream(completePathFile);
 
@@ -45,14 +44,19 @@ public class UploadManager {
                 in.close();
                 out.close();
 
-                FacesMessage message = new FacesMessage("File: " + file.getFileName() + " uploaded successfully!");
+                FacesMessage message = new FacesMessage("Ficheiro: " + file.getFileName() + " carregado com sucesso!");
                 FacesContext.getCurrentInstance().addMessage(null, message);
-                
+
             } catch (IOException e) {
-                FacesMessage message = new FacesMessage("ERROR :: File: " + file.getFileName() + " not uploaded!");
+                FacesMessage message = new FacesMessage("ERRO :: Ficheiro: " + file.getFileName() + " não carregado!");
                 FacesContext.getCurrentInstance().addMessage(null, message);
             }
+        } else {
+            FacesMessage message = new FacesMessage("ERRO :: Ficheiro: " + 
+                    file.getFileName() + " não selécionado ou vazio!");
+            FacesContext.getCurrentInstance().addMessage(null, message);
         }
+
     }
 
     public UploadedFile getFile() {
@@ -78,6 +82,5 @@ public class UploadManager {
     public void setFilename(String filename) {
         this.filename = filename;
     }
-    
-    
+
 }

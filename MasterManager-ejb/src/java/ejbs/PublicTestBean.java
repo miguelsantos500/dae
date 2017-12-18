@@ -8,6 +8,8 @@ import entities.users.Student;
 import entities.users.Teacher;
 import exceptions.EntityAlreadyExistsException;
 import exceptions.EntityDoesNotExistException;
+import exceptions.MyConstraintViolationException;
+import exceptions.Utils;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
@@ -16,14 +18,17 @@ import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.validation.ConstraintViolationException;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 @Stateless
-@Path("/publictest")
+@Path("/publictests")
 public class PublicTestBean {
 
     @PersistenceContext
@@ -67,9 +72,34 @@ public class PublicTestBean {
         }
     }
 
+    @PUT
+    @Path("/updateREST")
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public void updateREST(PublicTestDTO publicTest)
+            throws EntityDoesNotExistException,
+            MyConstraintViolationException {
+        try {
+            update(
+                    publicTest.getCode(),
+                    publicTest.getTitle(),
+                    publicTest.getTestDateTime(),
+                    publicTest.getPlace(),
+                    publicTest.getLink(),
+                    publicTest.getJuryPresidentUsername(),
+                    publicTest.getOutsideTeacherName(),
+                    publicTest.getOutsideTeacherEmail()
+            );
+        } catch (EntityDoesNotExistException | MyConstraintViolationException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new EJBException(e.getMessage());
+        }
+    }
+
     public void update(int code, String title, Date testDateTime,
             String place, String link, String teacherJuryUsername,
-            String outideTeacherName, String outsideTeacherEmail) throws EntityDoesNotExistException {
+            String outideTeacherName, String outsideTeacherEmail)
+            throws EntityDoesNotExistException, MyConstraintViolationException {
         try {
             PublicTest publicTest = em.find(PublicTest.class, code);
             if (publicTest == null) {
@@ -95,6 +125,8 @@ public class PublicTestBean {
             em.merge(publicTest);
         } catch (EntityDoesNotExistException e) {
             throw e;
+        } catch (ConstraintViolationException e) {
+            throw new MyConstraintViolationException(Utils.getConstraintViolationMessages(e));
         } catch (Exception e) {
             throw new EJBException(e.getMessage());
         }
@@ -116,6 +148,9 @@ public class PublicTestBean {
         }
     }
 
+    @GET
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Path("all")
     public List<PublicTestDTO> getAll() {
         try {
             List<PublicTest> publicTests = (List<PublicTest>) em.createNamedQuery("getAllPublicTests").getResultList();
@@ -124,31 +159,34 @@ public class PublicTestBean {
             throw new EJBException(e.getMessage());
         }
     }
-    
-    public List<PublicTestDTO> search(String searchValue) {
+
+    @GET
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Path("/search/{searchWord}")
+    public List<PublicTestDTO> search(@PathParam("searchWord") String searchValue) {
         try {
             List<PublicTest> publicTests = (List<PublicTest>) em.createNamedQuery("getAllPublicTests").getResultList();
             List<PublicTest> aux = new LinkedList<>();
             for (PublicTest publicTest : publicTests) {
-                if (Integer.toString(publicTest.getCode()).contains(searchValue)){
+                if (Integer.toString(publicTest.getCode()).contains(searchValue)) {
                     aux.add(publicTest);
                 } else if (publicTest.getTitle().toLowerCase().
-                        contains(searchValue.toLowerCase())){
+                        contains(searchValue.toLowerCase())) {
                     aux.add(publicTest);
                 } else if (publicTest.getPlace().toLowerCase().
-                        contains(searchValue.toLowerCase())){
+                        contains(searchValue.toLowerCase())) {
                     aux.add(publicTest);
                 } else if (publicTest.getJuryPresident().getName().toLowerCase().
-                        contains(searchValue.toLowerCase())){
+                        contains(searchValue.toLowerCase())) {
                     aux.add(publicTest);
                 } else if (publicTest.getAdvisor().getName().toLowerCase().
-                        contains(searchValue.toLowerCase())){
+                        contains(searchValue.toLowerCase())) {
                     aux.add(publicTest);
                 } else if (publicTest.getOutsideTeacherName().toLowerCase().
-                        contains(searchValue.toLowerCase())){
+                        contains(searchValue.toLowerCase())) {
                     aux.add(publicTest);
                 } else if (publicTest.getStudent().getName().toLowerCase().
-                        contains(searchValue.toLowerCase())){
+                        contains(searchValue.toLowerCase())) {
                     aux.add(publicTest);
                 }
             }
@@ -184,7 +222,7 @@ public class PublicTestBean {
                 publicTest.getTestDateTimeString(),
                 publicTest.getFileRecord().getDesiredName());
     }
-    
+
     @PUT
     @Path("/addFileRecord/{code}")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
@@ -208,17 +246,39 @@ public class PublicTestBean {
         }
     }
 
+    public void removeFileRecord(int code) throws EntityDoesNotExistException {
+        try {
+            PublicTest publicTest = em.find(PublicTest.class, code);
+            if (publicTest == null) {
+                throw new EntityDoesNotExistException(
+                        "Não existe nenhuma prova publica com esse código.");
+            }
+
+            Document document = em.find(Document.class, publicTest.getFileRecord().getId());
+            if (document == null) {
+                throw new EntityDoesNotExistException(
+                        "Não existe nenhum documento com esse código.");
+            }
+
+            em.remove(document);
+            publicTest.setFileRecord(new Document());
+        } catch (EntityDoesNotExistException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new EJBException(e.getMessage());
+        }
+    }
+
     public DocumentDTO getDocument(int code) throws EntityDoesNotExistException {
         System.out.println("CODE: " + code);
         PublicTest publicTest = em.find(PublicTest.class, code);
-            
-        if (publicTest == null)
-            throw new EntityDoesNotExistException();
-        
-        
 
-        return new DocumentDTO(publicTest.getFileRecord().getId(),publicTest.getFileRecord().getFilepath(),
-                publicTest.getFileRecord().getDesiredName(),publicTest.getFileRecord().getMimeType());
+        if (publicTest == null) {
+            throw new EntityDoesNotExistException();
+        }
+
+        return new DocumentDTO(publicTest.getFileRecord().getId(), publicTest.getFileRecord().getFilepath(),
+                publicTest.getFileRecord().getDesiredName(), publicTest.getFileRecord().getMimeType());
     }
-    
+
 }
