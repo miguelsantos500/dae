@@ -63,10 +63,13 @@ public class UserManager implements Serializable {
     }
     
     public boolean isUserInRole(String role) {
+        boolean two = FacesContext.getCurrentInstance().getExternalContext().isUserInRole(role);
         return (isSomeUserAuthenticated() && FacesContext.getCurrentInstance().getExternalContext().isUserInRole(role));
     }
 
     public boolean isSomeUserAuthenticated() {
+        Object one = FacesContext.getCurrentInstance().getExternalContext().getUserPrincipal();
+        
         return FacesContext.getCurrentInstance().getExternalContext().getUserPrincipal() != null;
     }
 
