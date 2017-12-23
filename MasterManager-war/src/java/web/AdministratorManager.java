@@ -25,6 +25,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
@@ -33,6 +34,7 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.component.html.HtmlPanelGrid;
 import javax.faces.component.UIParameter;
+import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -442,9 +444,12 @@ public class AdministratorManager {
 
     public void applyStudent(ActionEvent event) {
         try {
-            UIParameter param = (UIParameter) event.getComponent().findComponent("studentUsername");
-            String username = param.getValue().toString();
-            studentBean.applyStudent(username, currentProjectProposal.getCode());
+         //   UIParameter param = (UIParameter) event.getComponent().findComponent("studentUsername");
+        //    String username = param.getValue().toString();
+         String username = FacesContext.getCurrentInstance().getExternalContext().getUserPrincipal().getName();
+         logger.log(Level.SEVERE, " Student name is:"  + username);
+                 
+        studentBean.applyStudent(username, currentProjectProposal.getCode());
         } catch (EntityDoesNotExistException e) {
             FacesExceptionHandler.handleException(e, e.getMessage(), logger);
         } catch (Exception e) {
