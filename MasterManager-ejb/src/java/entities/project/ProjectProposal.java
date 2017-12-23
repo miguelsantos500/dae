@@ -5,24 +5,16 @@
  */
 package entities.project;
 
-import entities.users.Institution;
 import entities.users.Proponent;
-import exceptions.EntityDoesNotExistException;
-import exceptions.MyConstraintViolationException;
-import exceptions.Utils;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
-import javax.ejb.EJBException;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.validation.ConstraintViolationException;
 import javax.validation.constraints.NotNull;
-import javax.ws.rs.Path;
 
 /**
  *
@@ -81,6 +73,10 @@ public class ProjectProposal implements Serializable {
     
     @NotNull
     private List<String> supports;
+    
+    @NotNull
+    private ProjectProposalState projectProposalState;
+    
 
     public ProjectProposal() {
     }
@@ -106,6 +102,7 @@ public class ProjectProposal implements Serializable {
         this.successRequirements = successRequirements;
         this.budget = budget;
         this.supports = supports;
+        this.projectProposalState = ProjectProposalState.PENDING;
     }
 
     //GETTERS AND SETTERS
@@ -213,6 +210,15 @@ public class ProjectProposal implements Serializable {
     public void setSupports(List<String> supports) {
         this.supports = supports;
     }
+
+    public ProjectProposalState getProjectProposalState() {
+        return projectProposalState;
+    }
+
+    public void setProjectProposalState(ProjectProposalState projectProposalState) {
+        this.projectProposalState = projectProposalState;
+    }
+    
     
     
     

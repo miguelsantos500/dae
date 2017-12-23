@@ -1,5 +1,6 @@
 package dtos;
 
+import entities.project.ProjectProposalState;
 import entities.project.ProjectType;
 import entities.users.Proponent;
 import java.io.Serializable;
@@ -43,6 +44,8 @@ public class ProjectProposalDTO implements Serializable {
 
     private List<String> supports;
     private String supportsString;
+    
+    private ProjectProposalState projectProposalState;
 
     public ProjectProposalDTO() {
     }
@@ -51,7 +54,8 @@ public class ProjectProposalDTO implements Serializable {
             String proponentUsername, String projectAbstract, String workPlan, 
             String workPlace, String budget, List<String> scientificAreas, 
             List<String> objectives, List<String> bibliography, 
-            List<String> successRequirements, List<String> supports) {
+            List<String> successRequirements, List<String> supports,
+            ProjectProposalState projectProposalState) {
         this.code = code;
         this.projectTypeString = projectTypeString;
         this.title = title;
@@ -65,6 +69,7 @@ public class ProjectProposalDTO implements Serializable {
         this.bibliography = bibliography;
         this.successRequirements = successRequirements;
         this.supports = supports;
+        this.projectProposalState = projectProposalState;
     }
 
     
@@ -248,5 +253,14 @@ public class ProjectProposalDTO implements Serializable {
     public void setSupportsString(String supportsString) {
         this.supportsString = supportsString;
     }
+
+    public ProjectProposalState getProjectProposalState() {
+        return projectProposalState;
+    }
+
+    public void setProjectProposalState(ProjectProposalState projectProposalState) {
+        this.projectProposalState = projectProposalState;
+    }
+    
 
 }
