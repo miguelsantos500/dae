@@ -233,14 +233,6 @@ public class ProjectProposal implements Serializable {
         this.projectProposalState = projectProposalState;
     }
     
-    
-    
-    
-    @Override
-    public String toString() {
-        return "entities.ProjectProposal[ id=" + code + " ]";
-    }
-
     public List<Student> getStudents() {
         return students;
     }
@@ -249,6 +241,12 @@ public class ProjectProposal implements Serializable {
         this.students = students;
     }
     
+    
+    @Override
+    public String toString() {
+        return "entities.ProjectProposal[ id=" + code + " ]";
+    }
+
     
     
 }
