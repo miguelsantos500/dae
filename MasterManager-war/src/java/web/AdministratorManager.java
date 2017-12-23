@@ -352,13 +352,23 @@ public class AdministratorManager {
             String username = param.getValue().toString();
             studentBean.applyStudent(username, currentProjectProposal.getCode());
         }catch(EntityDoesNotExistException e){
-            
+            FacesExceptionHandler.handleException(e, e.getMessage(), logger);
         }catch(Exception e){
             FacesExceptionHandler.handleException(e, "Erro inesperado, tente mais tarde.", logger);
         }
     }
     
- //   public void unapplyStudent
+    public void unapplyStudent(ActionEvent event){
+        try{
+            UIParameter param = (UIParameter) event.getComponent().findComponent("studentUsername");
+            String username = param.getValue().toString();
+            studentBean.unapplyStudent(username, currentProjectProposal.getCode());
+        }catch(EntityDoesNotExistException e){
+             FacesExceptionHandler.handleException(e, e.getMessage(), logger);
+        }catch(Exception e){
+             FacesExceptionHandler.handleException(e, "Erro inesperado, tente mais tarde.", logger);
+        }
+    }
 
     /////////////////////////////////////////////PROJECT PROPOSALS/////////////////////////////////
     public List<ProjectProposalDTO> getAllProjectProposals() {

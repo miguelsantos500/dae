@@ -35,77 +35,74 @@ import javax.ws.rs.Path;
 @Entity
 @Table(name = "PROJECT_PROPOSALS")
 @NamedQuery(name = "getAllProjectProposals",
-        query = "SELECT p FROM ProjectProposal p") /*TODO: ORDER BY*/
+        query = "SELECT p FROM ProjectProposal p")
+/*TODO: ORDER BY*/
 public class ProjectProposal implements Serializable {
 
     @Id
     private int code;
-    
+
     @NotNull
     private ProjectType projectType;
-    
+
     @NotNull
     private String title;
-    
+
     @NotNull
     private List<String> scientificAreas;
-    
-    
+
     //Quem propos a proposta
     //TODO: Classe que é super, ou interface, de quem pode Propor, ao invés de User?
     @NotNull
     @ManyToOne
     @JoinColumn(name = "PROPONENT_CODE")
     private Proponent proponent;
-    
+
     @ManyToMany
     @JoinTable(name = "PROJECT_PROPOSAL_STUDENT",
             joinColumns = @JoinColumn(name = "PROJECT_PROPOSAL_CODE", referencedColumnName = "CODE"),
             inverseJoinColumns = @JoinColumn(name = "STUDENT_USERNAME", referencedColumnName = "USERNAME"))
     private List<Student> students;
-            
-   
-    
+
     @NotNull
     private String projectAbstract;
-    
+
     @NotNull
     private List<String> objectives;
-    
+
     //No máximo 5.
     @NotNull
     private List<String> bibliography;
-    
+
     @NotNull
     private String workPlan;
-    
+
     @NotNull
     private String workPlace;
-    
-    @NotNull
-    private List<String>  successRequirements;
 
-/*    
+    @NotNull
+    private List<String> successRequirements;
+
+    /*    
     @NotNull
     private Budget budget;*///TODO:LATER
     @NotNull
     private String budget;
-    
+
     @NotNull
     private List<String> supports;
 
     public ProjectProposal() {
         this.students = new LinkedList<>();
     }
-    
 
-    public ProjectProposal(int code, ProjectType projectType, 
-            String title, List<String> scientificAreas, Proponent proponent, 
-            String projectAbstract, List<String> objectives, 
-            List<String> bibliography, String workPlan, 
-            String workPlace, List<String> successRequirements, 
+    public ProjectProposal(int code, ProjectType projectType,
+            String title, List<String> scientificAreas, Proponent proponent,
+            String projectAbstract, List<String> objectives,
+            List<String> bibliography, String workPlan,
+            String workPlace, List<String> successRequirements,
             String budget, List<String> supports) {
-        
+
         this.code = code;
         this.projectType = projectType;
         this.title = title;
@@ -123,7 +120,6 @@ public class ProjectProposal implements Serializable {
     }
 
     //GETTERS AND SETTERS
-    
     public int getCode() {
         return code;
     }
@@ -227,9 +223,7 @@ public class ProjectProposal implements Serializable {
     public void setSupports(List<String> supports) {
         this.supports = supports;
     }
-    
-    
-    
+
     @Override
     public String toString() {
         return "entities.ProjectProposal[ id=" + code + " ]";
@@ -242,7 +236,13 @@ public class ProjectProposal implements Serializable {
     public void setStudents(List<Student> students) {
         this.students = students;
     }
-    
-    
-    
+
+    public void removeStudent(Student student) {
+        students.remove(student);
+    }
+
+    public void addStudent(Student student) {
+        students.add(student);
+    }
+
 }
