@@ -184,7 +184,8 @@ public class ProjectProposalBean {
                     projectProposal.getObjectives(),
                     projectProposal.getBibliography(),
                     projectProposal.getSuccessRequirements(),
-                    projectProposal.getSupports()));
+                    projectProposal.getSupports(),
+                    projectProposal.getProjectProposalState()));
         }
         return dtos;
         

@@ -52,9 +52,9 @@ public class ConfigBean {
             courseBean.create(6, "MGSIM");
 
             studentBean.create("1111111", "Manuel", "Manuel", "dae.ei.ipleiria@gmail.com", 1);
-            studentBean.create("2222222", "Antonio", "António", "dae.ei.ipleiria@gmail.com", 1);
+            studentBean.create("2222222", "Antonio", "Antonio", "dae.ei.ipleiria@gmail.com", 1);
             studentBean.create("3333333", "Ana", "Ana", "dae.ei.ipleiria@gmail.com", 2);
-            studentBean.create("4444444", "Jose", "José", "dae.ei.ipleiria@gmail.com", 2);
+            studentBean.create("4444444", "Jose", "Jose", "dae.ei.ipleiria@gmail.com", 2);
             studentBean.create("5555555", "Maria", "Maria", "dae.ei.ipleiria@gmail.com", 3);
             studentBean.create("6666666", "Joaquim", "Joaquim", "dae.ei.ipleiria@gmail.com", 3);
             studentBean.create("7777777", "Alzira", "Alzira", "dae.ei.ipleiria@gmail.com", 4);
