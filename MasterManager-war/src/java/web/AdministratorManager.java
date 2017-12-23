@@ -438,6 +438,10 @@ public class AdministratorManager {
             return null;
         }
     }
+    
+    public void redirect (String to) {
+        
+    }
 
     ////////////// PUBLIC TEST ///////////////////
     public String createPublicTest() {
