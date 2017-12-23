@@ -7,11 +7,7 @@ package entities.project;
 
 import entities.users.Proponent;
 import entities.users.Student;
-import exceptions.EntityDoesNotExistException;
-import exceptions.MyConstraintViolationException;
-import exceptions.Utils;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import javax.persistence.Entity;
