@@ -18,6 +18,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import util.Security;
 
 @Entity
 @Table(name = "USERS")
@@ -43,7 +44,7 @@ public class User implements Serializable {
 
     public User(String username, String password, GROUP group, String name, String email) {
         this.username = username;
-        this.password = hashPassword(password);
+        this.password = Security.hashPassword(password);
         this.group = new UserGroup(group, this);
         this.name = name;
         this.email = email;
