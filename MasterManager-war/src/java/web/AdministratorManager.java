@@ -23,6 +23,7 @@ import exceptions.EntityDoesNotExistException;
 import exceptions.MyConstraintViolationException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -354,20 +355,6 @@ public class AdministratorManager {
     public void setSearchableTeacher(String searchableTeacher) {
         this.searchableTeacher = searchableTeacher;
     }
-    
-    public void applyStudent(ActionEvent event){
-        try{
-            UIParameter param = (UIParameter) event.getComponent().findComponent("studentUsername");
-            String username = param.getValue().toString();
-            studentBean.applyStudent(username, currentProjectProposal.getCode());
-        }catch(EntityDoesNotExistException e){
-            
-        }catch(Exception e){
-            FacesExceptionHandler.handleException(e, "Erro inesperado, tente mais tarde.", logger);
-        }
-    }
-    
- //   public void unapplyStudent
 
     /////////////////////////////////////////////PROJECT PROPOSALS/////////////////////////////////
     public List<ProjectProposalDTO> getAllProjectProposals() {
@@ -453,8 +440,55 @@ public class AdministratorManager {
             return null;
         }
     }
-        
-    public void redirect (String to) {
+
+    public void applyStudent(ActionEvent event) {
+        try {
+            UIParameter param = (UIParameter) event.getComponent().findComponent("studentUsername");
+            String username = param.getValue().toString();
+            studentBean.applyStudent(username, currentProjectProposal.getCode());
+        } catch (EntityDoesNotExistException e) {
+            FacesExceptionHandler.handleException(e, e.getMessage(), logger);
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Erro inesperado, tente mais tarde.", logger);
+        }
+    }
+
+    public void unapplyStudent(ActionEvent event) {
+        try {
+            UIParameter param = (UIParameter) event.getComponent().findComponent("studentUsername");
+            String username = param.getValue().toString();
+            studentBean.unapplyStudent(username, currentProjectProposal.getCode());
+        } catch (EntityDoesNotExistException e) {
+            FacesExceptionHandler.handleException(e, e.getMessage(), logger);
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Erro inesperado, tente mais tarde.", logger);
+        }
+    }
+
+    public Collection<StudentDTO> getAppliedStudents() {
+
+        try {
+            return studentBean.getAppliedStudents(currentProjectProposal.getCode());
+        } catch (EntityDoesNotExistException e) {
+            FacesExceptionHandler.handleException(e, e.getMessage(), logger);
+            return null;
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Erro inesperado, tente mais tarde.", logger);
+            return null;
+        }
+    }
+
+    public Collection<StudentDTO> getUnappliedStudents() {
+
+        try {
+            return studentBean.getUnappliedStudents(currentProjectProposal.getCode());
+        } catch (EntityDoesNotExistException e) {
+            FacesExceptionHandler.handleException(e, e.getMessage(), logger);
+            return null;
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Erro inesperado, tente mais tarde.", logger);
+            return null;
+        }
 
     }
 

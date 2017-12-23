@@ -8,8 +8,10 @@ import exceptions.EntityAlreadyExistsException;
 import exceptions.EntityDoesNotExistException;
 import exceptions.MyConstraintViolationException;
 import exceptions.StudentAlreadyAppliedException;
+import exceptions.StudentNotAppliedException;
 import exceptions.Utils;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import javax.ejb.EJBException;
@@ -24,16 +26,13 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-
 @Stateless
 @Path("/students")
 public class StudentBean {
 
     @PersistenceContext
     private EntityManager em;
-    
 
-   
     public void create(String username, String password, String name, String email, int courseCode)
             throws EntityAlreadyExistsException, MyConstraintViolationException {
         try {
@@ -62,24 +61,24 @@ public class StudentBean {
     public void updateStudent(StudentDTO studentDTO)
             throws MyConstraintViolationException {
         try {
-           
+
             Course course = em.find(Course.class, studentDTO.getCourseCode());
             if (course == null) {
-             //   throw new EJBException(e.getMessage());
+                //   throw new EJBException(e.getMessage());
             }
             Student student = em.find(Student.class, studentDTO.getUsername());
             if (student == null) {
-              //  throw new EntityDoesNotExistsException("There is no student with that username.");
+                //  throw new EntityDoesNotExistsException("There is no student with that username.");
             }
- 
+
             student.setPassword(studentDTO.getPassword());
             student.setName(studentDTO.getName());
             student.setEmail(studentDTO.getEmail());
-           // student.getCourse().removeStudent(student);
+            // student.getCourse().removeStudent(student);
             student.setCourse(course);
             course.addStudent(student);
             em.merge(student);
- 
+
         } catch (Exception e) {
             throw e;
         }
@@ -101,7 +100,7 @@ public class StudentBean {
             throw new EJBException(e.getMessage());
         }
     }
-    
+
     @GET
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Path("all")
@@ -135,57 +134,132 @@ public class StudentBean {
     }
 
     public List<StudentDTO> search(String searchName) {
-        try{
-              /**********debug**/
+        try {
+            /**
+             * ********debug*
+             */
             System.out.println("DEBUG - entrou no StudentBean.search()");
             List<Student> students = em.createNamedQuery("getAllStudents").getResultList();
             List<Student> matchedStudents = new LinkedList<>();
-            
-            for(Student s: students){
-                if((s.getUsername().toLowerCase()).contains(searchName.toLowerCase())){
+
+            for (Student s : students) {
+                if ((s.getUsername().toLowerCase()).contains(searchName.toLowerCase())) {
                     matchedStudents.add(s);
-                }else if((s.getName().toLowerCase()).contains(searchName.toLowerCase())){
+                } else if ((s.getName().toLowerCase()).contains(searchName.toLowerCase())) {
                     matchedStudents.add(s);
-                }else if((s.getEmail().toLowerCase()).contains(searchName.toLowerCase())){
+                } else if ((s.getEmail().toLowerCase()).contains(searchName.toLowerCase())) {
                     matchedStudents.add(s);
                 }
             }
-            /**********debug**/
+            /**
+             * ********debug*
+             */
             System.out.println("DEBUG - entrou no StudentBean.search()");
-           return studentsToDTOs(matchedStudents);
-           
-        }catch(Exception ex){
+            return studentsToDTOs(matchedStudents);
+
+        } catch (Exception ex) {
             throw new EJBException(ex.getMessage());
         }
     }
 
-    public void applyStudent(String username, int code) throws EntityDoesNotExistException, 
+    public void applyStudent(String username, int code) throws EntityDoesNotExistException,
             StudentAlreadyAppliedException {
-        try{
-            
+        try {
+
             Student student = em.find(Student.class, username);
-            if(student == null){
+            if (student == null) {
                 throw new EntityDoesNotExistException("There is no student with that username.");
             }
-            
+
             ProjectProposal projectProposal = em.find(ProjectProposal.class, code);
-            if(projectProposal == null){
+            if (projectProposal == null) {
                 throw new EntityDoesNotExistException("There is no project proposal with that code.");
             }
-            
-            if(student.getProjectProposals().contains(projectProposal)){
+
+            if (student.getProjectProposals().contains(projectProposal)) {
                 throw new StudentAlreadyAppliedException("That student is already applied to that proposal.");
             }
-            
-            if(projectProposal.getStudents().contains(student)){
+
+            if (projectProposal.getStudents().contains(student)) {
                 throw new StudentAlreadyAppliedException("That student is already applied to that proposal.");
             }
-            
-        }catch(EntityDoesNotExistException | StudentAlreadyAppliedException e){
-           throw e;
-        }catch(Exception e){
-             throw new EJBException(e.getMessage());
+
+            student.addProjectProposal(projectProposal);
+            projectProposal.addStudent(student);
+
+        } catch (EntityDoesNotExistException | StudentAlreadyAppliedException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new EJBException(e.getMessage());
         }
     }
- 
+
+    public void unapplyStudent(String username, int code) throws EntityDoesNotExistException,
+            StudentNotAppliedException {
+        try {
+            Student student = em.find(Student.class, username);
+            if (student == null) {
+                throw new EntityDoesNotExistException("There is no such student.");
+            }
+
+            ProjectProposal projectProposal = em.find(ProjectProposal.class, code);
+            if (projectProposal == null) {
+                throw new EntityDoesNotExistException("There is no such project proposal.");
+            }
+
+            if (!projectProposal.getStudents().contains(student)) {
+                throw new StudentNotAppliedException();
+            }
+
+            student.removeProjectProposal(projectProposal);
+            projectProposal.removeStudent(student);
+
+        } catch (EntityDoesNotExistException | StudentNotAppliedException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new EJBException(e.getMessage());
+        }
+    }
+
+    public Collection<StudentDTO> getAppliedStudents(int code) throws EntityDoesNotExistException{
+        
+        try {
+        ProjectProposal projectProposal = em.find(ProjectProposal.class, code);
+        if(projectProposal == null){
+            throw new EntityDoesNotExistException("There is no project proposal with that code.");
+        }
+        
+        return studentsToDTOs(projectProposal.getStudents());
+            
+        } catch (EntityDoesNotExistException e) {
+            throw e;
+        }catch (Exception e){
+            throw new EJBException(e.getMessage());
+        }
+        
+    
+    }
+
+    public Collection<StudentDTO> getUnappliedStudents(int code)throws EntityDoesNotExistException {
+        try {
+            ProjectProposal projectProposal = em.find(ProjectProposal.class, code);
+            if(projectProposal == null){
+                throw new EntityDoesNotExistException();
+            }
+            List<Student> studentsApplied = em.createNamedQuery("getAllProjectProposalStudents")
+                    .setParameter("code", projectProposal.getCode())
+                    .getResultList();
+            
+            studentsApplied.removeAll(studentsApplied);
+            
+            return studentsToDTOs(studentsApplied);
+            
+        }catch(EntityDoesNotExistException e){
+            throw e;
+        }
+        catch (Exception e) {
+            throw new EJBException(e.getMessage());
+        }
+    }
+
 }

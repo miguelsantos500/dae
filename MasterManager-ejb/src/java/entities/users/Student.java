@@ -21,21 +21,21 @@ import javax.validation.constraints.NotNull;
 @Table(name = "STUDENTS")
 @NamedQueries({
     @NamedQuery(name = "getAllStudents",
-    query = "SELECT s FROM Student s ORDER BY s.name")})
+            query = "SELECT s FROM Student s ORDER BY s.name")})
 public class Student extends User implements Serializable {
 
     @ManyToOne
-    @JoinColumn(name="COURSE_CODE")
-    @NotNull (message="A student must have a course")
+    @JoinColumn(name = "COURSE_CODE")
+    @NotNull(message = "A student must have a course")
     private Course course;
-    
+
     @OneToOne
     @JoinColumn(name = "PUBLIC_CODE")
     private PublicTest publicTest;
-    
+
     @ManyToMany(mappedBy = "students")
     private List<ProjectProposal> projectProposals;
-    
+
     public Student() {
         this.projectProposals = new LinkedList<>();
     }
@@ -70,5 +70,12 @@ public class Student extends User implements Serializable {
         this.projectProposals = projectProposals;
     }
 
-    
+    public void removeProjectProposal(ProjectProposal projectProposal) {
+        projectProposals.remove(projectProposal);
+    }
+
+    public void addProjectProposal(ProjectProposal projectProposal) {
+        projectProposals.add(projectProposal);
+    }
+
 }
