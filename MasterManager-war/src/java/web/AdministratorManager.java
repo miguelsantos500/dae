@@ -297,7 +297,7 @@ public class AdministratorManager {
         return "index?faces-redirect=true";
     }
 
-    ////////////// PROJECT PROPOSAL ///////////////////
+    ////////////////////////////////////// PROJECT PROPOSAL /////////////////////////////////////////////////
     public String createProjectProposal() {
 
         try {
@@ -345,6 +345,20 @@ public class AdministratorManager {
     public void setSearchableTeacher(String searchableTeacher) {
         this.searchableTeacher = searchableTeacher;
     }
+    
+    public void applyStudent(ActionEvent event){
+        try{
+            UIParameter param = (UIParameter) event.getComponent().findComponent("studentUsername");
+            String username = param.getValue().toString();
+            studentBean.applyStudent(username, currentProjectProposal.getCode());
+        }catch(EntityDoesNotExistException e){
+            
+        }catch(Exception e){
+            FacesExceptionHandler.handleException(e, "Erro inesperado, tente mais tarde.", logger);
+        }
+    }
+    
+ //   public void unapplyStudent
 
     /////////////////////////////////////////////PROJECT PROPOSALS/////////////////////////////////
     public List<ProjectProposalDTO> getAllProjectProposals() {

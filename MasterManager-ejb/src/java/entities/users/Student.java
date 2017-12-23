@@ -34,7 +34,7 @@ public class Student extends User implements Serializable {
     private PublicTest publicTest;
     
     @ManyToMany(mappedBy = "students")
-    public List<ProjectProposal> projectProposals;
+    private List<ProjectProposal> projectProposals;
     
     public Student() {
         this.projectProposals = new LinkedList<>();
@@ -60,6 +60,14 @@ public class Student extends User implements Serializable {
 
     public void setPublicTest(PublicTest publicTest) {
         this.publicTest = publicTest;
+    }
+
+    public List<ProjectProposal> getProjectProposals() {
+        return projectProposals;
+    }
+
+    public void setProjectProposals(List<ProjectProposal> projectProposals) {
+        this.projectProposals = projectProposals;
     }
 
     

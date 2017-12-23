@@ -7,16 +7,20 @@ package entities.project;
 
 import entities.users.Institution;
 import entities.users.Proponent;
+import entities.users.Student;
 import exceptions.EntityDoesNotExistException;
 import exceptions.MyConstraintViolationException;
 import exceptions.Utils;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import javax.ejb.EJBException;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -54,6 +58,14 @@ public class ProjectProposal implements Serializable {
     @JoinColumn(name = "PROPONENT_CODE")
     private Proponent proponent;
     
+    @ManyToMany
+    @JoinTable(name = "PROJECT_PROPOSAL_STUDENT",
+            joinColumns = @JoinColumn(name = "PROJECT_PROPOSAL_CODE", referencedColumnName = "CODE"),
+            inverseJoinColumns = @JoinColumn(name = "STUDENT_USERNAME", referencedColumnName = "USERNAME"))
+    private List<Student> students;
+            
+   
+    
     @NotNull
     private String projectAbstract;
     
@@ -83,6 +95,7 @@ public class ProjectProposal implements Serializable {
     private List<String> supports;
 
     public ProjectProposal() {
+        this.students = new LinkedList<>();
     }
     
 
@@ -106,6 +119,7 @@ public class ProjectProposal implements Serializable {
         this.successRequirements = successRequirements;
         this.budget = budget;
         this.supports = supports;
+        this.students = new LinkedList<>();
     }
 
     //GETTERS AND SETTERS
@@ -220,5 +234,15 @@ public class ProjectProposal implements Serializable {
     public String toString() {
         return "entities.ProjectProposal[ id=" + code + " ]";
     }
+
+    public List<Student> getStudents() {
+        return students;
+    }
+
+    public void setStudents(List<Student> students) {
+        this.students = students;
+    }
+    
+    
     
 }

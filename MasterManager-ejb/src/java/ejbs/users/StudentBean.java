@@ -2,10 +2,12 @@ package ejbs.users;
 
 import dtos.StudentDTO;
 import entities.Course;
+import entities.project.ProjectProposal;
 import entities.users.Student;
 import exceptions.EntityAlreadyExistsException;
 import exceptions.EntityDoesNotExistException;
 import exceptions.MyConstraintViolationException;
+import exceptions.StudentAlreadyAppliedException;
 import exceptions.Utils;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -154,6 +156,35 @@ public class StudentBean {
            
         }catch(Exception ex){
             throw new EJBException(ex.getMessage());
+        }
+    }
+
+    public void applyStudent(String username, int code) throws EntityDoesNotExistException, 
+            StudentAlreadyAppliedException {
+        try{
+            
+            Student student = em.find(Student.class, username);
+            if(student == null){
+                throw new EntityDoesNotExistException("There is no student with that username.");
+            }
+            
+            ProjectProposal projectProposal = em.find(ProjectProposal.class, code);
+            if(projectProposal == null){
+                throw new EntityDoesNotExistException("There is no project proposal with that code.");
+            }
+            
+            if(student.getProjectProposals().contains(projectProposal)){
+                throw new StudentAlreadyAppliedException("That student is already applied to that proposal.");
+            }
+            
+            if(projectProposal.getStudents().contains(student)){
+                throw new StudentAlreadyAppliedException("That student is already applied to that proposal.");
+            }
+            
+        }catch(EntityDoesNotExistException | StudentAlreadyAppliedException e){
+           throw e;
+        }catch(Exception e){
+             throw new EJBException(e.getMessage());
         }
     }
  
