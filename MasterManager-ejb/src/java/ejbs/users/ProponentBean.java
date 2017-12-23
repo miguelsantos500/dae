@@ -1,16 +1,16 @@
 package ejbs.users;
 
 import dtos.ProponentDTO;
+import ejbs.EmailBean;
 import entities.users.Proponent;
-import entities.users.User;
-import entities.users.UserGroup.GROUP;
-import exceptions.EntityAlreadyExistsException;
 import exceptions.EntityDoesNotExistException;
 import exceptions.MyConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
+import javax.mail.MessagingException;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.ws.rs.Consumes;
@@ -26,24 +26,9 @@ public class ProponentBean {
 
     @PersistenceContext
     private EntityManager em;
-
-    public void create(String username, String password, String name, String email)
-            throws EntityAlreadyExistsException {
-        try {
-            if (em.find(User.class, username) != null) {
-                throw new EntityAlreadyExistsException(
-                        "Um utilizador já existe com esse username.");
-            }
-            
-            // Por enquanto fica com role de professore
-            Proponent proponent = new Proponent(username, password,GROUP.Teacher, name, email); 
-            em.persist(proponent);
-        } catch (EntityAlreadyExistsException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new EJBException(e.getMessage());
-        }
-    }
+    
+    @EJB
+    EmailBean emailBean;
 
     @PUT
     @Path("/update")
@@ -114,5 +99,23 @@ public class ProponentBean {
         }
         return proponentdtos;
     }
+        public void sendEmailToProponent(String username, String subject, String message) throws MessagingException, EntityDoesNotExistException {
+        try {
+            Proponent proponent = em.find(Proponent.class, username);
+            if (proponent == null) {
+                throw new EntityDoesNotExistException("There is no proponent with that username. (" + username + ")");
+            }
+
+            emailBean.send(
+                    proponent.getEmail(),
+                    subject,
+                    "Bom dia " + proponent.getName() +"," + System.lineSeparator() +
+                            message);
+        
+        } catch (MessagingException | EntityDoesNotExistException e) {
+            throw e;
+        }
+    }
+    
 
 }
