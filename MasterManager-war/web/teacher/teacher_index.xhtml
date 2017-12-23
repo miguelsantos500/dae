@@ -7,108 +7,13 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:em="http://xmlns.jcp.org/jsf/composite/emcomp">
     <ui:composition template="../templates/skeleton.xhtml">
-        <ui:define name="title">CCP</ui:define>
+        <ui:define name="title">Professore</ui:define>
         <ui:define name="main">
 
             <h:form>
                 <h:commandButton value="Logout" action="#{userManager.logout}" />  
             </h:form> 
 
-            <h:form>       
-                <h:outputLabel for="search" value="Procurar Estudante: " />
-                <h:inputText 
-                    id="searchStudents"
-                    size="20"
-                    required="true"
-                    requiredMessage="Erro: campo não pode estar vazio!"
-                    value="#{administratorManager.searchableStudent}"/>
-
-                <br></br>
-
-                <h:commandButton
-                    id="searchStudent"
-                    value="Procurar"
-                    action="search_student?facesredirect=true" />    
-                <h:message for="searchStudent" style="color: red" />   
-
-            </h:form> 
-            <em:dt 
-                title="Estudantes" 
-                headers="#{['Username', 'Nome', 'Email', 'Curso']}"
-                props="#{['username', 'name', 'email', 'courseName']}"
-                list="#{administratorManager.allStudents}">
-                <p:column headerText="Acções">
-                    <h:form>
-                        <h:commandLink value="Detalhes" action="admin_student_details?facesredirect=true">
-                            <f:setPropertyActionListener
-                                target="#{administratorManager.currentStudent}" value="#{object}" />
-                        </h:commandLink>
-                        &nbsp;
-                        <h:commandLink value="Actualizar" action="students_update?facesredirect=true">
-                            <f:setPropertyActionListener
-                                target="#{administratorManager.currentStudent}" value="#{object}" />
-                        </h:commandLink>
-                        &nbsp;
-                        <h:commandLink value="Remover"
-                                       actionListener="#{administratorManager.removeStudent}">
-                            <f:param name="studentUsername" id="studentUsername"
-                                     value="#{object.username}" />
-                        </h:commandLink>
-                    </h:form>
-                </p:column>
-            </em:dt>
-            <h:link value="Criar Estudante" outcome="students_create"/>
-
-            <br/>
-            <br/>
-            <br/>
-            <br/>
-
-            <h:form>
-                <h:outputLabel for="search" value="Procurar professor " />
-                <h:inputText 
-                    id="searchTeachers"
-                    size="20"
-                    required="true"
-                    requiredMessage="Erro: campo não pode estar vazio!"
-                    value="#{administratorManager.searchableTeacher}"/>
-
-                <br></br>
-
-                <h:commandButton
-                    id="searchTeacher"
-                    value="Procurar"
-                    action="search_teacher?facesredirect=true" />    
-                <h:message for="searchTeacher" style="color: red" />   
-
-            </h:form>
-            <em:dt 
-                title="Professores" 
-                headers="#{['Username', 'Nome', 'Email']}"
-                props="#{['username', 'name', 'email']}"
-                list="#{administratorManager.allTeachers}">
-                <p:column headerText="Acções">
-                    <h:form>
-                        <h:commandLink value="Detalhes" action="teacher_details?facesredirect=true">
-                            <f:setPropertyActionListener
-                                target="#{administratorManager.currentTeacher}" value="#{object}" />
-                        </h:commandLink>
-                        &nbsp;
-                        <h:commandLink value="Actualizar" action="teacher_update?facesredirect=true">
-                            <f:setPropertyActionListener
-                                target="#{administratorManager.currentTeacher}" value="#{object}" />
-                        </h:commandLink>
-                        &nbsp;
-                        <h:commandLink value="Remover"
-                                       actionListener="#{administratorManager.removeTeacher}">
-                            <f:param name="teacherUsername" id="teacherUsername"
-                                     value="#{object.username}" />
-                        </h:commandLink>
-                    </h:form>
-                </p:column>
-            </em:dt>
-            <h:link value="Criar Professor" outcome="teacher_create"/>
-            <br/>
             <em:dt 
                 title="Proposta de projecto" 
                 headers="#{['Tipo de projecto', 'Título', 'Proponente']}"
@@ -116,12 +21,12 @@
                 list="#{administratorManager.allProjectProposals}">
                 <p:column headerText="Acções">
                     <h:form>
-                        <h:commandLink value="Detalhes" action="admin_project_proposals_details?facesredirect=true">
+                        <h:commandLink value="Detalhes" action="../proponent/project_proposals_details?facesredirect=true">
                             <f:setPropertyActionListener
                                 target="#{administratorManager.currentProjectProposal}" value="#{object}" />
                         </h:commandLink>
                         &nbsp;
-                        <h:commandLink value="Actualizar" action="project_proposals_update?facesredirect=true">
+                        <h:commandLink value="Actualizar" action="../proponent/project_proposals_update?facesredirect=true">
                             <f:setPropertyActionListener
                                 target="#{administratorManager.currentProjectProposal}" value="#{object}" />
                         </h:commandLink>
@@ -138,7 +43,7 @@
             <br/>
             <br/>
 
-            <h:link class="btn btn-primary" value="Nova proposta de projecto" outcome="admin_project_proposals_create"/>
+            <h:link class="btn btn-primary" value="Nova proposta de projecto" outcome="../proponent/project_proposals_create"/>
             <h:form>
                 <h:outputLabel for="search" value="Procurar proposta: " />
                 <h:inputText 
@@ -153,146 +58,10 @@
                 <h:commandButton
                     id="searchProjectProposal"
                     value="Procurar"
-                    action="search_project_proposal?facesredirect=true" />    
+                    action="../proponent/search_project_proposal?facesredirect=true" />    
                 <h:message for="searchProjectProposal" style="color: red" />   
 
             </h:form> 
-
-
-            <br/>
-            <br/>
-            <br/>
-            <br/>
-
-            <h:form>
-                <h:outputLabel for="search" value="Procurar Prova Pública: " />
-                <h:inputText 
-                    id="search"
-                    size="20"
-                    required="true"
-                    requiredMessage="Erro: campo não pode estar vazio!"
-                    value="#{administratorManager.searchablePublicTest}"/>
-
-                <br></br>
-
-                <h:commandButton
-                    id="procurarPublicTest"
-                    value="Procurar"
-                    action="searchTest?facesredirect=true" />    
-                <h:message for="procurarPublicTest" style="color: red" />   
-
-            </h:form> 
-
-            <em:dt 
-                title="Provas Públicas" 
-                headers="#{['Código', 'Titulo', 'Dia da Prova', 'Local', 'Estudante',
-                           'Presidente do Jury', 'Orientador', 'Professore de Fora']}"
-                props="#{['code', 'title', 'testDateString', 'place', 'studentName',
-                         'juryPresidentName', 'advisorName', 'outsideTeacherName']}"
-                list="#{administratorManager.allPublicTests}">
-                <p:column headerText="Acções">
-                    <h:form enctype="multipart/form-data">
-                        <h:commandLink value="Detalhes" action="admin_publictest_details?facesredirect=true">
-                            <f:setPropertyActionListener
-                                target="#{administratorManager.currentPublicTest}" value="#{object}" />
-                        </h:commandLink>
-                        &nbsp;
-                        <h:commandLink value="Actualizar" action="admin_publictest_update?facesredirect=true">
-                            <f:setPropertyActionListener
-                                target="#{administratorManager.currentPublicTest}" value="#{object}" />
-                        </h:commandLink>
-                        &nbsp;
-                        <h:commandLink value="Remover"
-                                       actionListener="#{administratorManager.removePublicTest}">
-                            <f:param name="publicTestCode" id="publicTestCode"
-                                     value="#{object.code}" />
-                        </h:commandLink>
-                        &nbsp;
-                        <h:commandLink value="Remover Ata" 
-                                       rendered="${not empty object.documentName}"
-                                       actionListener="#{administratorManager.removePublicTest}">
-                            <f:param name="publicTestCode3" id="publicTestCode3"
-                                     value="#{object.code}" />
-                        </h:commandLink>
-                        &nbsp;
-                        <p:growl id="messages" showDetail="true" />
-                        <p:fileUpload value="#{uploadManager.file}" mode="simple" skinSimple="true"/>
-                        <p:commandButton value="Submit" ajax="false" actionListener="#{uploadManager.upload}" >
-                            <f:actionListener binding="#{administratorManager.uploadFileRecord(component)}"/>
-                            <f:param name="publicTestCode2" id="publicTestCode2"
-                                     value="#{object.code}" />
-                        </p:commandButton>
-                    </h:form>
-                </p:column>
-            </em:dt>
-
-            <h:link class="btn btn-primary" value="Criar Prova Pública" outcome="admin_publictest_create"/>
-
-
-            <br/>
-            <br/>
-            <br/>
-            <br/>
-
-            <h:form>
-                <h:outputLabel for="search" value="Procurar instituições: " />
-                <h:inputText 
-                    id="searchInstitutions"
-                    size="20"
-                    required="true"
-                    requiredMessage="Erro: campo não pode estar vazio!"
-                    value="#{administratorManager.searchableInstitution}"/>
-
-                <br></br>
-
-                <h:commandButton
-                    id="searchInstitution"
-                    value="Procurar"
-                    action="search_institution?facesredirect=true" />    
-                <h:message for="searchInstitution" style="color: red" />   
-
-            </h:form>
-            <em:dt 
-                title="Instituições" 
-                headers="#{['Username', 'Nome', 'Email']}"
-                props="#{['username', 'name', 'email']}"
-                list="#{administratorManager.allInstitutions}">
-                <p:column headerText="Acções">
-                    <h:form>
-                        <h:commandLink value="Detalhes" action="institution_details?facesredirect=true">
-                            <f:setPropertyActionListener
-                                target="#{administratorManager.currentInstitution}" value="#{object}" />
-                        </h:commandLink>
-                        &nbsp;
-                        <h:commandLink value="Actualizar" action="institution_update?facesredirect=true">
-                            <f:setPropertyActionListener
-                                target="#{administratorManager.currentInstitution}" value="#{object}" />
-                        </h:commandLink>
-                        &nbsp;
-                        <h:commandLink value="Remover"
-                                       actionListener="#{administratorManager.removeInstitution}">
-                            <f:param name="institutionUsername" id="institutionUsername"
-                                     value="#{object.username}" />
-                        </h:commandLink>
-                    </h:form>
-                </p:column>
-            </em:dt>
-            <h:link value="Criar Instituição" outcome="institution_create"/>
-            <br/>
-            <br/>
-
-            <h:form enctype="multipart/form-data">
-                <p:growl id="messages" showDetail="true" />
-                <p:fileUpload value="#{uploadManager.file}" mode="simple" skinSimple="true"/>
-                <p:commandButton value="Submit" ajax="false" actionListener="#{uploadManager.upload}"/>
-            </h:form>
-            <h:messages errorClass="error" />
-
-            <h:form>
-                <p:commandButton value="Download" ajax="false" icon="ui-icon-arrowthick-1-s">
-                    <p:fileDownload value="#{downloadManager.file}" />
-                </p:commandButton>
-            </h:form>
         </ui:define>
     </ui:composition>
 </html>

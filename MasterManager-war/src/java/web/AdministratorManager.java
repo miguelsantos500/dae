@@ -16,6 +16,7 @@ import ejbs.users.InstitutionBean;
 import ejbs.users.StudentBean;
 import ejbs.users.TeacherBean;
 import entities.project.ProjectType;
+import entities.users.UserGroup;
 import exceptions.EntityAlreadyExistsException;
 import exceptions.EntityDoesNotExistException;
 import exceptions.MyConstraintViolationException;
@@ -97,6 +98,9 @@ public class AdministratorManager {
     @ManagedProperty(value = "#{uploadManager}")
     private UploadManager uploadManager;
 
+    @ManagedProperty(value = "#{userManager}")
+    private UserManager userManager;
+
     private String scientificAreasString;
 
     private String search;
@@ -140,7 +144,7 @@ public class AdministratorManager {
             e.printStackTrace();
             return null;
         }
-        return "index?faces-redirect=true";
+        return "admin/admin_index?faces-redirect=true";
     }
 
     public List<StudentDTO> getAllStudents() {
@@ -173,7 +177,7 @@ public class AdministratorManager {
             return null;
         }
 
-        return "index?faces-redirect=true";
+        return "admin/admin_index?faces-redirect=true";
     }
 
     public void removeStudent(ActionEvent event) {
@@ -221,7 +225,7 @@ public class AdministratorManager {
             e.printStackTrace();
             return null;
         }
-        return "index?faces-redirect=true";
+        return "admin/admin_index?faces-redirect=true";
     }
 
     public List<TeacherDTO> getAllTeachers() {
@@ -294,7 +298,7 @@ public class AdministratorManager {
             return null;
         }
 
-        return "index?faces-redirect=true";
+        return "admin/admin_index?faces-redirect=true";
     }
 
     ////////////////////////////////////// PROJECT PROPOSAL /////////////////////////////////////////////////
@@ -303,7 +307,6 @@ public class AdministratorManager {
         try {
 
             logger.info(scientificAreasString);
-
 
             projectProposalBean.create(
                     newProjectProposal.getCode(), newProjectProposal.getProjectTypeString(),
@@ -325,7 +328,12 @@ public class AdministratorManager {
                     component, logger);
             return null;
         }
-        return "index?faces-redirect=true";
+        if (userManager.isUserInRole(UserGroup.GROUP.Teacher)) {
+            return "teacher/teacher_index?faces-redirect=true";
+        }
+
+        return "institution/institution_index?faces-redirect=true";
+
     }
 
     public List<TeacherDTO> getSearchTeacher() {
@@ -394,34 +402,37 @@ public class AdministratorManager {
         }
         return returnedProponents;
     }
-    
-  
-    public void removeProjectProposal(ActionEvent event){
-        
-        try{
+
+    public void removeProjectProposal(ActionEvent event) {
+
+        try {
             UIParameter param = (UIParameter) event.getComponent().findComponent("projectProposalCode");
             int code = (int) param.getValue();
             projectProposalBean.remove(code);
-            } catch(Exception e) {
+        } catch (Exception e) {
             FacesExceptionHandler.handleException(e, e.getMessage(), logger);
         }
-        
-    }
-    
 
-    public String updateProjectProposal(){
-        try{
+    }
+
+    public String updateProjectProposal() {
+        try {
             client.target(baseUri)
                     .path("projectProposals/update")
                     .request(MediaType.APPLICATION_XML)
                     .put(Entity.xml(currentProjectProposal));
-            
-        } catch (Exception e){
-             FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
+
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
             return null;
         }
-        
-        return "index?faces-redirect=true";
+
+        if (userManager.isUserInRole(UserGroup.GROUP.Teacher)) {
+            return "teacher/teacher_index?faces-redirect=true";
+        }
+
+        return "institution/institution_index?faces-redirect=true";
+
     }
 
     public String getSearchableProjectProposal() {
@@ -431,7 +442,7 @@ public class AdministratorManager {
     public void setSearchableProjectProposal(String searchableProjectProposal) {
         this.searchableProjectProposal = searchableProjectProposal;
     }
-    
+
     public List<ProjectProposalDTO> getSearchProjectProposal() {
         try {
             List<ProjectProposalDTO> foundProjectProposals = projectProposalBean.search(searchableProjectProposal);
@@ -442,6 +453,10 @@ public class AdministratorManager {
         }
     }
     
+    public void redirect (String to) {
+
+    }
+
     ////////////// PUBLIC TEST ///////////////////
     public String createPublicTest() {
 
@@ -464,7 +479,7 @@ public class AdministratorManager {
                     component, logger);
             return null;
         }
-        return "index?faces-redirect=true";
+        return "admin/admin_index?faces-redirect=true";
     }
 
     public List<PublicTestDTO> getAllPublicTests() {
@@ -506,7 +521,7 @@ public class AdministratorManager {
             FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
             return null;
         }
-        return "index?faces-redirect=true";
+        return "admin/admin_index?faces-redirect=true";
     }
 
     public void removePublicTest(ActionEvent event) {
@@ -593,7 +608,7 @@ public class AdministratorManager {
             e.printStackTrace();
             return null;
         }
-        return "index?faces-redirect=true";
+        return "admin/admin_index?faces-redirect=true";
     }
 
     public List<InstitutionDTO> getAllInstitutions() {
@@ -653,7 +668,7 @@ public class AdministratorManager {
             return null;
         }
 
-        return "index?faces-redirect=true";
+        return "admin/admin_index?faces-redirect=true";
     }
 
     public List<InstitutionDTO> getSearchInstitution() {
@@ -699,10 +714,7 @@ public class AdministratorManager {
             return null;
         }
     }
-    
-    
-    
-  
+
     ///////////////////////////////////////////Getters e setters tem que ser organizado//////////////////////////////////////////
     public ProjectProposalDTO getNewProjectProposal() {
         return newProjectProposal;
@@ -830,6 +842,14 @@ public class AdministratorManager {
 
     public void setUploadManager(UploadManager uploadManager) {
         this.uploadManager = uploadManager;
+    }
+
+    public UserManager getUserManager() {
+        return userManager;
+    }
+
+    public void setUserManager(UserManager userManager) {
+        this.userManager = userManager;
     }
 
 }

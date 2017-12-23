@@ -69,6 +69,19 @@
             <role-name>Student</role-name>
         </auth-constraint>
     </security-constraint>
+    <security-constraint>
+        <display-name>ProponentConstraint</display-name>
+        <web-resource-collection>
+            <web-resource-name>Proponent Pages</web-resource-name>
+            <description/>
+            <url-pattern>/faces/proponent/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <description/>
+            <role-name>Institution</role-name>
+            <role-name>Teacher</role-name>
+        </auth-constraint>
+    </security-constraint>
     <login-config>
         <auth-method>BASIC</auth-method>
         <realm-name>dae_project_realm</realm-name>
