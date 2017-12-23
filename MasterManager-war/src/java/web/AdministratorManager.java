@@ -440,7 +440,7 @@ public class AdministratorManager {
     }
     
     public void redirect (String to) {
-        
+
     }
 
     ////////////// PUBLIC TEST ///////////////////
