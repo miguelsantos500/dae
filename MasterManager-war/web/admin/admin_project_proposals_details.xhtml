@@ -73,7 +73,7 @@
                     list="#{administratorManager.currentProjectProposal.bibliography}">
                 </em:dt_list>
                 <em:dt_list
-                    headers="#{['Requesitos de Sucesso']}"
+                    headers="#{['Requisitos de Sucesso']}"
                     list="#{administratorManager.currentProjectProposal.successRequirements}">
                 </em:dt_list>
                 <em:dt_list
@@ -82,11 +82,22 @@
                 </em:dt_list>
 
 
-                <br/>
+                <h:commandLink value="Remover"
+                               actionListener="#{administratorManager.approveProjectProposal(true)}">
+                    <img alt="Check Yes" src="../resources/images/check_yes.png" style="width: 50%; height: 50%"></img>
+                
+                </h:commandLink>
+                <h:commandLink value="Remover"
+                               actionListener="#{administratorManager.approveProjectProposal(false)}">
+                    <img alt="Check No" src="../resources/images/check_no.png" style="width: 50%; height: 50%"></img>
+                </h:commandLink>
 
-                <h:link value="Return" outcome="index"/>
 
-                <h:messages errorStyle="color: red" />        
+                    <br/>
+
+                    <h:link value="Return" outcome="index"/>
+
+                    <h:messages errorStyle="color: red" />        
 
             </ui:define>
         </ui:composition>

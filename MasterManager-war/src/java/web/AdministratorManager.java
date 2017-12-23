@@ -15,6 +15,7 @@ import ejbs.users.CourseBean;
 import ejbs.users.InstitutionBean;
 import ejbs.users.StudentBean;
 import ejbs.users.TeacherBean;
+import entities.project.ProjectProposalState;
 import entities.project.ProjectType;
 import entities.users.UserGroup;
 import exceptions.EntityAlreadyExistsException;
@@ -452,7 +453,7 @@ public class AdministratorManager {
             return null;
         }
     }
-    
+        
     public void redirect (String to) {
 
     }
