@@ -11,6 +11,7 @@ import exceptions.StudentAlreadyAppliedException;
 import exceptions.StudentNotAppliedException;
 import exceptions.Utils;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import javax.ejb.EJBException;
@@ -216,6 +217,47 @@ public class StudentBean {
         } catch (EntityDoesNotExistException | StudentNotAppliedException e) {
             throw e;
         } catch (Exception e) {
+            throw new EJBException(e.getMessage());
+        }
+    }
+
+    public Collection<StudentDTO> getAppliedStudents(int code) throws EntityDoesNotExistException{
+        
+        try {
+        ProjectProposal projectProposal = em.find(ProjectProposal.class, code);
+        if(projectProposal == null){
+            throw new EntityDoesNotExistException("There is no project proposal with that code.");
+        }
+        
+        return studentsToDTOs(projectProposal.getStudents());
+            
+        } catch (EntityDoesNotExistException e) {
+            throw e;
+        }catch (Exception e){
+            throw new EJBException(e.getMessage());
+        }
+        
+    
+    }
+
+    public Collection<StudentDTO> getUnappliedStudents(int code)throws EntityDoesNotExistException {
+        try {
+            ProjectProposal projectProposal = em.find(ProjectProposal.class, code);
+            if(projectProposal == null){
+                throw new EntityDoesNotExistException();
+            }
+            List<Student> studentsApplied = em.createNamedQuery("getAllProjectProposalStudents")
+                    .setParameter("code", projectProposal.getCode())
+                    .getResultList();
+            
+            studentsApplied.removeAll(studentsApplied);
+            
+            return studentsToDTOs(studentsApplied);
+            
+        }catch(EntityDoesNotExistException e){
+            throw e;
+        }
+        catch (Exception e) {
             throw new EJBException(e.getMessage());
         }
     }
