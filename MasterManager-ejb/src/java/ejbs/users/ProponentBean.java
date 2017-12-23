@@ -3,6 +3,7 @@ package ejbs.users;
 import dtos.ProponentDTO;
 import entities.users.Proponent;
 import entities.users.User;
+import entities.users.UserGroup.GROUP;
 import exceptions.EntityAlreadyExistsException;
 import exceptions.EntityDoesNotExistException;
 import exceptions.MyConstraintViolationException;
@@ -34,8 +35,8 @@ public class ProponentBean {
                         "Um utilizador já existe com esse username.");
             }
             
-            
-            Proponent proponent = new Proponent(username, password, name, email);
+            // Por enquanto fica com role de professore
+            Proponent proponent = new Proponent(username, password,GROUP.Teacher, name, email); 
             em.persist(proponent);
         } catch (EntityAlreadyExistsException e) {
             throw e;

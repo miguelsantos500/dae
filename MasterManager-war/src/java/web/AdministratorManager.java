@@ -21,7 +21,6 @@ import exceptions.EntityDoesNotExistException;
 import exceptions.MyConstraintViolationException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Logger;

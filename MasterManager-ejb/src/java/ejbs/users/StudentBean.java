@@ -3,7 +3,6 @@ package ejbs.users;
 import dtos.StudentDTO;
 import entities.Course;
 import entities.users.Student;
-import entities.users.User;
 import exceptions.EntityAlreadyExistsException;
 import exceptions.EntityDoesNotExistException;
 import exceptions.MyConstraintViolationException;
@@ -22,7 +21,6 @@ import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import sun.rmi.runtime.Log;
 
 
 @Stateless

@@ -19,6 +19,74 @@
         </session-timeout>
     </session-config>
     <welcome-file-list>
-        <welcome-file>faces/index.xhtml</welcome-file>
+        <welcome-file>faces/login.xhtml</welcome-file>
     </welcome-file-list>
+    <security-constraint>
+        <display-name>CCPUserConstraint</display-name>
+        <web-resource-collection>
+            <web-resource-name>CCPUser pages</web-resource-name>
+            <description/>
+            <url-pattern>/faces/admin/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <description/>
+            <role-name>CCPUser</role-name>
+        </auth-constraint>
+    </security-constraint>
+    <security-constraint>
+        <display-name>TeacherConstraint</display-name>
+        <web-resource-collection>
+            <web-resource-name>Teacher Pages</web-resource-name>
+            <description/>
+            <url-pattern>/faces/teacher/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <description/>
+            <role-name>Teacher</role-name>
+        </auth-constraint>
+    </security-constraint>
+    <security-constraint>
+        <display-name>InstitutionConstraint</display-name>
+        <web-resource-collection>
+            <web-resource-name>Institution Pages</web-resource-name>
+            <description/>
+            <url-pattern>/faces/institution/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <description/>
+            <role-name>Institution</role-name>
+        </auth-constraint>
+    </security-constraint>
+    <security-constraint>
+        <display-name>StudentConstraint</display-name>
+        <web-resource-collection>
+            <web-resource-name>Student Pages</web-resource-name>
+            <description/>
+            <url-pattern>/faces/student/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <description/>
+            <role-name>Student</role-name>
+        </auth-constraint>
+    </security-constraint>
+    <login-config>
+        <auth-method>BASIC</auth-method>
+        <realm-name>dae_project_realm</realm-name>
+    </login-config>
+    <security-role>
+        <description/>
+        <role-name>CCPUser</role-name>
+    </security-role>
+    <security-role>
+        <description/>
+        <role-name>Teacher</role-name>
+    </security-role>
+    <security-role>
+        <description/>
+        <role-name>Student</role-name>
+    </security-role>
+    <security-role>
+        <description/>
+        <role-name>Institution</role-name>
+    </security-role>
 </web-app>

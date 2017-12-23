@@ -1,6 +1,7 @@
 
 package entities.users;
 
+import entities.users.UserGroup.GROUP;
 import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.NamedQueries;
@@ -18,8 +19,8 @@ public class Proponent extends User implements Serializable {
     public Proponent() {
     }
 
-    public Proponent(String username, String password, String name, String email) {
-        super(username, password, name, email);
+    public Proponent(String username, String password,GROUP group, String name, String email) {
+        super(username, password, group, name, email);
     }
 
     

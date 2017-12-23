@@ -1,6 +1,7 @@
 package entities.users;
 
 import entities.publictest.PublicTest;
+import entities.users.UserGroup.GROUP;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
@@ -26,7 +27,7 @@ public class Teacher extends Proponent implements Serializable {
     }
 
     public Teacher(String username, String password, String name, String email) {
-        super(username, password, name, email);
+        super(username, password, GROUP.Teacher, name, email);
         publicTests = new LinkedList<>();
     }
 

@@ -1,6 +1,6 @@
 package entities.users;
 
-import entities.users.User;
+import entities.users.UserGroup.GROUP;
 import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.NamedQueries;
@@ -18,7 +18,7 @@ public class Institution extends Proponent implements Serializable {
     }
 
     public Institution(String username, String password, String name, String email) {
-        super(username, password, name, email);
+        super(username, password, GROUP.Institution, name, email);
     }
 
 }

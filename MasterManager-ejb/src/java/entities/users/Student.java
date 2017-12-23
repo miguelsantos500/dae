@@ -2,6 +2,7 @@ package entities.users;
 
 import entities.Course;
 import entities.publictest.PublicTest;
+import entities.users.UserGroup.GROUP;
 import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -32,7 +33,7 @@ public class Student extends User implements Serializable {
     }
 
     public Student(String username, String password, String name, String email, Course course) {
-        super(username, password, name, email);
+        super(username, password, GROUP.Student, name, email);
         this.course = course;
     }
 

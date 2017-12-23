@@ -6,10 +6,13 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:em="http://xmlns.jcp.org/jsf/composite/emcomp">
-    <ui:composition template="./templates/skeleton.xhtml">
+    <ui:composition template="../templates/skeleton.xhtml">
         <ui:define name="title">CCP</ui:define>
         <ui:define name="main">
 
+            <h:form>
+                <h:commandButton value="Logout" action="#{userManager.logout}" />  
+            </h:form> 
 
             <h:form>
                 <h:outputLabel for="search" value="Procurar Estudante: " />
