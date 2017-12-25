@@ -55,7 +55,12 @@
                     <h:outputText 
                         id="proponent"
                         value="#{administratorManager.currentProjectProposal.proponentUsername}"/>
-
+                    
+                    <h:outputLabel for="projectProposalState" value="Project Proposal State " />
+                    <h:outputText 
+                        id="projectProposalState"
+                        value="#{administratorManager.currentProjectProposal.projectProposalState}"/>
+                    
                 </h:panelGrid>
 
 
@@ -82,22 +87,24 @@
                 </em:dt_list>
 
 
-                <h:commandLink value="Remover"
-                               actionListener="#{administratorManager.approveProjectProposal(true)}">
-                    <img alt="Check Yes" src="../resources/images/check_yes.png" style="width: 50%; height: 50%"></img>
-                
-                </h:commandLink>
-                <h:commandLink value="Remover"
-                               actionListener="#{administratorManager.approveProjectProposal(false)}">
-                    <img alt="Check No" src="../resources/images/check_no.png" style="width: 50%; height: 50%"></img>
-                </h:commandLink>
+                <h:form>
+                    <h:commandLink value="Aceitar Proposta"
+                                   actionListener="#{administratorManager.approveProjectProposal(true)}">
+                        <img alt="Check Yes" src="../resources/images/check_yes.png"></img>
+
+                    </h:commandLink>
+                    <h:commandLink value="Recusar Proposta"
+                                   actionListener="#{administratorManager.approveProjectProposal(false)}">
+                        <img alt="Check No" src="../resources/images/check_no.png"></img>
+                    </h:commandLink>
+                </h:form>
 
 
-                    <br/>
+                <br/>
 
-                    <h:link value="Return" outcome="index"/>
+                <h:link value="Return" outcome="index"/>
 
-                    <h:messages errorStyle="color: red" />        
+                <h:messages errorStyle="color: red" />        
 
             </ui:define>
         </ui:composition>

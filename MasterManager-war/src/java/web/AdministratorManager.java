@@ -492,6 +492,17 @@ public class AdministratorManager {
 
     }
 
+    public String approveProjectProposal(boolean approved) {
+        //TODO: Restful?
+        try {
+            projectProposalBean.approveProjectProposal(currentProjectProposal.getCode(), approved);
+            return "admin/admin_index?faces-redirect=true";
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Erro inesperado, tente mais tarde.", logger);
+            return null;
+        }
+    }
+
     ////////////// PUBLIC TEST ///////////////////
     public String createPublicTest() {
 

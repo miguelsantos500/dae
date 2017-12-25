@@ -11,6 +11,8 @@ import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 import javax.persistence.Entity;
+import static javax.persistence.EnumType.STRING;
+import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -35,6 +37,7 @@ public class ProjectProposal implements Serializable {
     private int code;
 
     @NotNull
+    @Enumerated(STRING)
     private ProjectType projectType;
 
     @NotNull
@@ -85,6 +88,7 @@ public class ProjectProposal implements Serializable {
     private List<String> supports;
     
     @NotNull
+    @Enumerated(STRING)
     private ProjectProposalState projectProposalState;
     
 

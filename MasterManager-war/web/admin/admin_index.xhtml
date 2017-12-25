@@ -111,8 +111,8 @@
             <br/>
             <em:dt 
                 title="Proposta de projecto" 
-                headers="#{['Tipo de projecto', 'Título', 'Proponente']}"
-                props="#{['projectTypeString', 'title', 'proponentUsername']}"
+                headers="#{['Tipo de projecto', 'Título', 'Proponente', 'Estado']}"
+                props="#{['projectTypeString', 'title', 'proponentUsername', 'projectProposalState']}"
                 list="#{administratorManager.allProjectProposals}">
                 <p:column headerText="Acções">
                     <h:form>
