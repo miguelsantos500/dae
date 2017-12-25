@@ -51,6 +51,7 @@ public class ConfigBean {
             courseBean.create(5, "MEI-CM");
             courseBean.create(6, "MGSIM");
 
+            studentBean.create("s1", "s1", "s1", "s1.ei.ipleiria@gmail.com", 1);
             studentBean.create("1111111", "Manuel", "Manuel", "dae.ei.ipleiria@gmail.com", 1);
             studentBean.create("2222222", "Antonio", "Antonio", "dae.ei.ipleiria@gmail.com", 1);
             studentBean.create("3333333", "Ana", "Ana", "dae.ei.ipleiria@gmail.com", 2);
@@ -60,6 +61,7 @@ public class ConfigBean {
             studentBean.create("7777777", "Alzira", "Alzira", "dae.ei.ipleiria@gmail.com", 4);
             studentBean.create("8888888", "Pedro", "Pedro", "dae.ei.ipleiria@gmail.com", 4);
 
+            teacherBean.create("t1", "t1", "t1", "t1.jose.ipleiria@gmail.com");
             teacherBean.create("3243243", "José", "José", "dae.jose.ipleiria@gmail.com");
             teacherBean.create("2446546", "Tati", "Tati", "dae.tati.ipleiria@gmail.com");
             teacherBean.create("9473829", "Marco", "Marco", "dae.marco.ipleiria@gmail.com");
@@ -70,6 +72,46 @@ public class ConfigBean {
             projectProposalBean.create(1, "PROJECT", "My First Project",
                     new LinkedList<>(Arrays.asList("Programming", "Management")),
                     "3243243", "This is my first abstract",
+                    new LinkedList<>(Arrays.asList("Pass", "Have more than 12")),
+                    new ArrayList<>(Arrays.asList("Wikipedia", "Google")),
+                    "Do it the day before", "My Basement",
+                    new LinkedList<>(Arrays.asList("Pass", "Have more than 12")),
+                    "Literaly Zero Euros",
+                    new LinkedList<>(Arrays.asList("Mum", "Pops")));
+            
+           projectProposalBean.create(2, "PROJECT", "My First",
+                    new LinkedList<>(Arrays.asList("Programming", "estion")),
+                    "2446546", "This is my second abstract",
+                    new LinkedList<>(Arrays.asList("Pass", "Have more than 12")),
+                    new ArrayList<>(Arrays.asList("Wikipedia", "Google")),
+                    "Do it the day before", "My Basement",
+                    new LinkedList<>(Arrays.asList("Pass", "Have more than 12")),
+                    "Literaly Zero Euros",
+                    new LinkedList<>(Arrays.asList("Mum", "Pops")));
+            
+            projectProposalBean.create(3, "PROJECT", "My Project",
+                    new LinkedList<>(Arrays.asList("Alias", "Management")),
+                    "9473829", "This is my first abstract",
+                    new LinkedList<>(Arrays.asList("Pass", "Have more than 12")),
+                    new ArrayList<>(Arrays.asList("Wikipedia", "Google")),
+                    "Do it the day before", "My Basement",
+                    new LinkedList<>(Arrays.asList("Pass", "Have more than 12")),
+                    "Literaly Zero Euros",
+                    new LinkedList<>(Arrays.asList("Mum", "Pops")));
+            
+            projectProposalBean.create(4, "PROJECT", "Project XPTO",
+                    new LinkedList<>(Arrays.asList("Programming", "Management")),
+                    "3243244", "This is my first abstract",
+                    new LinkedList<>(Arrays.asList("Pass", "Have more than 12")),
+                    new ArrayList<>(Arrays.asList("Wikipedia", "Google")),
+                    "Do it the day before", "My Basement",
+                    new LinkedList<>(Arrays.asList("Pass", "Have more than 12")),
+                    "Literaly Zero Euros",
+                    new LinkedList<>(Arrays.asList("Mum", "Pops")));
+            
+            projectProposalBean.create(5, "PROJECT", "My  God",
+                    new LinkedList<>(Arrays.asList("Programming", "Management")),
+                    "3243245", "This is my first abstract",
                     new LinkedList<>(Arrays.asList("Pass", "Have more than 12")),
                     new ArrayList<>(Arrays.asList("Wikipedia", "Google")),
                     "Do it the day before", "My Basement",
