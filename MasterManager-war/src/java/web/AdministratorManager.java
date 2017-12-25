@@ -20,6 +20,7 @@ import entities.users.UserGroup;
 import exceptions.EntityAlreadyExistsException;
 import exceptions.EntityDoesNotExistException;
 import exceptions.MyConstraintViolationException;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
@@ -32,6 +33,8 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.component.html.HtmlPanelGrid;
 import javax.faces.component.UIParameter;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -144,7 +147,7 @@ public class AdministratorManager {
             e.printStackTrace();
             return null;
         }
-        return "admin/admin_index?faces-redirect=true";
+        return "admin_index?faces-redirect=true";
     }
 
     public List<StudentDTO> getAllStudents() {
@@ -177,7 +180,7 @@ public class AdministratorManager {
             return null;
         }
 
-        return "admin/admin_index?faces-redirect=true";
+        return "admin_index?faces-redirect=true";
     }
 
     public void removeStudent(ActionEvent event) {
@@ -225,7 +228,7 @@ public class AdministratorManager {
             e.printStackTrace();
             return null;
         }
-        return "admin/admin_index?faces-redirect=true";
+        return "admin_index?faces-redirect=true";
     }
 
     public List<TeacherDTO> getAllTeachers() {
@@ -298,7 +301,7 @@ public class AdministratorManager {
             return null;
         }
 
-        return "admin/admin_index?faces-redirect=true";
+        return "admin_index?faces-redirect=true";
     }
 
     ////////////////////////////////////// PROJECT PROPOSAL /////////////////////////////////////////////////
@@ -329,10 +332,10 @@ public class AdministratorManager {
             return null;
         }
         if (userManager.isUserInRole(UserGroup.GROUP.Teacher)) {
-            return "teacher/teacher_index?faces-redirect=true";
+            return "teacher_index?faces-redirect=true";
         }
 
-        return "institution/institution_index?faces-redirect=true";
+        return "institution_index?faces-redirect=true";
 
     }
 
@@ -428,10 +431,10 @@ public class AdministratorManager {
         }
 
         if (userManager.isUserInRole(UserGroup.GROUP.Teacher)) {
-            return "teacher/teacher_index?faces-redirect=true";
+            return "teacher_index?faces-redirect=true";
         }
 
-        return "institution/institution_index?faces-redirect=true";
+        return "institution_index?faces-redirect=true";
 
     }
 
@@ -453,8 +456,20 @@ public class AdministratorManager {
         }
     }
     
-    public void redirect (String to) {
-
+    public void redirect (String to) throws IOException {
+        if ("update".equals(to)){
+            ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+            externalContext.redirect("http://localhost:8080/MasterManager-war/faces/proponent/project_proposals_update.xhtml");
+        }
+        if ("details".equals(to)){
+            ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+            externalContext.redirect("http://localhost:8080/MasterManager-war/faces/proponent/project_proposals_details.xhtml");
+        }
+        if ("search".equals(to)){
+            ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+            externalContext.redirect("http://localhost:8080/MasterManager-war/faces/proponent/search_project_proposal.xhtml");
+        }
+ 
     }
 
     ////////////// PUBLIC TEST ///////////////////
@@ -479,7 +494,7 @@ public class AdministratorManager {
                     component, logger);
             return null;
         }
-        return "admin/admin_index?faces-redirect=true";
+        return "admin_index?faces-redirect=true";
     }
 
     public List<PublicTestDTO> getAllPublicTests() {
@@ -521,7 +536,7 @@ public class AdministratorManager {
             FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
             return null;
         }
-        return "admin/admin_index?faces-redirect=true";
+        return "admin_index?faces-redirect=true";
     }
 
     public void removePublicTest(ActionEvent event) {
@@ -608,7 +623,7 @@ public class AdministratorManager {
             e.printStackTrace();
             return null;
         }
-        return "admin/admin_index?faces-redirect=true";
+        return "admin_index?faces-redirect=true";
     }
 
     public List<InstitutionDTO> getAllInstitutions() {
@@ -668,7 +683,7 @@ public class AdministratorManager {
             return null;
         }
 
-        return "admin/admin_index?faces-redirect=true";
+        return "admin_index?faces-redirect=true";
     }
 
     public List<InstitutionDTO> getSearchInstitution() {

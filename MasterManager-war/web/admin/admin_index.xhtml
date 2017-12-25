@@ -120,17 +120,6 @@
                             <f:setPropertyActionListener
                                 target="#{administratorManager.currentProjectProposal}" value="#{object}" />
                         </h:commandLink>
-                        &nbsp;
-                        <h:commandLink value="Actualizar" action="project_proposals_update?facesredirect=true">
-                            <f:setPropertyActionListener
-                                target="#{administratorManager.currentProjectProposal}" value="#{object}" />
-                        </h:commandLink>
-                        &nbsp;
-                        <h:commandLink value="Remover"
-                                       actionListener="#{administratorManager.removeProjectProposal}">
-                            <f:param name="projectProposalCode" id="projectProposalCode"
-                                     value="#{object.code}" />
-                        </h:commandLink>
                     </h:form>
                 </p:column>
             </em:dt>
@@ -138,7 +127,6 @@
             <br/>
             <br/>
 
-            <h:link class="btn btn-primary" value="Nova proposta de projecto" outcome="admin_project_proposals_create"/>
             <h:form>
                 <h:outputLabel for="search" value="Procurar proposta: " />
                 <h:inputText 
