@@ -17,6 +17,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -50,10 +51,7 @@ public class ProjectProposal implements Serializable {
     @JoinColumn(name = "PROPONENT_CODE")
     private Proponent proponent;
 
-    @ManyToMany
-    @JoinTable(name = "PROJECT_PROPOSAL_STUDENT",
-            joinColumns = @JoinColumn(name = "PROJECT_PROPOSAL_CODE", referencedColumnName = "CODE"),
-            inverseJoinColumns = @JoinColumn(name = "STUDENT_USERNAME", referencedColumnName = "USERNAME"))
+    @OneToMany(mappedBy="projectProposal")
     private List<Student> students;
 
     @NotNull

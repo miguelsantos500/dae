@@ -162,7 +162,7 @@ public class StudentBean {
         }
     }
 
-    public void applyStudent(String username, int code) throws EntityDoesNotExistException,
+ /*   public void assigneStudent(String username, int code) throws EntityDoesNotExistException,
             StudentAlreadyAppliedException {
         try {
 
@@ -192,9 +192,9 @@ public class StudentBean {
         } catch (Exception e) {
             throw new EJBException(e.getMessage());
         }
-    }
+    }*/
 
-    public void unapplyStudent(String username, int code) throws EntityDoesNotExistException,
+ /*   public void unussigneStudent(String username, int code) throws EntityDoesNotExistException,
             StudentNotAppliedException {
         try {
             Student student = em.find(Student.class, username);
@@ -219,9 +219,9 @@ public class StudentBean {
         } catch (Exception e) {
             throw new EJBException(e.getMessage());
         }
-    }
+    }*/
 
-    public Collection<StudentDTO> getAppliedStudents(int code) throws EntityDoesNotExistException{
+    public Collection<StudentDTO> getAssignedStudents(int code) throws EntityDoesNotExistException{
         
         try {
         ProjectProposal projectProposal = em.find(ProjectProposal.class, code);
@@ -240,7 +240,7 @@ public class StudentBean {
     
     }
 
-    public Collection<StudentDTO> getUnappliedStudents(int code)throws EntityDoesNotExistException {
+ /*   public Collection<StudentDTO> getUnappliedStudents(int code)throws EntityDoesNotExistException {
         try {
             ProjectProposal projectProposal = em.find(ProjectProposal.class, code);
             if(projectProposal == null){
@@ -260,6 +260,6 @@ public class StudentBean {
         catch (Exception e) {
             throw new EJBException(e.getMessage());
         }
-    }
+    }*/
 
 }

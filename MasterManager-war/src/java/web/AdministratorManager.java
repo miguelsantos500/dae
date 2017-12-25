@@ -1,5 +1,6 @@
 package web;
 
+import dtos.ApplicationDTO;
 import dtos.CourseDTO;
 import dtos.DocumentDTO;
 import dtos.InstitutionDTO;
@@ -8,6 +9,7 @@ import dtos.ProponentDTO;
 import dtos.PublicTestDTO;
 import dtos.StudentDTO;
 import dtos.TeacherDTO;
+import ejbs.ApplicationBean;
 import ejbs.ProjectProposalBean;
 import ejbs.PublicTestBean;
 import ejbs.users.CCPUserBean;
@@ -64,6 +66,8 @@ public class AdministratorManager {
     private PublicTestBean publicTestBean;
     @EJB
     private ProjectProposalBean projectProposalBean;
+    @EJB
+    private ApplicationBean applicationBean;
 
     /**
      * ** newObjects ***
@@ -74,6 +78,7 @@ public class AdministratorManager {
     private InstitutionDTO newInstitution;
     private PublicTestDTO newPublicTest;
     private ProjectProposalDTO newProjectProposal;
+    private ApplicationDTO newApplication;
 
     /**
      * ** currentObjects ***
@@ -119,6 +124,7 @@ public class AdministratorManager {
             = "http://localhost:8080/MasterManager-war/webapi";
 
     private HtmlPanelGrid mainGrid;
+    
 
     public AdministratorManager() {
         newStudent = new StudentDTO();
@@ -127,6 +133,7 @@ public class AdministratorManager {
         newPublicTest = new PublicTestDTO();
         newInstitution = new InstitutionDTO();
         newProjectProposal = new ProjectProposalDTO();
+        newApplication = new ApplicationDTO();
         client = ClientBuilder.newClient();
     }
 
@@ -357,7 +364,6 @@ public class AdministratorManager {
         this.searchableTeacher = searchableTeacher;
     }
 
-    /////////////////////////////////////////////PROJECT PROPOSALS/////////////////////////////////
     public List<ProjectProposalDTO> getAllProjectProposals() {
         List<ProjectProposalDTO> returnedProjectProposals = null;
         try {
@@ -442,37 +448,41 @@ public class AdministratorManager {
         }
     }
 
-    public void applyStudent(ActionEvent event) {
+    //ESTE METODO VAI SERVIR PARA DEPOIS associar UM ESTUDANTE PARA UMA DETERMINADA PROPOSTA depois de a candidatura 
+    //ser aceite
+  /*  public void assigneStudent(ActionEvent event) {
         try {
          //   UIParameter param = (UIParameter) event.getComponent().findComponent("studentUsername");
         //    String username = param.getValue().toString();
          String username = FacesContext.getCurrentInstance().getExternalContext().getUserPrincipal().getName();
          logger.log(Level.SEVERE, " Student name is:"  + username);
                  
-        studentBean.applyStudent(username, currentProjectProposal.getCode());
+        studentBean.assigneStudent(username, currentProjectProposal.getCode());
         } catch (EntityDoesNotExistException e) {
             FacesExceptionHandler.handleException(e, e.getMessage(), logger);
         } catch (Exception e) {
             FacesExceptionHandler.handleException(e, "Erro inesperado, tente mais tarde.", logger);
         }
-    }
+    }*/
 
-    public void unapplyStudent(ActionEvent event) {
+    //ESTE METODO VAI SERVIR PARA DEPOIS retirar UM ESTUDANTE de uma proposta da qual ele já
+    //tinha sido aceite
+  /*  public void unassigneStudent(ActionEvent event) {
         try {
             UIParameter param = (UIParameter) event.getComponent().findComponent("studentUsername");
             String username = param.getValue().toString();
-            studentBean.unapplyStudent(username, currentProjectProposal.getCode());
+            studentBean.unussigneStudent(username, currentProjectProposal.getCode());
         } catch (EntityDoesNotExistException e) {
             FacesExceptionHandler.handleException(e, e.getMessage(), logger);
         } catch (Exception e) {
             FacesExceptionHandler.handleException(e, "Erro inesperado, tente mais tarde.", logger);
         }
-    }
+    }*/
 
-    public Collection<StudentDTO> getAppliedStudents() {
+  /*  public Collection<StudentDTO> getAppliedStudents() {
 
         try {
-            return studentBean.getAppliedStudents(currentProjectProposal.getCode());
+            return studentBean.getAssignedStudents(currentProjectProposal.getCode());
         } catch (EntityDoesNotExistException e) {
             FacesExceptionHandler.handleException(e, e.getMessage(), logger);
             return null;
@@ -481,8 +491,8 @@ public class AdministratorManager {
             return null;
         }
     }
-
-    public Collection<StudentDTO> getUnappliedStudents() {
+*/
+  /*  public Collection<StudentDTO> getUnappliedStudents() {
 
         try {
             return studentBean.getUnappliedStudents(currentProjectProposal.getCode());
@@ -494,7 +504,7 @@ public class AdministratorManager {
             return null;
         }
 
-    }
+    }*/
 
     ////////////// PUBLIC TEST ///////////////////
     public String createPublicTest() {
@@ -753,6 +763,33 @@ public class AdministratorManager {
             return null;
         }
     }
+    
+    ////////////////////////////////////////////APPLICATIONS///////////////////////////////////////////////////////////////////
+    
+     public String createApplication(ActionEvent event) {
+
+         //ir buscar o username do estudante via userManager
+         String username = userManager.getUsername();
+         
+         //ir buscar a projectProposal via codigo
+         UIParameter param = (UIParameter) event.getComponent().findComponent("code");
+         int code = Integer.parseInt(param.getValue().toString());
+         
+        try {
+            applicationBean.create(
+                    username,
+                    code,
+                    newApplication.getApplyingMessage());
+            newApplication.reset();
+
+            
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Erro inesperado no creeateApplication do AdministratorManager", component, logger);
+            e.printStackTrace();
+            return null;
+        }
+        return "student/student_index?faces-redirect=true";
+    }
 
     ///////////////////////////////////////////Getters e setters tem que ser organizado//////////////////////////////////////////
     public ProjectProposalDTO getNewProjectProposal() {
@@ -890,5 +927,15 @@ public class AdministratorManager {
     public void setUserManager(UserManager userManager) {
         this.userManager = userManager;
     }
+
+    public ApplicationDTO getNewApplication() {
+        return newApplication;
+    }
+
+    public void setNewApplication(ApplicationDTO newApplication) {
+        this.newApplication = newApplication;
+    }
+    
+    
 
 }

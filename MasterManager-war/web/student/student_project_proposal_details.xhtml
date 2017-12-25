@@ -83,14 +83,30 @@
 
 
                 <br/>
-                
-                <h:form>
-                 <h:commandLink value="Candidatar"
-                                       actionListener="#{administratorManager.applyStudent}">
-                            
-                 </h:commandLink>
 
-                <h:messages errorStyle="color: red" />        
+                <h:form>
+                    <!--upload do ficheiro-->
+                    <h:outputLabel for="message" value="Motivação: " />
+                    <h:inputText
+                        id="message"
+                        size="10"
+                        required="true"
+                        requiredMessage="Erro: A mensagem de motivação tem que ser preenchida."
+                        value="#{administratorManager.newApplication.applyingMessage}"/>
+                    <h:message for="message" errorStyle="color: red" />      
+
+
+                    <h:commandLink value="Candidatar"
+                                   actionListener="#{administratorManager.createApplication}">
+                        <f:param name="code" id="code"
+                                 value="#{administratorManager.currentProjectProposal.code}" />
+                    </h:commandLink>
+
+                    <h:commandLink value="Voltar"
+                                   action="student_index?facesredirect=true">
+                    </h:commandLink>
+
+                    <h:messages errorStyle="color: red" />        
                 </h:form>
             </ui:define>
         </ui:composition>
