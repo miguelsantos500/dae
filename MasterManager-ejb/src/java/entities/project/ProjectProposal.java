@@ -10,13 +10,13 @@ import entities.users.Student;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import static javax.persistence.EnumType.STRING;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -45,6 +45,7 @@ public class ProjectProposal implements Serializable {
     private String title;
 
     @NotNull
+    @ElementCollection(fetch=FetchType.EAGER)
     private List<String> scientificAreas;
 
     //Quem propos a proposta
@@ -61,10 +62,12 @@ public class ProjectProposal implements Serializable {
     private String projectAbstract;
 
     @NotNull
+    @ElementCollection(fetch=FetchType.EAGER)
     private List<String> objectives;
 
     //No máximo 5.
     @NotNull
+    @ElementCollection(fetch=FetchType.EAGER)
     private List<String> bibliography;
 
     @NotNull
@@ -74,6 +77,7 @@ public class ProjectProposal implements Serializable {
     private String workPlace;
 
     @NotNull
+    @ElementCollection(fetch=FetchType.EAGER)
     private List<String> successRequirements;
 
     /*    
@@ -83,6 +87,7 @@ public class ProjectProposal implements Serializable {
     private String budget;
 
     @NotNull
+    @ElementCollection(fetch=FetchType.EAGER)
     private List<String> supports;
     
     @NotNull
