@@ -55,12 +55,7 @@
                     <h:outputText 
                         id="proponent"
                         value="#{administratorManager.currentProjectProposal.proponentUsername}"/>
-                    
-                    <h:outputLabel for="projectProposalState" value="Project Proposal State " />
-                    <h:outputText 
-                        id="projectProposalState"
-                        value="#{administratorManager.currentProjectProposal.projectProposalState}"/>
-                    
+
                 </h:panelGrid>
 
 
@@ -78,7 +73,7 @@
                     list="#{administratorManager.currentProjectProposal.bibliography}">
                 </em:dt_list>
                 <em:dt_list
-                    headers="#{['Requisitos de Sucesso']}"
+                    headers="#{['Requesitos de Sucesso']}"
                     list="#{administratorManager.currentProjectProposal.successRequirements}">
                 </em:dt_list>
                 <em:dt_list
@@ -87,25 +82,32 @@
                 </em:dt_list>
 
 
-                <h:form>
-                    <h:commandLink value="Aceitar Proposta"
-                                   actionListener="#{administratorManager.approveProjectProposal(true)}">
-                        <img alt="Check Yes" src="../resources/images/check_yes.png"></img>
-
-                    </h:commandLink>
-                    <h:commandLink value="Recusar Proposta"
-                                   actionListener="#{administratorManager.approveProjectProposal(false)}">
-                        <img alt="Check No" src="../resources/images/check_no.png"></img>
-                    </h:commandLink>
-                </h:form>
-
-
                 <br/>
 
-                <h:link value="Return" outcome="index"/>
+                <h:form>
+                    <!--upload do ficheiro-->
+                    <h:outputLabel for="message" value="Motivação: " />
+                    <h:inputText
+                        id="message"
+                        size="10"
+                        required="true"
+                        requiredMessage="Erro: A mensagem de motivação tem que ser preenchida."
+                        value="#{administratorManager.newApplication.applyingMessage}"/>
+                    <h:message for="message" errorStyle="color: red" />      
 
-                <h:messages errorStyle="color: red" />        
 
+                    <h:commandLink value="Candidatar"
+                                   actionListener="#{administratorManager.createApplication}">
+                        <f:param name="code" id="code"
+                                 value="#{administratorManager.currentProjectProposal.code}" />
+                    </h:commandLink>
+
+                    <h:commandLink value="Voltar"
+                                   action="student_index?facesredirect=true">
+                    </h:commandLink>
+
+                    <h:messages errorStyle="color: red" />        
+                </h:form>
             </ui:define>
         </ui:composition>
     </h:body>

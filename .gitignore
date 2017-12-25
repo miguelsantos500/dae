@@ -26,3 +26,4 @@ hs_err_pid*
 /MasterManager-ejb/dist/
 /MasterManager-war/dist/
 /dist/
+/nbproject/private/

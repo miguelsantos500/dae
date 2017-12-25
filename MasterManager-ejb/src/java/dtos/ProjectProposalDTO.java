@@ -1,8 +1,6 @@
 package dtos;
 
 import entities.project.ProjectProposalState;
-import entities.project.ProjectType;
-import entities.users.Proponent;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;

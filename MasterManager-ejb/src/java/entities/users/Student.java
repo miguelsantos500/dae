@@ -1,5 +1,6 @@
 package entities.users;
 
+import entities.Application;
 import entities.Course;
 import entities.project.ProjectProposal;
 import entities.publictest.PublicTest;
@@ -7,12 +8,14 @@ import entities.users.UserGroup.GROUP;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -21,29 +24,32 @@ import javax.validation.constraints.NotNull;
 @Table(name = "STUDENTS")
 @NamedQueries({
     @NamedQuery(name = "getAllStudents",
-    query = "SELECT s FROM Student s ORDER BY s.name")})
+            query = "SELECT s FROM Student s ORDER BY s.name"),
+})
 public class Student extends User implements Serializable {
 
     @ManyToOne
-    @JoinColumn(name="COURSE_CODE")
-    @NotNull (message="A student must have a course")
+    @JoinColumn(name = "COURSE_CODE")
+    @NotNull(message = "A student must have a course")
     private Course course;
-    
-    @OneToOne
+
+    @OneToOne(cascade=CascadeType.REMOVE)
     @JoinColumn(name = "PUBLIC_CODE")
     private PublicTest publicTest;
+
+    @ManyToOne(cascade=CascadeType.REMOVE)
+    @JoinColumn(name = "PROJECT_PROPOSAL_CODE")
+    private ProjectProposal projectProposal;
     
-    @ManyToMany(mappedBy = "students")
-    private List<ProjectProposal> projectProposals;
-    
+    @OneToMany(mappedBy="student", cascade=CascadeType.REMOVE)
+    private List<Application> applications;
+
     public Student() {
-        this.projectProposals = new LinkedList<>();
     }
 
     public Student(String username, String password, String name, String email, Course course) {
         super(username, password, GROUP.Student, name, email);
         this.course = course;
-        this.projectProposals = new LinkedList<>();
     }
 
     public Course getCourse() {
@@ -62,13 +68,31 @@ public class Student extends User implements Serializable {
         this.publicTest = publicTest;
     }
 
-    public List<ProjectProposal> getProjectProposals() {
-        return projectProposals;
+    public ProjectProposal getProjectProposal() {
+        return projectProposal;
     }
 
-    public void setProjectProposals(List<ProjectProposal> projectProposals) {
-        this.projectProposals = projectProposals;
+    public void setProjectProposal(ProjectProposal projectProposal) {
+        this.projectProposal = projectProposal;
     }
 
+    public List<Application> getApplications() {
+        return applications;
+    }
+
+    public void setApplications(List<Application> applications) {
+        this.applications = applications;
+    }
+
+   
     
+    public void addApplication(Application app){
+        applications.add(app);
+    }
+    
+    public void removeApplication(Application app) {
+        applications.remove(app);
+    }
+
+
 }
