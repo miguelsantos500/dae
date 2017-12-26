@@ -94,6 +94,10 @@ public class ProjectProposal implements Serializable {
     @Enumerated(STRING)
     private ProjectProposalState projectProposalState;
     
+    
+    @OneToMany(mappedBy="projectProposal")
+    private List<Observation> observations;
+    
 
     public ProjectProposal() {
         this.students = new LinkedList<>();
@@ -244,14 +248,6 @@ public class ProjectProposal implements Serializable {
         this.students = students;
     }
     
-    
-    @Override
-    public String toString() {
-        return "entities.ProjectProposal[ id=" + code + " ]";
-    }
-
-    
-    
 
     public void removeStudent(Student student) {
         students.remove(student);
@@ -259,6 +255,11 @@ public class ProjectProposal implements Serializable {
 
     public void addStudent(Student student) {
         students.add(student);
+    }
+    
+    @Override
+    public String toString() {
+        return "entities.ProjectProposal[ id=" + code + " ]";
     }
 
 }
