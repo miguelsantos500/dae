@@ -26,11 +26,17 @@
                                 target="#{administratorManager.currentApplication}" value="#{object}" />
                         </h:commandLink>
                         &nbsp;
+                        <h:commandLink value="Actualizar" action="student_application_update?facesredirect=true">
+                            <f:setPropertyActionListener
+                                target="#{administratorManager.currentApplication}" value="#{object}" />
+                        </h:commandLink>
+                        &nbsp;
                         <h:commandLink value="Remover"
                                        actionListener="#{administratorManager.removeApplication}">
                             <f:param name="applicationId" id="applicationId"
                                      value="#{object.id}" />
                         </h:commandLink>
+                        
                     </h:form>
                 </p:column>
             </em:dt> 
