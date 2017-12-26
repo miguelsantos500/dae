@@ -21,12 +21,12 @@
                 list="#{administratorManager.allProjectProposals}">
                 <p:column headerText="Acções">
                     <h:form>
-                        <h:commandLink value="Detalhes" action="../proponent/project_proposals_details?facesredirect=true">
+                        <h:commandLink value="Detalhes" action="#{administratorManager.redirect('details')}">
                             <f:setPropertyActionListener
                                 target="#{administratorManager.currentProjectProposal}" value="#{object}" />
                         </h:commandLink>
                         &nbsp;
-                        <h:commandLink value="Actualizar" action="../proponent/project_proposals_update?facesredirect=true">
+                        <h:commandLink value="Actualizar" action="#{administratorManager.redirect('update')}">
                             <f:setPropertyActionListener
                                 target="#{administratorManager.currentProjectProposal}" value="#{object}" />
                         </h:commandLink>
@@ -43,7 +43,11 @@
             <br/>
             <br/>
 
-            <h:link class="btn btn-primary" value="Nova proposta de projecto" outcome="../proponent/project_proposals_create"/>
+            <h:outputLink class="btn btn-primary" 
+                          value="http://localhost:8080/MasterManager-war/faces/proponent/project_proposals_create.xhtml">
+                          Nova proposta de trabalho
+            </h:outputLink>
+            
             <h:form>
                 <h:outputLabel for="search" value="Procurar proposta: " />
                 <h:inputText 
@@ -58,7 +62,7 @@
                 <h:commandButton
                     id="searchProjectProposal"
                     value="Procurar"
-                    action="../proponent/search_project_proposal?facesredirect=true" />    
+                    action="#{administratorManager.redirect('search')}" />    
                 <h:message for="searchProjectProposal" style="color: red" />   
 
             </h:form> 

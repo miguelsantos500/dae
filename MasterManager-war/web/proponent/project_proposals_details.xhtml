@@ -8,7 +8,7 @@
       xmlns:em="http://xmlns.jcp.org/jsf/composite/emcomp">
     <h:body>
 
-        <ui:composition template="./templates/skeleton.xhtml">
+        <ui:composition template="../templates/skeleton.xhtml">
             <ui:define name="title">CCP</ui:define>
             <ui:define name="main">
 
@@ -84,8 +84,14 @@
 
                 <br/>
 
-                <h:link rendered="${administratorManager.userManager.isUserInRole(Teacher)}" value="Return" outcome="../teacher/teacher_index"/>
-                <h:link rendered="${administratorManager.userManager.isUserInRole(Institution)}" value="Return" outcome="../institution/institution_index"/>
+                <h:outputLink rendered="${administratorManager.userManager.isUserInRole('Teacher')}" 
+                              value="http://localhost:8080/MasterManager-war/faces/teacher/teacher_index.xhtml">
+                    Voltar
+                </h:outputLink>
+                <h:outputLink rendered="${administratorManager.userManager.isUserInRole('Institution')}" 
+                              value="http://localhost:8080/MasterManager-war/faces/institution/institution_index.xhtml">
+                    Voltar
+                </h:outputLink>
 
                 <h:messages errorStyle="color: red" />        
 
