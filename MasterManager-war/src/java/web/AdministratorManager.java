@@ -541,7 +541,7 @@ public class AdministratorManager {
             return "admin_index?faces-redirect=true";
         } catch (Exception e) {
             e.printStackTrace();
-            FacesExceptionHandler.handleException(e, "Erro inesperado, tente mais tarde.", component, logger);
+            FacesExceptionHandler.handleException(e, e.getMessage(), component, logger);
             return null;
         }
     }
