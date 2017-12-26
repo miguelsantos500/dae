@@ -367,11 +367,12 @@ public class AdministratorManager {
         this.searchableTeacher = searchableTeacher;
     }
 
-    public List<ProjectProposalDTO> getAllProjectProposals() {
+    public List<ProjectProposalDTO> getAllProjectProposals(String path) {
         List<ProjectProposalDTO> returnedProjectProposals = null;
         try {
             returnedProjectProposals = client.target(baseUri)
-                    .path("/projectProposals/all")
+                    .path("/projectProposals/")
+                    .path(path)
                     .request(MediaType.APPLICATION_XML)
                     .get(new GenericType<List<ProjectProposalDTO>>() {
                     });

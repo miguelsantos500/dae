@@ -96,6 +96,20 @@ public class ProjectProposalBean {
         }
     }
 
+    @GET
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Path("allFinished")
+    public List<ProjectProposalDTO> getAllFinished() {
+        try {
+            List<ProjectProposal> projectProposals = 
+                    em.createNamedQuery("getAllProjectProposalsFinished", ProjectProposal.class).
+                            setParameter("state", ProjectProposalState.FINISHED).getResultList();
+            return projectProposalsToDTOs(projectProposals);
+        } catch (Exception e) {
+            throw new EJBException(e.getMessage());
+        }
+    }
+    
     public ProjectProposal getProjectProposal(int code) {
         try {
             ProjectProposal projectProposal = em.find(ProjectProposal.class, code);

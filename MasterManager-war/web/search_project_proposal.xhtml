@@ -10,26 +10,26 @@
         <ui:define name="title">CCP</ui:define>
         <ui:define name="main">
             <em:dt 
-                title="Estudantes encontrados" 
-               headers="#{['Username', 'Name', 'Email', 'Course']}"
-                props="#{['username', 'name', 'email', 'courseName']}"
-                list="#{administratorManager.searchStudent}">
-                <p:column headerText="Actions">
+                title="Propostas de projecto encontradas" 
+               headers="#{['Código', 'Tipo de projecto', 'Título']}"
+                props="#{['code', 'projectType', 'title']}"
+                list="#{administratorManager.searchProjectProposal}">
+                <p:column headerText="Acções">
                     <h:form>
-                        <h:commandLink value="Detalhes" action="admin_student_details?facesredirect=true">
+                        <h:commandLink value="Detalhes" action="project_proposals_details?facesredirect=true">
                             <f:setPropertyActionListener
-                                target="#{administratorManager.currentStudent}" value="#{object}" />
+                                target="#{administratorManager.currentProjectProposal}" value="#{object}" />
                         </h:commandLink>
                         &nbsp;
-                        <h:commandLink value="Update" action="students_update?facesredirect=true">
+                        <h:commandLink value="Actualizar" action="project_proposals_update?facesredirect=true">
                             <f:setPropertyActionListener
-                                target="#{administratorManager.currentStudent}" value="#{object}" />
+                                target="#{administratorManager.currentProjectProposal}" value="#{object}" />
                         </h:commandLink>
                         &nbsp;
-                        <h:commandLink value="Remove"
-                                       actionListener="#{administratorManager.removeStudent}">
-                            <f:param name="studentUsername" id="studentUsername"
-                                     value="#{object.username}" />
+                        <h:commandLink value="Remover"
+                                       actionListener="#{administratorManager.removeProjectProposal}">
+                            <f:param name="projectProposalCode" id="projectProposalCode"
+                                     value="#{object.code}" />
                         </h:commandLink>
                     </h:form>
                 </p:column>
@@ -37,3 +37,4 @@
         </ui:define>
     </ui:composition>
 </html>
+

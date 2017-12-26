@@ -15,9 +15,8 @@ import static javax.persistence.EnumType.STRING;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -29,9 +28,12 @@ import javax.validation.constraints.NotNull;
  */
 @Entity
 @Table(name = "PROJECT_PROPOSALS")
-@NamedQuery(name = "getAllProjectProposals",
-        query = "SELECT p FROM ProjectProposal p")
-/*TODO: ORDER BY*/
+@NamedQueries({
+    @NamedQuery(name = "getAllProjectProposals",
+        query = "SELECT p FROM ProjectProposal p"),
+    @NamedQuery(name = "getAllProjectProposalsFinished",
+        query = "SELECT p FROM ProjectProposal p WHERE p.projectProposalState = :state"),
+}) 
 public class ProjectProposal implements Serializable {
 
     @Id

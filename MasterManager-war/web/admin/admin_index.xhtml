@@ -113,10 +113,10 @@
                 title="Proposta de projecto" 
                 headers="#{['Tipo de projecto', 'Título', 'Proponente', 'Estado']}"
                 props="#{['projectTypeString', 'title', 'proponentUsername', 'projectProposalState']}"
-                list="#{administratorManager.allProjectProposals}">
+                list="#{administratorManager.getAllProjectProposals('all')}">
                 <p:column headerText="Acções">
                     <h:form>
-                        <h:commandLink value="Detalhes" action="admin_project_proposals_details?facesredirect=true">
+                        <h:commandLink value="Detalhes" action="#{administratorManager.redirect('details')}">
                             <f:setPropertyActionListener
                                 target="#{administratorManager.currentProjectProposal}" value="#{object}" />
                         </h:commandLink>
@@ -141,7 +141,7 @@
                 <h:commandButton
                     id="searchProjectProposal"
                     value="Procurar"
-                    action="search_project_proposal?facesredirect=true" />    
+                    action="#{administratorManager.redirect('search')}" />    
                 <h:message for="searchProjectProposal" style="color: red" />   
 
             </h:form> 

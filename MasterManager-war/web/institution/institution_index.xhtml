@@ -18,7 +18,7 @@
                 title="Proposta de projecto" 
                 headers="#{['Tipo de projecto', 'Título', 'Proponente']}"
                 props="#{['projectTypeString', 'title', 'proponentUsername']}"
-                list="#{administratorManager.allProjectProposals}">
+                list="#{administratorManager.getAllProjectProposals('all')}">
                 <p:column headerText="Acções">
                     <h:form>
                         <h:commandLink value="Detalhes" action="#{administratorManager.redirect('details')}">
