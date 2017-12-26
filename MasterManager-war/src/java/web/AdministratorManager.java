@@ -4,12 +4,14 @@ import dtos.ApplicationDTO;
 import dtos.CourseDTO;
 import dtos.DocumentDTO;
 import dtos.InstitutionDTO;
+import dtos.ObservationDTO;
 import dtos.ProjectProposalDTO;
 import dtos.ProponentDTO;
 import dtos.PublicTestDTO;
 import dtos.StudentDTO;
 import dtos.TeacherDTO;
 import ejbs.ApplicationBean;
+import ejbs.ObservationBean;
 import ejbs.ProjectProposalBean;
 import ejbs.PublicTestBean;
 import ejbs.users.CCPUserBean;
@@ -71,6 +73,8 @@ public class AdministratorManager {
     private ProjectProposalBean projectProposalBean;
     @EJB
     private ApplicationBean applicationBean;
+    @EJB
+    private ObservationBean observationBean;
 
     /**
      * ** newObjects ***
@@ -82,6 +86,7 @@ public class AdministratorManager {
     private PublicTestDTO newPublicTest;
     private ProjectProposalDTO newProjectProposal;
     private ApplicationDTO newApplication;
+    private ObservationDTO newObservation;
 
     /**
      * ** currentObjects ***
@@ -127,7 +132,6 @@ public class AdministratorManager {
             = "http://localhost:8080/MasterManager-war/webapi";
 
     private HtmlPanelGrid mainGrid;
-    
 
     public AdministratorManager() {
         newStudent = new StudentDTO();
@@ -137,6 +141,7 @@ public class AdministratorManager {
         newInstitution = new InstitutionDTO();
         newProjectProposal = new ProjectProposalDTO();
         newApplication = new ApplicationDTO();
+        newObservation = new ObservationDTO();
         client = ClientBuilder.newClient();
     }
 
@@ -469,7 +474,7 @@ public class AdministratorManager {
 
     //ESTE METODO VAI SERVIR PARA DEPOIS associar UM ESTUDANTE PARA UMA DETERMINADA PROPOSTA depois de a candidatura 
     //ser aceite
-  /*  public void assigneStudent(ActionEvent event) {
+    /*  public void assigneStudent(ActionEvent event) {
         try {
          //   UIParameter param = (UIParameter) event.getComponent().findComponent("studentUsername");
         //    String username = param.getValue().toString();
@@ -483,10 +488,9 @@ public class AdministratorManager {
             FacesExceptionHandler.handleException(e, "Erro inesperado, tente mais tarde.", logger);
         }
     }*/
-
     //ESTE METODO VAI SERVIR PARA DEPOIS retirar UM ESTUDANTE de uma proposta da qual ele já
     //tinha sido aceite
-  /*  public void unassigneStudent(ActionEvent event) {
+    /*  public void unassigneStudent(ActionEvent event) {
         try {
             UIParameter param = (UIParameter) event.getComponent().findComponent("studentUsername");
             String username = param.getValue().toString();
@@ -498,7 +502,7 @@ public class AdministratorManager {
         }
     }*/
 
-  /*  public Collection<StudentDTO> getAppliedStudents() {
+ /*  public Collection<StudentDTO> getAppliedStudents() {
 
         try {
             return studentBean.getAssignedStudents(currentProjectProposal.getCode());
@@ -510,8 +514,8 @@ public class AdministratorManager {
             return null;
         }
     }
-*/
-  /*  public Collection<StudentDTO> getUnappliedStudents() {
+     */
+ /*  public Collection<StudentDTO> getUnappliedStudents() {
 
         try {
             return studentBean.getUnappliedStudents(currentProjectProposal.getCode());
@@ -525,13 +529,20 @@ public class AdministratorManager {
 
     }*/
 
-    public String approveProjectProposal(boolean approved) {
-        //TODO: Restful?
+    public String addObservation() {
         try {
-            projectProposalBean.approveProjectProposal(currentProjectProposal.getCode(), approved);
-            return "admin/admin_index?faces-redirect=true";
+            projectProposalBean.updateProjectProposalState(
+                    currentProjectProposal.getCode(), 
+                    newObservation.getProjectProposalState());
+            
+            observationBean.create(newObservation.getMessage(),
+                    newObservation.getProjectProposalState().toString(), 
+                    currentProjectProposal.getCode());
+            
+            return "admin_index?faces-redirect=true";
         } catch (Exception e) {
-            FacesExceptionHandler.handleException(e, "Erro inesperado, tente mais tarde.", logger);
+            e.printStackTrace();
+            FacesExceptionHandler.handleException(e, e.getMessage(), component, logger);
             return null;
         }
     }
@@ -793,18 +804,17 @@ public class AdministratorManager {
             return null;
         }
     }
-    
-    ////////////////////////////////////////////APPLICATIONS///////////////////////////////////////////////////////////////////
-    
-     public String createApplication(ActionEvent event) {
 
-         //ir buscar o username do estudante via userManager
-         String username = userManager.getUsername();
-         
-         //ir buscar a projectProposal via codigo
-         UIParameter param = (UIParameter) event.getComponent().findComponent("code");
-         int code = Integer.parseInt(param.getValue().toString());
-         
+    ////////////////////////////////////////////APPLICATIONS///////////////////////////////////////////////////////////////////
+    public String createApplication(ActionEvent event) {
+
+        //ir buscar o username do estudante via userManager
+        String username = userManager.getUsername();
+
+        //ir buscar a projectProposal via codigo
+        UIParameter param = (UIParameter) event.getComponent().findComponent("code");
+        int code = Integer.parseInt(param.getValue().toString());
+
         try {
             applicationBean.create(
                     username,
@@ -812,7 +822,6 @@ public class AdministratorManager {
                     newApplication.getApplyingMessage());
             newApplication.reset();
 
-            
         } catch (Exception e) {
             FacesExceptionHandler.handleException(e, "Erro inesperado no creeateApplication do AdministratorManager", component, logger);
             e.printStackTrace();
@@ -965,7 +974,18 @@ public class AdministratorManager {
     public void setNewApplication(ApplicationDTO newApplication) {
         this.newApplication = newApplication;
     }
-    
-    
+
+    public ObservationDTO getNewObservation() {
+        return newObservation;
+    }
+
+    public void setNewObservation(ObservationDTO newObservation) {
+        this.newObservation = newObservation;
+    }
+
+    public ProjectProposalState[] getAllProposalValidationStates() {
+        return new ProjectProposalState[]{ProjectProposalState.PENDING,
+            ProjectProposalState.ACCEPTED, ProjectProposalState.NOT_ACCEPTED};
+    }
 
 }
