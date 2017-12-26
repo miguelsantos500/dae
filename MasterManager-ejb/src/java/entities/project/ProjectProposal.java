@@ -251,7 +251,9 @@ public class ProjectProposal implements Serializable {
         return "entities.ProjectProposal[ id=" + code + " ]";
     }
 
-    
+    public void removeApplication(Application app){
+        applications.remove(app);
+    }
     
 
     public void removeStudent(Student student) {

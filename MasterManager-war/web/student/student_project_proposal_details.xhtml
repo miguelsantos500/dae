@@ -100,18 +100,10 @@
                         <f:param name="code" id="code"
                                  value="#{administratorManager.currentProjectProposal.code}" />
                     </h:commandLink>
-
-                    &nbsp;
-                    &nbsp;
-                    &nbsp;
-
-
-                    <h:commandLink value="Voltar"
-                                   action="student_index?facesredirect=true">
-                    </h:commandLink>
-
-                    <h:messages errorStyle="color: red" />        
+      
                 </h:form>
+                
+                <h:link value="Voltar" outcome="student_index"/>
             </ui:define>
         </ui:composition>
     </h:body>

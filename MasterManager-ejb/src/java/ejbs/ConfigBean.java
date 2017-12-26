@@ -147,6 +147,12 @@ public class ConfigBean {
             applicationBean.create("s1", 3, "Quero ser estudante.");
             applicationBean.create("s1", 4, "Quero ser estudante.");
             applicationBean.create("s1", 5, "Quero ser estudante.");
+            
+            applicationBean.create("1111111", 1, "Eu sou o Manuel e quero fazer este projecto.");
+            applicationBean.create("1111111", 7, "Quero ganhar experiência.");
+            applicationBean.create("3333333", 3, "Qeuro trabalhar nesta área e por isso quero fazer este projecto.");
+            applicationBean.create("3333333", 1, "Não sei o que dizer.");
+            applicationBean.create("3333333", 5, "...");
 
             
             

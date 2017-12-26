@@ -1,0 +1,74 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:em="http://xmlns.jcp.org/jsf/composite/emcomp">
+    <h:body>
+
+        <ui:composition template="../templates/skeleton.xhtml">
+            <ui:define name="title">Detalhes da candidatura</ui:define>
+            <ui:define name="main">
+
+
+                <h:panelGrid columns="2">
+
+                    <h:outputLabel for="id" value="Identificador da candidatura: " />
+                    <h:outputText 
+                        id="id"
+                        value="#{administratorManager.currentApplication.id}"/>
+
+                    <h:outputLabel for="projectProposalCode" value="Código da proposta de projecto: " />
+                    <h:outputText 
+                        id="projectProposalCode"
+                        value="#{administratorManager.currentApplication.projectProposal.code}"/>
+
+                    <h:outputLabel for="projectProposalTitle" value="Title da proposta: " />
+                    <h:outputText 
+                        id="title"
+                        value="#{administratorManager.currentApplication.projectProposal.title}"/>
+
+                    <h:outputLabel for="projectProposalAbstract" value="Abstract da proposta: " />
+                    <h:outputText 
+                        id="projectProposalAbstract"
+                        value="#{administratorManager.currentApplication.projectProposal.projectAbstract}"/>
+
+                    <h:outputLabel for="projectProposalWorkPlan" value="WorkPlan: " />
+                    <h:outputText 
+                        id="workPlan"
+                        value="#{administratorManager.currentApplication.projectProposal.workPlan}"/>
+
+                    <h:outputLabel for="projectProposalWorkPlace" value="WorkPlace: " />
+                    <h:outputText 
+                        id="workPlace"
+                        value="#{administratorManager.currentApplication.projectProposal.workPlace}"/>
+
+
+                    <h:outputLabel for="projectProposalBudget" value="Budget: " />
+                    <h:outputText 
+                        id="budget"
+                        value="#{administratorManager.currentApplication.projectProposal.budget}"/>
+
+                    <h:outputLabel for="projectProposalProponent" value="ProponentUsername " />
+                    <h:outputText 
+                        id="proponent"
+                        value="#{administratorManager.currentApplication.projectProposal.proponent.name}"/>
+
+                    <h:outputLabel for="applyingMessage" value="Mensagem de motivação: " />
+                    <h:outputText 
+                        id="applyingMessage"
+                        value="#{administratorManager.currentApplication.applyingMessage}"/>
+
+                    <!--MOSTRAR O NOME DO FICHEIRO QUE FOI FEITO UPLOAD-->
+                    <!--MOSTRAR O ESTADO DA CANDIDATURA-->
+
+                </h:panelGrid>
+
+                <br/>
+                 <h:link value="Voltar" outcome="student_index"/>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>

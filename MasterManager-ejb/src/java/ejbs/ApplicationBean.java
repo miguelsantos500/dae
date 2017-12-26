@@ -24,6 +24,8 @@ import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.ejb.LocalBean;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.ws.rs.Consumes;
@@ -75,14 +77,13 @@ public class ApplicationBean {
             
             em.persist(application);
             }else{
-                throw new ApplicationNumberException("Não é possível candidatar-se a mais de cinco propostas.");
+                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ja tem o num max de candidaturas", "candidaturas"));
+        return ;
+                
             }
-            
-            
         } catch (Exception e) {
             throw new EJBException(e.getMessage());
         }
-
      
     }
     
@@ -168,5 +169,45 @@ public class ApplicationBean {
             throw new EJBException(e.getMessage());
         }
         
+    }
+    
+    /*public void remove(String username) throws EntityDoesNotExistException {
+        try {
+            Institution institution = em.find(Institution.class, username);
+            if (institution == null) {
+                throw new EntityDoesNotExistException(
+                        "Não existe um utilizador Instituição com esse username.");
+            }
+
+            em.remove(institution);
+
+        } catch (EntityDoesNotExistException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new EJBException(e.getMessage());
+        }
+    } */
+
+    public void remove(String id) throws EntityDoesNotExistException{
+        try {
+            Application application = em.find(Application.class, Long.parseLong(id));
+            if(application == null){
+                throw new EntityDoesNotExistException("Não existe uma candidatura com esse id.");
+            }
+            
+            //removo a candidatura  da lista de candidaturas da projectProposal
+            application.getProjectProposal().removeApplication(application);
+            
+            //removo a candidatura da lista de candidaturas do estudante
+            application.getStudent().removeApplication(application);
+            
+            //apago a candiatura da tabela
+            em.remove(application);
+            
+        } catch (EntityDoesNotExistException e) {
+            throw e;
+        }catch (Exception e) {
+            throw new EJBException(e.getMessage());
+        }
     }
 }

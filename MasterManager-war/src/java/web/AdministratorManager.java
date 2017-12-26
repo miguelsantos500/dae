@@ -889,23 +889,30 @@ public class AdministratorManager {
         }
         return applications;
         
-        /* public List<ProjectProposalDTO> getAllProjectProposals() {
-        List<ProjectProposalDTO> returnedProjectProposals = null;
+    }
+    
+    public void removeApplication(ActionEvent event){
+        
         try {
-            returnedProjectProposals = client.target(baseUri)
-                    .path("/projectProposals/all")
-                    .request(MediaType.APPLICATION_XML)
-                    .get(new GenericType<List<ProjectProposalDTO>>() {
-                    });
-
+            UIParameter param = (UIParameter) event.getComponent().findComponent("applicationId");
+            String id = param.getValue().toString();
+            
+            applicationBean.remove(id);
+            
         } catch (Exception e) {
-            FacesExceptionHandler.handleException(e, "Erro inesperado", component, logger);
-
+            FacesExceptionHandler.handleException(e, e.getMessage(), logger);
         }
-        return returnedProjectProposals;
-    } */
         
         
+      /*   public void removeInstitution(ActionEvent event) {
+        try {
+            UIParameter param = (UIParameter) event.getComponent().findComponent("institutionUsername");
+            String id = param.getValue().toString();
+            institutionBean.remove(id);
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, e.getMessage(), logger);
+        }
+    }*/
     }
     ///////////////////////////////////////////Getters e setters tem que ser organizado//////////////////////////////////////////
     public ProjectProposalDTO getNewProjectProposal() {
