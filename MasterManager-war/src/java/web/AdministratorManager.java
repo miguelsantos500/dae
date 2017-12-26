@@ -42,6 +42,7 @@ import javax.faces.event.ActionEvent;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.Form;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import util.URILookup;
@@ -90,6 +91,7 @@ public class AdministratorManager {
     private InstitutionDTO currentInstitution;
     private PublicTestDTO currentPublicTest;
     private ProjectProposalDTO currentProjectProposal;
+    private ApplicationDTO currentApplication;
 
     /**
      * ***Searchable objects******
@@ -125,7 +127,6 @@ public class AdministratorManager {
             = "http://localhost:8080/MasterManager-war/webapi";
 
     private HtmlPanelGrid mainGrid;
-    
 
     public AdministratorManager() {
         newStudent = new StudentDTO();
@@ -451,7 +452,7 @@ public class AdministratorManager {
 
     //ESTE METODO VAI SERVIR PARA DEPOIS associar UM ESTUDANTE PARA UMA DETERMINADA PROPOSTA depois de a candidatura 
     //ser aceite
-  /*  public void assigneStudent(ActionEvent event) {
+    /*  public void assigneStudent(ActionEvent event) {
         try {
          //   UIParameter param = (UIParameter) event.getComponent().findComponent("studentUsername");
         //    String username = param.getValue().toString();
@@ -465,10 +466,9 @@ public class AdministratorManager {
             FacesExceptionHandler.handleException(e, "Erro inesperado, tente mais tarde.", logger);
         }
     }*/
-
     //ESTE METODO VAI SERVIR PARA DEPOIS retirar UM ESTUDANTE de uma proposta da qual ele já
     //tinha sido aceite
-  /*  public void unassigneStudent(ActionEvent event) {
+    /*  public void unassigneStudent(ActionEvent event) {
         try {
             UIParameter param = (UIParameter) event.getComponent().findComponent("studentUsername");
             String username = param.getValue().toString();
@@ -480,7 +480,7 @@ public class AdministratorManager {
         }
     }*/
 
-  /*  public Collection<StudentDTO> getAppliedStudents() {
+ /*  public Collection<StudentDTO> getAppliedStudents() {
 
         try {
             return studentBean.getAssignedStudents(currentProjectProposal.getCode());
@@ -492,8 +492,8 @@ public class AdministratorManager {
             return null;
         }
     }
-*/
-  /*  public Collection<StudentDTO> getUnappliedStudents() {
+     */
+ /*  public Collection<StudentDTO> getUnappliedStudents() {
 
         try {
             return studentBean.getUnappliedStudents(currentProjectProposal.getCode());
@@ -506,7 +506,6 @@ public class AdministratorManager {
         }
 
     }*/
-
     public String approveProjectProposal(boolean approved) {
         //TODO: Restful?
         try {
@@ -775,25 +774,56 @@ public class AdministratorManager {
             return null;
         }
     }
-    
-    ////////////////////////////////////////////APPLICATIONS///////////////////////////////////////////////////////////////////
-    
-     public String createApplication(ActionEvent event) {
 
-         //ir buscar o username do estudante via userManager
-         String username = userManager.getUsername();
-         
-         //ir buscar a projectProposal via codigo
-         UIParameter param = (UIParameter) event.getComponent().findComponent("code");
-         int code = Integer.parseInt(param.getValue().toString());
-         
+    ////////////////////////////////////////////APPLICATIONS///////////////////////////////////////////////////////////////////
+    public String createApplication(ActionEvent event) {
+
         try {
+         /*   DocumentDTO document = new DocumentDTO(uploadManager.getCompletePathFile(),
+                    uploadManager.getFilename(),
+                    uploadManager.getFile().getContentType());*/
+            
+            //ir buscar o username do estudante via userManager
+            String username = userManager.getUsername();
+
+            //ir buscar a projectProposal via codigo
+          
+           
+            UIParameter param = (UIParameter) event.getComponent().findComponent("code");
+            int code = Integer.parseInt(param.getValue().toString());
+
             applicationBean.create(
                     username,
                     code,
                     newApplication.getApplyingMessage());
+            
+            //nao devia estar a passar isto pelo link
+            Long applcationId = newApplication.getId();
+                    
             newApplication.reset();
+           
+          // Form form = new Form();
+           //form.param("username", username);
+           //form.param("applcationId", String.valueOf(applcationId));
+          // form.param("document", Entity.xml(document));
+         //  form.param("message", "hello");
 
+           //crio a application atraves de uma rota e passo todos os parametros no body em vez de passar
+           //como parametros
+         
+           //  client.target(URILookup.getBaseAPI())
+            //        .path("/applications/create")
+            //        .request(MediaType.APPLICATION_XML)
+             //       .post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED_TYPE))
+            //         ;
+            
+          //TODO - upload do dcumento ao criar uma nova candidatura
+            
+           /* client.target(URILookup.getBaseAPI())
+                    .path("/applications/addFileApplication")
+                    .path(String.valueOf(applcationId))
+                    .request(MediaType.APPLICATION_XML)
+                    .put(Entity.xml(document));*/
             
         } catch (Exception e) {
             FacesExceptionHandler.handleException(e, "Erro inesperado no creeateApplication do AdministratorManager", component, logger);
@@ -803,6 +833,80 @@ public class AdministratorManager {
         return "student/student_index?faces-redirect=true";
     }
 
+    //isto vai ser retirado porque o upload é feito aquando a criação da candidatura
+    public void uploadFileApplication(UIComponent component) {
+
+        try {
+            DocumentDTO document = new DocumentDTO(uploadManager.getCompletePathFile(),
+                    uploadManager.getFilename(),
+                    uploadManager.getFile().getContentType());
+
+            String username = userManager.getUsername();
+            UIParameter param = (UIParameter) component.findComponent("applicationFile");
+            String code = param.getValue().toString();
+
+            client.target(URILookup.getBaseAPI())
+                    .path("/applications/addFileApplication")
+                    .path(code)
+                    .path(username)
+                    .request(MediaType.APPLICATION_XML)
+                    .put(Entity.xml(document));
+
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Erro ao fazer o upload do ficheiro!", logger);
+        }
+    }
+
+    /*
+    public void removeFileRecord(ActionEvent event) {
+        try {
+            UIParameter param = (UIParameter) event.getComponent().findComponent("publicTestCode3");
+            int code = Integer.parseInt(param.getValue().toString());
+            publicTestBean.removeFileRecord(code);
+        } catch (EntityDoesNotExistException e) {
+            FacesExceptionHandler.handleException(e, e.getMessage(), logger);
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
+        }
+    } */
+
+    
+    public Collection<ApplicationDTO> getAllStudentApplications(){
+        
+        Collection<ApplicationDTO> applications = null;
+        
+        try{
+            //vai buscar o estudante correntemente logado atraves do username
+            String username = userManager.getUsername();
+            
+          applications =  applicationBean.getStudentApplications(username);
+          
+          
+        }catch
+        (Exception e) {
+            FacesExceptionHandler.handleException(e, "Erro inesperado", component, logger);
+
+        }
+        return applications;
+        
+        /* public List<ProjectProposalDTO> getAllProjectProposals() {
+        List<ProjectProposalDTO> returnedProjectProposals = null;
+        try {
+            returnedProjectProposals = client.target(baseUri)
+                    .path("/projectProposals/all")
+                    .request(MediaType.APPLICATION_XML)
+                    .get(new GenericType<List<ProjectProposalDTO>>() {
+                    });
+
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Erro inesperado", component, logger);
+
+        }
+        return returnedProjectProposals;
+    } */
+        
+        
+    }
     ///////////////////////////////////////////Getters e setters tem que ser organizado//////////////////////////////////////////
     public ProjectProposalDTO getNewProjectProposal() {
         return newProjectProposal;
@@ -947,7 +1051,15 @@ public class AdministratorManager {
     public void setNewApplication(ApplicationDTO newApplication) {
         this.newApplication = newApplication;
     }
-    
-    
 
+    public ApplicationDTO getCurrentApplication() {
+        return currentApplication;
+    }
+
+    public void setCurrentApplication(ApplicationDTO currentApplication) {
+        this.currentApplication = currentApplication;
+    }
+
+    
+    
 }

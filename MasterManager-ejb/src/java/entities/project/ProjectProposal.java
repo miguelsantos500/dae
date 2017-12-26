@@ -5,6 +5,7 @@
  */
 package entities.project;
 
+import entities.Application;
 import entities.users.Proponent;
 import entities.users.Student;
 import java.io.Serializable;
@@ -89,9 +90,13 @@ public class ProjectProposal implements Serializable {
     @Enumerated(STRING)
     private ProjectProposalState projectProposalState;
     
+    @OneToMany(mappedBy="projectProposal")
+    private List<Application> applications;
+    
 
     public ProjectProposal() {
         this.students = new LinkedList<>();
+        this.applications = new LinkedList<>();
     }
 
     public ProjectProposal(int code, ProjectType projectType,
@@ -116,6 +121,7 @@ public class ProjectProposal implements Serializable {
         this.supports = supports;
         this.students = new LinkedList<>();
         this.projectProposalState = ProjectProposalState.PENDING;
+        this.applications = new LinkedList<>();
     }
 
     //GETTERS AND SETTERS
@@ -254,6 +260,10 @@ public class ProjectProposal implements Serializable {
 
     public void addStudent(Student student) {
         students.add(student);
+    }
+    
+    public void addApplication(Application application){
+        applications.add(application);
     }
 
 }

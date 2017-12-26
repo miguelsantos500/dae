@@ -1,28 +1,35 @@
-
 package dtos;
 
 import entities.project.ProjectProposal;
 import entities.users.Student;
 import java.io.Serializable;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
+@XmlRootElement(name = "Applications")
+@XmlAccessorType(XmlAccessType.FIELD)
+public class ApplicationDTO implements Serializable {
 
-public class ApplicationDTO implements Serializable  {
-  
-   private Student student;
-   private ProjectProposal projectProposal;
-   private String applyingMessage;
+    private Long id;
+    private Student student;
+    private ProjectProposal projectProposal;
+    private String applyingMessage;
+    private String documentName;
+    private int projectProposalCode;
 
     public ApplicationDTO() {
     }
 
-   
-    public ApplicationDTO(Student student, ProjectProposal projectProposal, String applyingMessage) {
+    public ApplicationDTO(Long id, int projectProposalCode, Student student, ProjectProposal projectProposal, String applyingMessage) {
+        this.id = id;
         this.student = student;
         this.projectProposal = projectProposal;
         this.applyingMessage = applyingMessage;
+        this.projectProposalCode = projectProposal.getCode();
     }
-   
-   public void reset(){
+
+    public void reset() {
         student = null;
         projectProposal = null;
         applyingMessage = null;
@@ -40,6 +47,11 @@ public class ApplicationDTO implements Serializable  {
         return projectProposal;
     }
 
+    public int getProjectProposalCode() {
+        return projectProposalCode;
+    }
+    
+
     public void setProjectProposal(ProjectProposal projectProposal) {
         this.projectProposal = projectProposal;
     }
@@ -51,6 +63,13 @@ public class ApplicationDTO implements Serializable  {
     public void setApplyingMessage(String applyingMessage) {
         this.applyingMessage = applyingMessage;
     }
-   
-   
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
 }

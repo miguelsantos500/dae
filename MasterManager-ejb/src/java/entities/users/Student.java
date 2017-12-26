@@ -45,11 +45,14 @@ public class Student extends User implements Serializable {
     private List<Application> applications;
 
     public Student() {
+        this.applications = new LinkedList<>();
     }
 
     public Student(String username, String password, String name, String email, Course course) {
         super(username, password, GROUP.Student, name, email);
         this.course = course;
+        this.applications = new LinkedList<>();
+        
     }
 
     public Course getCourse() {

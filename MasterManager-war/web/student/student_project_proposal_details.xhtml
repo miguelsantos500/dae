@@ -94,13 +94,17 @@
                         requiredMessage="Erro: A mensagem de motivação tem que ser preenchida."
                         value="#{administratorManager.newApplication.applyingMessage}"/>
                     <h:message for="message" errorStyle="color: red" />      
-
-
+                    &nbsp;
                     <h:commandLink value="Candidatar"
                                    actionListener="#{administratorManager.createApplication}">
                         <f:param name="code" id="code"
                                  value="#{administratorManager.currentProjectProposal.code}" />
                     </h:commandLink>
+
+                    &nbsp;
+                    &nbsp;
+                    &nbsp;
+
 
                     <h:commandLink value="Voltar"
                                    action="student_index?facesredirect=true">

@@ -34,7 +34,9 @@ public class Document implements Serializable {
     public Document() {
         
     }
-
+    
+    //TODO
+//isto tem que ser alterado: o Document tem que receber um objecto de qualquer tipo. Não pode ser só o public test
     public Document(String filepath, String desiredName, String mimeType, PublicTest publicTest) {
         this.filepath = filepath;
         this.desiredName = desiredName;

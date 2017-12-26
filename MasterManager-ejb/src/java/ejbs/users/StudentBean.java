@@ -261,5 +261,12 @@ public class StudentBean {
             throw new EJBException(e.getMessage());
         }
     }*/
+    
+    public StudentDTO getStudent(String username){
+        
+        StudentDTO student = em.find(StudentDTO.class, username);
+        
+        return student;
+    }
 
 }

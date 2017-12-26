@@ -35,6 +35,8 @@ public class ConfigBean {
     private PublicTestBean publicTestBean;
      @EJB
     private InstitutionBean institutionBean;
+      @EJB
+    private ApplicationBean applicationBean;
 
     @PostConstruct
     public void populateBD() {
@@ -60,7 +62,7 @@ public class ConfigBean {
             studentBean.create("6666666", "Joaquim", "Joaquim", "dae.ei.ipleiria@gmail.com", 3);
             studentBean.create("7777777", "Alzira", "Alzira", "dae.ei.ipleiria@gmail.com", 4);
             studentBean.create("8888888", "Pedro", "Pedro", "dae.ei.ipleiria@gmail.com", 4);
-
+            
             teacherBean.create("t1", "t1", "t1", "t1.jose.ipleiria@gmail.com");
             teacherBean.create("3243243", "José", "José", "dae.jose.ipleiria@gmail.com");
             teacherBean.create("2446546", "Tati", "Tati", "dae.tati.ipleiria@gmail.com");
@@ -118,7 +120,36 @@ public class ConfigBean {
                     new LinkedList<>(Arrays.asList("Pass", "Have more than 12")),
                     "Literaly Zero Euros",
                     new LinkedList<>(Arrays.asList("Mum", "Pops")));
+            
+            projectProposalBean.create(6, "PROJECT", "Project from hell",
+                    new LinkedList<>(Arrays.asList("Programming", "Management")),
+                    "3243245", "This is my first abstract",
+                    new LinkedList<>(Arrays.asList("Pass", "Have more than 12")),
+                    new ArrayList<>(Arrays.asList("Wikipedia", "Google")),
+                    "Do it the day before", "My Basement",
+                    new LinkedList<>(Arrays.asList("Pass", "Have more than 12")),
+                    "Literaly Zero Euros",
+                    new LinkedList<>(Arrays.asList("Mum", "Pops")));
+            
+            projectProposalBean.create(7, "PROJECT", "Project from heaven",
+                    new LinkedList<>(Arrays.asList("Programming", "Management")),
+                    "3243245", "This is my first abstract",
+                    new LinkedList<>(Arrays.asList("Pass", "Have more than 12")),
+                    new ArrayList<>(Arrays.asList("Wikipedia", "Google")),
+                    "Do it the day before", "My Basement",
+                    new LinkedList<>(Arrays.asList("Pass", "Have more than 12")),
+                    "Literaly Zero Euros",
+                    new LinkedList<>(Arrays.asList("Mum", "Pops")));
 
+            
+            applicationBean.create("s1", 1, "Quero ser estudante.");
+            applicationBean.create("s1", 2, "Quero ser estudante.");
+            applicationBean.create("s1", 3, "Quero ser estudante.");
+            applicationBean.create("s1", 4, "Quero ser estudante.");
+            applicationBean.create("s1", 5, "Quero ser estudante.");
+
+            
+            
             publicTestBean.create(1, "Title1", new Date(2000, 1, 1), "Sala yyy", "www.link.com", "2446546", "3243243", "Pedro Oliveia", "yyy@gmail.com", "1111111");
             publicTestBean.create(2, "Title2", new Date(2000, 1, 1), "Sala xxx", "www.link.com", "9473829", "3243244", "Pedro Silva", "xxx@gmail.com", "2222222");
             publicTestBean.create(3, "Title3", new Date(2000, 1, 1), "Sala zzz", "www.link.com", "3243245", "3243247", "Joao Oliveia", "zzz@gmail.com", "3333333");

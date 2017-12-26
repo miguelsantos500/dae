@@ -24,25 +24,30 @@ import javax.validation.constraints.NotNull;
 @Table(name = "APPLICATIONS")
 @NamedQueries({
     @NamedQuery(name = "getAllApplications",
-            query = "SELECT a FROM Application a ORDER BY a.student.username"),
+            query = "SELECT a FROM Application a"),
 })
 public class Application implements Serializable {
   
-   @Id 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+ 
    @ManyToOne
    @JoinColumn(name="SUDENT_USERNAME")
    private Student student;
    
-   @Id
    @ManyToOne
    @JoinColumn(name="PROJECT_PROPOSAL_CODE")
-   private ProjectProposal projectProposal;
+   private ProjectProposal projectProposal; 
    
    @NotNull
    private String applyingMessage;
    
-   //todo
-   //acrescentat classe documento e lista de documentos aqui
+   @OneToOne
+   @JoinColumn(name = "FILE_ID")
+   private Document fileRecord;
+   
+   
 
     public Application() {
     }
@@ -70,6 +75,10 @@ public class Application implements Serializable {
         this.projectProposal = projectProposal;
     }
 
+    
+
+    
+
     public String getApplyingMessage() {
         return applyingMessage;
     }
@@ -78,8 +87,26 @@ public class Application implements Serializable {
         this.applyingMessage = applyingMessage;
     }
     
+     public Document getFileRecord() {
+        if (this.fileRecord == null) {
+            return new Document();
+        }
+        return fileRecord;
+    }
+
+    public void setFileRecord(Document fileRecord) {
+        this.fileRecord = fileRecord;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
     
    
    
-
+   
 }
