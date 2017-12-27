@@ -447,9 +447,9 @@ public class AdministratorManager {
         this.searchableProjectProposal = searchableProjectProposal;
     }
 
-    public List<ProjectProposalDTO> getSearchProjectProposal() {
+    public List<ProjectProposalDTO> getSearchProjectProposal(String condition) {
         try {
-            List<ProjectProposalDTO> foundProjectProposals = projectProposalBean.search(searchableProjectProposal);
+            List<ProjectProposalDTO> foundProjectProposals = projectProposalBean.search(searchableProjectProposal, condition);
             return foundProjectProposals;
         } catch (Exception e) {
             FacesExceptionHandler.handleException(e, "Unexpected error on getSearchProjectProposal()!", logger);

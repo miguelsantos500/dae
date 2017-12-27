@@ -102,15 +102,15 @@ public class ProjectProposalBean {
     @Path("allFinished")
     public List<ProjectProposalDTO> getAllFinished() {
         try {
-            List<ProjectProposal> projectProposals = 
-                    em.createNamedQuery("getAllProjectProposalsFinished", ProjectProposal.class).
+            List<ProjectProposal> projectProposals
+                    = em.createNamedQuery("getAllProjectProposalsFinished", ProjectProposal.class).
                             setParameter("state", ProjectProposalState.FINISHED).getResultList();
             return projectProposalsToDTOs(projectProposals);
         } catch (Exception e) {
             throw new EJBException(e.getMessage());
         }
     }
-    
+
     public ProjectProposal getProjectProposal(int code) {
         try {
             ProjectProposal projectProposal = em.find(ProjectProposal.class, code);
@@ -206,10 +206,16 @@ public class ProjectProposalBean {
 
     }
 
-    public List<ProjectProposalDTO> search(String searchProjectProposal) {
+    public List<ProjectProposalDTO> search(String searchProjectProposal, String condition) {
         try {
+            List<ProjectProposal> projects;
+            if (condition.equals("all")) {
+                projects = em.createNamedQuery("getAllProjectProposals").getResultList();
+            } else {
+                projects = em.createNamedQuery("getAllProjectProposalsFinished", ProjectProposal.class).
+                        setParameter("state", ProjectProposalState.FINISHED).getResultList();
+            }
 
-            List<ProjectProposal> projects = em.createNamedQuery("getAllProjectProposals").getResultList();
             List<ProjectProposal> matchedProjectProposals = new LinkedList<>();
 
             for (ProjectProposal p : projects) {
@@ -227,8 +233,8 @@ public class ProjectProposalBean {
         }
     }
 
-    public void updateProjectProposalState(int code, ProjectProposalState projectProposalState) 
-    throws ProjectProposalNotPendingException, ProjectProposalStateNotChangedException{
+    public void updateProjectProposalState(int code, ProjectProposalState projectProposalState)
+            throws ProjectProposalNotPendingException, ProjectProposalStateNotChangedException {
         try {
             ProjectProposal projectProposal = em.find(ProjectProposal.class, code);
             if (projectProposal == null) {

@@ -56,11 +56,6 @@
                         id="proponent"
                         value="#{administratorManager.currentProjectProposal.proponentUsername}"/>
 
-                    <h:outputLabel for="projectProposalState" value="Project Proposal State " />
-                    <h:outputText 
-                        id="projectProposalState"
-                        value="#{administratorManager.currentProjectProposal.projectProposalState}"/>
-
                 </h:panelGrid>
 
 
@@ -78,7 +73,7 @@
                     list="#{administratorManager.currentProjectProposal.bibliography}">
                 </em:dt_list>
                 <em:dt_list
-                    headers="#{['Requisitos de Sucesso']}"
+                    headers="#{['Requesitos de Sucesso']}"
                     list="#{administratorManager.currentProjectProposal.successRequirements}">
                 </em:dt_list>
                 <em:dt_list
@@ -87,42 +82,9 @@
                 </em:dt_list>
 
 
-                <h:form>
-
-                    <h:panelGrid columns="3">
-
-                        <h:outputLabel for="message" value="Mensagem: " />
-                        <h:inputText 
-                            id="message"
-                            size="10"
-                            required="true"
-                            requiredMessage="Erro: Mensagem não pode estar vazia."
-                            value="#{administratorManager.newObservation.message}"/>
-                        <h:message for="message" errorStyle="color: red" />
-
-                        <h:outputLabel for="projectProposalState" value="Estado a transitar: " />
-                        <h:selectOneMenu
-                            id="projectProposalState"
-                            value="#{administratorManager.newObservation.projectProposalState}" >
-                            <f:selectItems
-                                value="#{administratorManager.allProposalValidationStates}"
-                                var="ccp"/>
-                        </h:selectOneMenu>
-                        <h:message for="projectProposalState" errorStyle="color: red" />
-
-                        <h:commandButton
-                            id="submit"
-                            value="Adicionar Observação"
-                            binding="#{administratorManager.component}" 
-                            action="#{administratorManager.addObservation}" />
-                        <h:message for="submit" style="color: red"/>
-                    </h:panelGrid>
-                </h:form>
-
-
                 <br/>
 
-                <h:link value="Return" outcome="admin_index"/>
+                <h:link value="Voltar" outcome="admin_index"/>
 
                 <h:messages errorStyle="color: red" />        
 
