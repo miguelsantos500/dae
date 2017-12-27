@@ -628,7 +628,8 @@ public class AdministratorManager {
 
     public void uploadFileRecord(UIComponent component) {
         try {
-            DocumentDTO document = new DocumentDTO(uploadManager.getCompletePathFile(),
+            if (uploadManager.getFile().getSize() != 0){
+                DocumentDTO document = new DocumentDTO(uploadManager.getCompletePathFile(),
                     uploadManager.getFilename(),
                     uploadManager.getFile().getContentType());
 
@@ -641,6 +642,7 @@ public class AdministratorManager {
                     .request(MediaType.APPLICATION_XML)
                     .put(Entity.xml(document));
 
+            }
         } catch (Exception e) {
             FacesExceptionHandler.handleException(e, "Erro ao fazer o upload do ficheiro!", logger);
         }

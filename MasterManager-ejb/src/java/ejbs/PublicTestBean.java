@@ -3,6 +3,7 @@ package ejbs;
 import dtos.DocumentDTO;
 import dtos.PublicTestDTO;
 import entities.Document;
+import entities.EntitieGeneric;
 import entities.publictest.PublicTest;
 import entities.users.Student;
 import entities.users.Teacher;
@@ -234,8 +235,8 @@ public class PublicTestBean {
             if (publicTest == null) {
                 throw new EntityDoesNotExistException("Não existe nenhuma prova publica com esse código.");
             }
-
-            Document document = new Document(doc.getFilepath(), doc.getDesiredName(), doc.getMimeType(), publicTest);
+            EntitieGeneric<PublicTest> generic = new EntitieGeneric<>(publicTest); 
+            Document document = new Document(doc.getFilepath(), doc.getDesiredName(), doc.getMimeType(), generic);
             em.persist(document);
             publicTest.setFileRecord(document);
 
