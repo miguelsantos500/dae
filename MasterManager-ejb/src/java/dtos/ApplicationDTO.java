@@ -6,12 +6,15 @@ import java.io.Serializable;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 @XmlRootElement(name = "Applications")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ApplicationDTO implements Serializable {
 
     private Long id;
+    //para que não faça ciclos na geração do XML
+    @XmlTransient
     private Student student;
     private ProjectProposal projectProposal;
     private String applyingMessage;

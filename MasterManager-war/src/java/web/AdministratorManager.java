@@ -42,6 +42,7 @@ import javax.faces.event.ActionEvent;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
@@ -102,6 +103,7 @@ public class AdministratorManager {
     private String searchableCourse;
     private String searchableInstitution;
     private String searchableProjectProposal;
+    private String searchableApplication;
 
     /**
      * ** Other ***
@@ -903,17 +905,50 @@ public class AdministratorManager {
             FacesExceptionHandler.handleException(e, e.getMessage(), logger);
         }
         
-        
-      /*   public void removeInstitution(ActionEvent event) {
-        try {
-            UIParameter param = (UIParameter) event.getComponent().findComponent("institutionUsername");
-            String id = param.getValue().toString();
-            institutionBean.remove(id);
-        } catch (Exception e) {
-            FacesExceptionHandler.handleException(e, e.getMessage(), logger);
-        }
-    }*/
     }
+    
+    public String updateApplication(){
+        
+        try {
+            WebTarget path = client.target(baseUri)
+                    .path("/applications/update");
+            System.out.println(path.getUri());
+                    path.request(MediaType.APPLICATION_XML)
+                    .put(Entity.xml(currentApplication));
+        
+        } catch (Exception e) {
+            e.printStackTrace();
+             FacesExceptionHandler.handleException(e, "Unexpected error no updateApplication do AdministratorManager!", logger);
+            return null;
+        }
+        
+        return "student_index?faces-redirect=true";
+        
+        
+    }
+    
+    
+    public List<ApplicationDTO> getSearchApplication(){
+        try {
+            //tenho que saber qual é o estudante para que ele procure só as candidaturas desse estudante
+            String username = userManager.getUsername();
+            List<ApplicationDTO> foundApplications = applicationBean.search(searchableApplication, username);
+            return foundApplications;
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Unexpected error on getSearchApplication()!", logger);
+            return null;
+        }
+    }
+
+    public String getSearchableApplication() {
+        return searchableApplication;
+    }
+
+    public void setSearchableApplication(String searchableApplication) {
+        this.searchableApplication = searchableApplication;
+    }
+    
+    
     ///////////////////////////////////////////Getters e setters tem que ser organizado//////////////////////////////////////////
     public ProjectProposalDTO getNewProjectProposal() {
         return newProjectProposal;

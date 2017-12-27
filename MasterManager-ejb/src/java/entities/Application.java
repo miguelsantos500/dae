@@ -24,8 +24,8 @@ import javax.validation.constraints.NotNull;
 @Table(name = "APPLICATIONS")
 @NamedQueries({
     @NamedQuery(name = "getAllApplications",
-            query = "SELECT a FROM Application a"),
-})
+            query = "SELECT a FROM Application a"),})
+
 public class Application implements Serializable {
   
     @Id

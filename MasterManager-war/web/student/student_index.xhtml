@@ -13,7 +13,31 @@
             <h:form>
                 <h:commandButton value="Logout" action="#{userManager.logout}" />  
             </h:form> 
-            
+
+            <br></br>
+            <br></br>
+
+            <h:form>
+                <h:outputLabel for="search" value="Procurar candidatura " />
+                <h:inputText 
+                    id="searchApplications"
+                    size="20"
+                    required="true"
+                    requiredMessage="Erro: campo não pode estar vazio!"
+                    value="#{administratorManager.searchableApplication}"/>
+
+                <br></br>
+
+                <h:commandButton
+                    id="searchApplication"
+                    value="Procurar"
+                    action="student_search_application?facesredirect=true" />    
+                <h:message for="searchApplication" style="color: red" />   
+
+            </h:form>
+            <br></br>
+            <br></br>
+            <br></br>
             <em:dt 
                 title="As minhas candidaturas" 
                 headers="#{['Id da candidatura', 'Código da proposta', 'Mensagem']}"
@@ -36,12 +60,14 @@
                             <f:param name="applicationId" id="applicationId"
                                      value="#{object.id}" />
                         </h:commandLink>
-                        
+
                     </h:form>
                 </p:column>
             </em:dt> 
-          
-            
+
+            <br></br>
+            <br></br>
+            <br></br>
             <em:dt 
                 title="Todas as propostas de projecto" 
                 headers="#{['Tipo de projecto', 'Título', 'Proponente']}"
