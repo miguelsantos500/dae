@@ -6,30 +6,19 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:em="http://xmlns.jcp.org/jsf/composite/emcomp">
-    <ui:composition template="../templates/skeleton.xhtml">
+    <ui:composition template="./templates/skeleton.xhtml">
         <ui:define name="title">CCP</ui:define>
         <ui:define name="main">
-            <em:dt 
-                title="Propostas de projecto encontradas" 
-               headers="#{['Código', 'Tipo de projecto', 'Título']}"
-                props="#{['code', 'projectType', 'title']}"
+            <em:dt
+                title="Proposta de projecto" 
+                headers="#{['Tipo de projecto', 'Título', 'Proponente', 'Estado']}"
+                props="#{['projectTypeString', 'title', 'proponentUsername', 'projectProposalState']}"
                 list="#{administratorManager.getSearchProjectProposal('all')}">
                 <p:column headerText="Acções">
                     <h:form>
                         <h:commandLink value="Detalhes" action="project_proposals_details?facesredirect=true">
                             <f:setPropertyActionListener
                                 target="#{administratorManager.currentProjectProposal}" value="#{object}" />
-                        </h:commandLink>
-                        &nbsp;
-                        <h:commandLink value="Actualizar" action="project_proposals_update?facesredirect=true">
-                            <f:setPropertyActionListener
-                                target="#{administratorManager.currentProjectProposal}" value="#{object}" />
-                        </h:commandLink>
-                        &nbsp;
-                        <h:commandLink value="Remover"
-                                       actionListener="#{administratorManager.removeProjectProposal}">
-                            <f:param name="projectProposalCode" id="projectProposalCode"
-                                     value="#{object.code}" />
                         </h:commandLink>
                     </h:form>
                 </p:column>

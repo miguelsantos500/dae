@@ -2,26 +2,67 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
-    <h:head>
-        <title>Login to Master Manager</title>
-    </h:head>
-    <h:body>
-        <c:if test="${not userManager.someUserAuthenticated}">
-            <h:form rendered="${not userManager.someUserAuthenticated}">
-                <h:panelGrid columns="2">                    
-                  <h:outputLabel for="username">Username: </h:outputLabel>
-                  <h:inputText id="username" value="#{userManager.username}" required="true" />
-                  <h:outputLabel for="password">Password: </h:outputLabel>
-                  <h:inputSecret id="password" value="#{userManager.password}" required="true" />
-                  <h:commandButton value="Login" action="#{userManager.login}" />
-                </h:panelGrid>
-            </h:form>
-        </c:if>
-        <c:if test="${userManager.someUserAuthenticated}">
-            <p>You are logged in!</p>
-            <h:link outcome="${userManager.redirect()}" value="Return to Home Page"/>
-        </c:if>
-    </h:body>
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:em="http://xmlns.jcp.org/jsf/composite/emcomp">
+    <ui:composition template="./templates/skeleton.xhtml">
+        <ui:define name="title">Página Inicial</ui:define>
+        <ui:define name="main">
+            <c:if test="${not userManager.someUserAuthenticated}">
+                <h:form rendered="${not userManager.someUserAuthenticated}">
+                    <h:panelGrid columns="2">                    
+                        <h:outputLabel for="username">Username: </h:outputLabel>
+                        <h:inputText id="username" value="#{userManager.username}" required="true" />
+                        <h:outputLabel for="password">Password: </h:outputLabel>
+                        <h:inputSecret id="password" value="#{userManager.password}" required="true" />
+                        <h:commandButton class="btn btn-primary" value="Login" action="#{userManager.login}" />
+                    </h:panelGrid>
+                </h:form>
+            </c:if>
+            <c:if test="${userManager.someUserAuthenticated}">
+                <p>You are logged in!</p>
+                <h:link outcome="${userManager.redirect()}" value="Return to Home Page"/>
+            </c:if>
+            
+            <em:dt
+                title="Proposta de projecto" 
+                headers="#{['Tipo de projecto', 'Título', 'Proponente', 'Estado']}"
+                props="#{['projectTypeString', 'title', 'proponentUsername', 'projectProposalState']}"
+                list="#{administratorManager.getAllProjectProposals('allFinished')}">
+                <p:column headerText="Acções">
+                    <h:form>
+                        <h:commandLink value="Detalhes" action="project_proposals_details?facesredirect=true">
+                            <f:setPropertyActionListener
+                                target="#{administratorManager.currentProjectProposal}" value="#{object}" />
+                        </h:commandLink>
+                    </h:form>
+                </p:column>
+            </em:dt>
+
+            <br/>
+            <br/>
+
+            <h:form>
+                <h:outputLabel for="search" value="Procurar proposta: " />
+                <h:inputText 
+                    id="searchProjectProposals"
+                    size="20"
+                    required="true"
+                    requiredMessage="Erro: campo não pode estar vazio!"
+                    value="#{administratorManager.searchableProjectProposal}"/>
+
+                <br></br>
+
+                <h:commandButton
+                    id="searchProjectProposal"
+                    value="Procurar"
+                    action="search_project_proposal?facesredirect=true" />    
+                <h:message for="searchProjectProposal" style="color: red" />   
+
+            </h:form> 
+        </ui:define>
+    </ui:composition>
 </html>
 

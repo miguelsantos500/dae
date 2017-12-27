@@ -15,6 +15,7 @@ import exceptions.EntityAlreadyExistsException;
 import exceptions.EntityDoesNotExistException;
 import exceptions.MyConstraintViolationException;
 import exceptions.ProjectProposalNotPendingException;
+import exceptions.ProjectProposalStateNotChangedException;
 import exceptions.Utils;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -90,6 +91,20 @@ public class ProjectProposalBean {
     public List<ProjectProposalDTO> getAll() {
         try {
             List<ProjectProposal> projectProposals = (List<ProjectProposal>) em.createNamedQuery("getAllProjectProposals").getResultList();
+            return projectProposalsToDTOs(projectProposals);
+        } catch (Exception e) {
+            throw new EJBException(e.getMessage());
+        }
+    }
+
+    @GET
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Path("allFinished")
+    public List<ProjectProposalDTO> getAllFinished() {
+        try {
+            List<ProjectProposal> projectProposals
+                    = em.createNamedQuery("getAllProjectProposalsFinished", ProjectProposal.class).
+                            setParameter("state", ProjectProposalState.FINISHED).getResultList();
             return projectProposalsToDTOs(projectProposals);
         } catch (Exception e) {
             throw new EJBException(e.getMessage());
@@ -192,10 +207,16 @@ public class ProjectProposalBean {
 
     }
 
-    public List<ProjectProposalDTO> search(String searchProjectProposal) {
+    public List<ProjectProposalDTO> search(String searchProjectProposal, String condition) {
         try {
+            List<ProjectProposal> projects;
+            if (condition.equals("all")) {
+                projects = em.createNamedQuery("getAllProjectProposals").getResultList();
+            } else {
+                projects = em.createNamedQuery("getAllProjectProposalsFinished", ProjectProposal.class).
+                        setParameter("state", ProjectProposalState.FINISHED).getResultList();
+            }
 
-            List<ProjectProposal> projects = em.createNamedQuery("getAllProjectProposals").getResultList();
             List<ProjectProposal> matchedProjectProposals = new LinkedList<>();
 
             for (ProjectProposal p : projects) {
@@ -213,7 +234,8 @@ public class ProjectProposalBean {
         }
     }
 
-    public void approveProjectProposal(int code, boolean approved) {
+    public void updateProjectProposalState(int code, ProjectProposalState projectProposalState)
+            throws ProjectProposalNotPendingException, ProjectProposalStateNotChangedException {
         try {
             ProjectProposal projectProposal = em.find(ProjectProposal.class, code);
             if (projectProposal == null) {
@@ -221,18 +243,23 @@ public class ProjectProposalBean {
                         "There is no Project Proposal with code: "
                         + code);
             }
-            if(projectProposal.getProjectProposalState() != ProjectProposalState.PENDING) {
+            if (projectProposal.getProjectProposalState() != ProjectProposalState.PENDING
+                    && projectProposal.getProjectProposalState() != ProjectProposalState.ACCEPTED
+                    && projectProposal.getProjectProposalState() != ProjectProposalState.NOT_ACCEPTED) {
                 throw new ProjectProposalNotPendingException(
-                        "This Project Proposal is not in state PENDING, is in state: "
+                        "This Project Proposal is not in state PENDING, ACCEPTED, NOT_ACCEPTED, is in state: "
                         + projectProposal.getProjectProposalState());
             }
-            if(approved) {
-                projectProposal.setProjectProposalState(ProjectProposalState.ACCEPTED);
-            }else {
-                projectProposal.setProjectProposalState(ProjectProposalState.NOT_ACCEPTED);                
+            if (projectProposal.getProjectProposalState() == projectProposalState) {
+                throw new ProjectProposalStateNotChangedException(
+                        "There is no change in the Project Proposal State! ("
+                        + projectProposalState + ")");
             }
-            
-            
+
+            projectProposal.setProjectProposalState(projectProposalState);
+
+        } catch (ProjectProposalNotPendingException | ProjectProposalStateNotChangedException e) {
+            throw e;
         } catch (Exception ex) {
             throw new EJBException(ex.getMessage());
         }

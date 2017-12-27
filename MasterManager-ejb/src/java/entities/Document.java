@@ -2,6 +2,7 @@ package entities;
 
 import entities.publictest.PublicTest;
 import java.io.Serializable;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -21,27 +22,28 @@ public class Document implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
-    
+
     private String filepath;
 
     private String desiredName;
-    
+
     private String mimeType;
-    
-    @OneToOne(mappedBy="fileRecord")
+
+    @OneToOne(mappedBy = "fileRecord", cascade = CascadeType.REMOVE)
     private PublicTest publicTest;
-    
+
     public Document() {
-        
+
     }
-    
-    //TODO
-//isto tem que ser alterado: o Document tem que receber um objecto de qualquer tipo. Não pode ser só o public test
-    public Document(String filepath, String desiredName, String mimeType, PublicTest publicTest) {
+
+    public Document(String filepath, String desiredName, String mimeType, EntitieGeneric<?> entitie) {
         this.filepath = filepath;
         this.desiredName = desiredName;
         this.mimeType = mimeType;
-        this.publicTest = publicTest;
+        if (entitie.getEntitie().getClass().equals(PublicTest.class)) {
+            this.publicTest = (PublicTest) entitie.getEntitie();
+        }
+
     }
 
     public int getId() {
@@ -75,7 +77,7 @@ public class Document implements Serializable {
     public void setMimeType(String mimeType) {
         this.mimeType = mimeType;
     }
-    
+
     public PublicTest getStudent() {
         return publicTest;
     }

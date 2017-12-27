@@ -11,15 +11,16 @@ import entities.users.Student;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
+import javax.persistence.ElementCollection;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import static javax.persistence.EnumType.STRING;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -32,9 +33,12 @@ import javax.validation.constraints.NotNull;
  */
 @Entity
 @Table(name = "PROJECT_PROPOSALS")
-@NamedQuery(name = "getAllProjectProposals",
-        query = "SELECT p FROM ProjectProposal p")
-/*TODO: ORDER BY*/
+@NamedQueries({
+    @NamedQuery(name = "getAllProjectProposals",
+        query = "SELECT p FROM ProjectProposal p"),
+    @NamedQuery(name = "getAllProjectProposalsFinished",
+        query = "SELECT p FROM ProjectProposal p WHERE p.projectProposalState = :state"),
+}) 
 public class ProjectProposal implements Serializable {
 
     @Id
@@ -48,6 +52,7 @@ public class ProjectProposal implements Serializable {
     private String title;
 
     @NotNull
+    @ElementCollection(fetch=FetchType.EAGER)
     private List<String> scientificAreas;
 
     //Quem propos a proposta
@@ -64,10 +69,12 @@ public class ProjectProposal implements Serializable {
     private String projectAbstract;
 
     @NotNull
+    @ElementCollection(fetch=FetchType.EAGER)
     private List<String> objectives;
 
     //No máximo 5.
     @NotNull
+    @ElementCollection(fetch=FetchType.EAGER)
     private List<String> bibliography;
 
     @NotNull
@@ -77,6 +84,7 @@ public class ProjectProposal implements Serializable {
     private String workPlace;
 
     @NotNull
+    @ElementCollection(fetch=FetchType.EAGER)
     private List<String> successRequirements;
 
     /*    
@@ -86,11 +94,16 @@ public class ProjectProposal implements Serializable {
     private String budget;
 
     @NotNull
+    @ElementCollection(fetch=FetchType.EAGER)
     private List<String> supports;
     
     @NotNull
     @Enumerated(STRING)
     private ProjectProposalState projectProposalState;
+    
+    
+    @OneToMany(mappedBy="projectProposal")
+    private List<Observation> observations;
     
     @OneToMany(mappedBy="projectProposal")
     private List<Application> applications;

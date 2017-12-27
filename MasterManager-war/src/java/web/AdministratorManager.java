@@ -5,12 +5,14 @@ import dtos.CourseDTO;
 import dtos.DocumentApplicationDTO;
 import dtos.DocumentDTO;
 import dtos.InstitutionDTO;
+import dtos.ObservationDTO;
 import dtos.ProjectProposalDTO;
 import dtos.ProponentDTO;
 import dtos.PublicTestDTO;
 import dtos.StudentDTO;
 import dtos.TeacherDTO;
 import ejbs.ApplicationBean;
+import ejbs.ObservationBean;
 import ejbs.ProjectProposalBean;
 import ejbs.PublicTestBean;
 import ejbs.users.CCPUserBean;
@@ -24,6 +26,7 @@ import entities.users.UserGroup;
 import exceptions.EntityAlreadyExistsException;
 import exceptions.EntityDoesNotExistException;
 import exceptions.MyConstraintViolationException;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
@@ -38,6 +41,7 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.component.html.HtmlPanelGrid;
 import javax.faces.component.UIParameter;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.ws.rs.client.Client;
@@ -72,6 +76,8 @@ public class AdministratorManager {
     private ProjectProposalBean projectProposalBean;
     @EJB
     private ApplicationBean applicationBean;
+    @EJB
+    private ObservationBean observationBean;
 
     /**
      * ** newObjects ***
@@ -83,6 +89,7 @@ public class AdministratorManager {
     private PublicTestDTO newPublicTest;
     private ProjectProposalDTO newProjectProposal;
     private ApplicationDTO newApplication;
+    private ObservationDTO newObservation;
 
     /**
      * ** currentObjects ***
@@ -139,6 +146,7 @@ public class AdministratorManager {
         newInstitution = new InstitutionDTO();
         newProjectProposal = new ProjectProposalDTO();
         newApplication = new ApplicationDTO();
+        newObservation = new ObservationDTO();
         client = ClientBuilder.newClient();
     }
 
@@ -159,7 +167,7 @@ public class AdministratorManager {
             e.printStackTrace();
             return null;
         }
-        return "admin/admin_index?faces-redirect=true";
+        return "admin_index?faces-redirect=true";
     }
 
     public List<StudentDTO> getAllStudents() {
@@ -192,7 +200,7 @@ public class AdministratorManager {
             return null;
         }
 
-        return "admin/admin_index?faces-redirect=true";
+        return "admin_index?faces-redirect=true";
     }
 
     public void removeStudent(ActionEvent event) {
@@ -240,7 +248,7 @@ public class AdministratorManager {
             e.printStackTrace();
             return null;
         }
-        return "admin/admin_index?faces-redirect=true";
+        return "admin_index?faces-redirect=true";
     }
 
     public List<TeacherDTO> getAllTeachers() {
@@ -313,7 +321,7 @@ public class AdministratorManager {
             return null;
         }
 
-        return "admin/admin_index?faces-redirect=true";
+        return "admin_index?faces-redirect=true";
     }
 
     ////////////////////////////////////// PROJECT PROPOSAL /////////////////////////////////////////////////
@@ -344,10 +352,10 @@ public class AdministratorManager {
             return null;
         }
         if (userManager.isUserInRole(UserGroup.GROUP.Teacher)) {
-            return "teacher/teacher_index?faces-redirect=true";
+            return "teacher_index?faces-redirect=true";
         }
 
-        return "institution/institution_index?faces-redirect=true";
+        return "institution_index?faces-redirect=true";
 
     }
 
@@ -369,11 +377,12 @@ public class AdministratorManager {
         this.searchableTeacher = searchableTeacher;
     }
 
-    public List<ProjectProposalDTO> getAllProjectProposals() {
+    public List<ProjectProposalDTO> getAllProjectProposals(String path) {
         List<ProjectProposalDTO> returnedProjectProposals = null;
         try {
             returnedProjectProposals = client.target(baseUri)
-                    .path("/projectProposals/all")
+                    .path("/projectProposals/")
+                    .path(path)
                     .request(MediaType.APPLICATION_XML)
                     .get(new GenericType<List<ProjectProposalDTO>>() {
                     });
@@ -428,10 +437,10 @@ public class AdministratorManager {
         }
 
         if (userManager.isUserInRole(UserGroup.GROUP.Teacher)) {
-            return "teacher/teacher_index?faces-redirect=true";
+            return "teacher_index?faces-redirect=true";
         }
 
-        return "institution/institution_index?faces-redirect=true";
+        return "institution_index?faces-redirect=true";
 
     }
 
@@ -443,13 +452,28 @@ public class AdministratorManager {
         this.searchableProjectProposal = searchableProjectProposal;
     }
 
-    public List<ProjectProposalDTO> getSearchProjectProposal() {
+    public List<ProjectProposalDTO> getSearchProjectProposal(String condition) {
         try {
-            List<ProjectProposalDTO> foundProjectProposals = projectProposalBean.search(searchableProjectProposal);
+            List<ProjectProposalDTO> foundProjectProposals = projectProposalBean.search(searchableProjectProposal, condition);
             return foundProjectProposals;
         } catch (Exception e) {
             FacesExceptionHandler.handleException(e, "Unexpected error on getSearchProjectProposal()!", logger);
             return null;
+        }
+    }
+
+    public void redirect (String to) throws IOException {
+        if ("update".equals(to)){
+            ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+            externalContext.redirect("http://localhost:8080/MasterManager-war/faces/proponent/project_proposals_update.xhtml");
+        }
+        if ("details".equals(to)){
+            ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+            externalContext.redirect("http://localhost:8080/MasterManager-war/faces/proponent/project_proposals_details.xhtml");
+        }
+        if ("search".equals(to)){
+            ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+            externalContext.redirect("http://localhost:8080/MasterManager-war/faces/proponent/search_project_proposal.xhtml");
         }
     }
 
@@ -509,13 +533,21 @@ public class AdministratorManager {
         }
 
     }*/
-    public String approveProjectProposal(boolean approved) {
-        //TODO: Restful?
+
+    public String addObservation() {
         try {
-            projectProposalBean.approveProjectProposal(currentProjectProposal.getCode(), approved);
-            return "admin/admin_index?faces-redirect=true";
+            projectProposalBean.updateProjectProposalState(
+                    currentProjectProposal.getCode(), 
+                    newObservation.getProjectProposalState());
+            
+            observationBean.create(newObservation.getMessage(),
+                    newObservation.getProjectProposalState().toString(), 
+                    currentProjectProposal.getCode());
+            
+            return "admin_index?faces-redirect=true";
         } catch (Exception e) {
-            FacesExceptionHandler.handleException(e, "Erro inesperado, tente mais tarde.", logger);
+            e.printStackTrace();
+            FacesExceptionHandler.handleException(e, e.getMessage(), component, logger);
             return null;
         }
     }
@@ -542,7 +574,7 @@ public class AdministratorManager {
                     component, logger);
             return null;
         }
-        return "admin/admin_index?faces-redirect=true";
+        return "admin_index?faces-redirect=true";
     }
 
     public List<PublicTestDTO> getAllPublicTests() {
@@ -584,7 +616,7 @@ public class AdministratorManager {
             FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
             return null;
         }
-        return "admin/admin_index?faces-redirect=true";
+        return "admin_index?faces-redirect=true";
     }
 
     public void removePublicTest(ActionEvent event) {
@@ -601,7 +633,8 @@ public class AdministratorManager {
 
     public void uploadFileRecord(UIComponent component) {
         try {
-            DocumentDTO document = new DocumentDTO(uploadManager.getCompletePathFile(),
+            if (uploadManager.getFile().getSize() != 0){
+                DocumentDTO document = new DocumentDTO(uploadManager.getCompletePathFile(),
                     uploadManager.getFilename(),
                     uploadManager.getFile().getContentType());
 
@@ -614,6 +647,7 @@ public class AdministratorManager {
                     .request(MediaType.APPLICATION_XML)
                     .put(Entity.xml(document));
 
+            }
         } catch (Exception e) {
             FacesExceptionHandler.handleException(e, "Erro ao fazer o upload do ficheiro!", logger);
         }
@@ -671,7 +705,7 @@ public class AdministratorManager {
             e.printStackTrace();
             return null;
         }
-        return "admin/admin_index?faces-redirect=true";
+        return "admin_index?faces-redirect=true";
     }
 
     public List<InstitutionDTO> getAllInstitutions() {
@@ -731,7 +765,7 @@ public class AdministratorManager {
             return null;
         }
 
-        return "admin/admin_index?faces-redirect=true";
+        return "admin_index?faces-redirect=true";
     }
 
     public List<InstitutionDTO> getSearchInstitution() {
@@ -781,6 +815,13 @@ public class AdministratorManager {
     ////////////////////////////////////////////APPLICATIONS///////////////////////////////////////////////////////////////////
     public String createApplication(ActionEvent event) {
 
+        //ir buscar o username do estudante via userManager
+        String username = userManager.getUsername();
+
+        //ir buscar a projectProposal via codigo
+        UIParameter param = (UIParameter) event.getComponent().findComponent("code");
+        int code = Integer.parseInt(param.getValue().toString());
+
         try {
             DocumentApplicationDTO document = new DocumentApplicationDTO(uploadManager.getCompletePathFile(),
                     uploadManager.getFilename(),
@@ -788,11 +829,11 @@ public class AdministratorManager {
             
             //ir buscar a projectProposal via codigo
            // UIParameter param = (UIParameter) component.findComponent("ppcode");
-            UIParameter param = (UIParameter) event.getComponent().findComponent("ppcode");
-            int code = Integer.parseInt(param.getValue().toString());
+           // UIParameter param = (UIParameter) event.getComponent().findComponent("ppcode");
+           // int code = Integer.parseInt(param.getValue().toString());
             
             //ir buscar o username do estudante via userManager
-            String username = userManager.getUsername();
+           // String username = userManager.getUsername();
 
             //ir buscar a projectProposal via codigo
            // UIParameter param = (UIParameter) event.getComponent().findComponent("code");
@@ -1085,6 +1126,19 @@ public class AdministratorManager {
 
     public void setNewApplication(ApplicationDTO newApplication) {
         this.newApplication = newApplication;
+    }
+
+    public ObservationDTO getNewObservation() {
+        return newObservation;
+    }
+
+    public void setNewObservation(ObservationDTO newObservation) {
+        this.newObservation = newObservation;
+    }
+
+    public ProjectProposalState[] getAllProposalValidationStates() {
+        return new ProjectProposalState[]{ProjectProposalState.PENDING,
+            ProjectProposalState.ACCEPTED, ProjectProposalState.NOT_ACCEPTED};
     }
 
     public ApplicationDTO getCurrentApplication() {
