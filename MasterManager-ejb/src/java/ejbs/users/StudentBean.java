@@ -229,7 +229,7 @@ public class StudentBean {
             throw new EntityDoesNotExistException("There is no project proposal with that code.");
         }
         
-        return studentsToDTOs(projectProposal.getStudents());
+        return new LinkedList<>();//studentsToDTOs(projectProposal.getStudents());
             
         } catch (EntityDoesNotExistException e) {
             throw e;

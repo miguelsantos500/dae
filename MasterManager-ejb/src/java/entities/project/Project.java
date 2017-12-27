@@ -30,7 +30,7 @@ public class Project implements Serializable {
 
     @NotNull
     @OneToMany(mappedBy = "project")
-    private Teacher[] teachers;
+    private List<Teacher> teachers;
 
     @NotNull
     private String messageToTeacher;
@@ -56,7 +56,7 @@ public class Project implements Serializable {
     public Project() {
     }
 
-    public Project(Teacher[] teachers, String messageToTeacher, 
+    public Project(List<Teacher> teachers, String messageToTeacher, 
                     ProjectProposal projectProposal, Student student, String docDescription) {
        
         this.teachers = teachers;
@@ -73,13 +73,15 @@ public class Project implements Serializable {
         this.id = id;
     }
 
-    public Teacher[] getTeachers() {
+    public List<Teacher> getTeachers() {
         return teachers;
     }
 
-    public void setTeachers(Teacher[] teachers) {
+    public void setTeachers(List<Teacher> teachers) {
         this.teachers = teachers;
     }
+
+    
 
     public String getMessageToTeacher() {
         return messageToTeacher;

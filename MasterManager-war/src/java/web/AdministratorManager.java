@@ -819,7 +819,7 @@ public class AdministratorManager {
         String username = userManager.getUsername();
 
         //ir buscar a projectProposal via codigo
-        UIParameter param = (UIParameter) event.getComponent().findComponent("code");
+        UIParameter param = (UIParameter) event.getComponent().findComponent("ppcode");
         int code = Integer.parseInt(param.getValue().toString());
 
         try {
@@ -846,14 +846,14 @@ public class AdministratorManager {
                     newApplication.getApplyingMessage());
             
             //vai buscar o id da candidatura criada
-            Long applcationId = newApplication.getId();
+            Long applicationId = newApplication.getId();
                     
             
            
             //nao devia passar o id pelo link, ver como se tentou fazer acima... tb posso recorrer ao bean em vez de usar rota
             client.target(URILookup.getBaseAPI())
                     .path("/applications/addFileRecord")
-                    .path(String.valueOf(applcationId))
+                    .path(String.valueOf(applicationId))
                     .request(MediaType.APPLICATION_XML)
                     .put(Entity.xml(document));
             

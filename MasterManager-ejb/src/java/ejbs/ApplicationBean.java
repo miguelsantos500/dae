@@ -85,7 +85,6 @@ public class ApplicationBean {
                 em.persist(application);
             } else {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ja tem o num max de candidaturas", "candidaturas"));
-                return;
 
             }
         } catch (Exception e) {
@@ -139,6 +138,7 @@ public class ApplicationBean {
             
             em.persist(document);
             application.setFileRecord(document);
+          //  em.merge(application);
 
         } catch (EntityDoesNotExistException e) {
             throw e;

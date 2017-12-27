@@ -61,10 +61,7 @@ public class ProjectProposal implements Serializable {
     @ManyToOne
     @JoinColumn(name = "PROPONENT_CODE")
     private Proponent proponent;
-
-    @OneToMany(mappedBy="projectProposal")
-    private List<Student> students;
-
+    
     @NotNull
     private String projectAbstract;
 
@@ -114,7 +111,6 @@ public class ProjectProposal implements Serializable {
     
 
     public ProjectProposal() {
-        this.students = new LinkedList<>();
         this.applications = new LinkedList<>();
     }
 
@@ -138,7 +134,6 @@ public class ProjectProposal implements Serializable {
         this.successRequirements = successRequirements;
         this.budget = budget;
         this.supports = supports;
-        this.students = new LinkedList<>();
         this.projectProposalState = ProjectProposalState.PENDING;
         this.applications = new LinkedList<>();
     }
@@ -256,14 +251,6 @@ public class ProjectProposal implements Serializable {
         this.projectProposalState = projectProposalState;
     }
     
-    public List<Student> getStudents() {
-        return students;
-    }
-
-    public void setStudents(List<Student> students) {
-        this.students = students;
-    }
-    
     
     @Override
     public String toString() {
@@ -272,15 +259,6 @@ public class ProjectProposal implements Serializable {
 
     public void removeApplication(Application app){
         applications.remove(app);
-    }
-    
-
-    public void removeStudent(Student student) {
-        students.remove(student);
-    }
-
-    public void addStudent(Student student) {
-        students.add(student);
     }
     
     public void addApplication(Application application){
