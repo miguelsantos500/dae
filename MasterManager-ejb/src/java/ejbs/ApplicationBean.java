@@ -130,7 +130,8 @@ public class ApplicationBean {
                 application.getProjectProposal().getCode(),
                 application.getStudent(),
                 application.getProjectProposal(),
-                application.getApplyingMessage());
+                application.getApplyingMessage(),
+                application.getApplicationState());
     }
 
     List<ApplicationDTO> applicationsToDTOs(List<Application> applications) {

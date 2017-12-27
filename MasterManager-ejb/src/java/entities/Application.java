@@ -6,6 +6,7 @@ import entities.users.Student;
 import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
+import static javax.persistence.EnumType.STRING;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -47,6 +48,9 @@ public class Application implements Serializable {
    @JoinColumn(name = "FILE_ID")
    private Document fileRecord;
    
+   @NotNull
+    @Enumerated(STRING)
+    private ApplicationState applicationState;
    
 
     public Application() {
@@ -57,6 +61,7 @@ public class Application implements Serializable {
         this.student = student;
         this.projectProposal = projectProposal;
         this.applyingMessage = applyingMessage;
+        this.applicationState = ApplicationState.PENDING;
     }
 
     public Student getStudent() {
@@ -104,6 +109,14 @@ public class Application implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public ApplicationState getApplicationState() {
+        return applicationState;
+    }
+
+    public void setApplicationState(ApplicationState applicationState) {
+        this.applicationState = applicationState;
     }
     
    

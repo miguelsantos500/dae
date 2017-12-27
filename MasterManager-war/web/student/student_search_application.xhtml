@@ -11,8 +11,8 @@
         <ui:define name="main">
             <em:dt 
                 title="Candidaturas encontradas" 
-              headers="#{['Id da candidatura', 'Código da proposta', 'Mensagem']}"
-                props="#{['id', 'projectProposalCode', 'applyingMessage']}"
+              headers="#{['Id da candidatura', 'Código da proposta', 'Mensagem', 'Estado']}"
+                props="#{['id', 'projectProposalCode', 'applyingMessage', 'applicationState']}"
                 list="#{administratorManager.searchApplication}">
                 <p:column headerText="Actions">
                     <h:form>

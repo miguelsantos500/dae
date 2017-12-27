@@ -40,8 +40,8 @@
             <br></br>
             <em:dt 
                 title="As minhas candidaturas" 
-                headers="#{['Id da candidatura', 'Código da proposta', 'Mensagem']}"
-                props="#{['id', 'projectProposalCode', 'applyingMessage']}"
+                headers="#{['Id da candidatura', 'Código da proposta', 'Mensagem', 'Estado']}"
+                props="#{['id', 'projectProposalCode', 'applyingMessage', 'applicationState']}"
                 list="#{administratorManager.allStudentApplications}">
                 <p:column headerText="Acções">
                     <h:form>

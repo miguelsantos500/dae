@@ -146,6 +146,7 @@ public class ProjectProposalBean {
             }
 
             //todo: actualizar bibliography e outras listas???, successRequirements, supports, scientificAreas
+           
             ProjectType projectType = ProjectType.valueOf(projectProposalDTO.getProjectTypeString());
             projectProposal.setProjectType(projectType);
             projectProposal.setTitle(projectProposalDTO.getTitle());

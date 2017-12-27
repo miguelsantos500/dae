@@ -1,5 +1,6 @@
 package dtos;
 
+import entities.ApplicationState;
 import entities.project.ProjectProposal;
 import entities.users.Student;
 import java.io.Serializable;
@@ -20,16 +21,20 @@ public class ApplicationDTO implements Serializable {
     private String applyingMessage;
     private String documentName;
     private int projectProposalCode;
+    private ApplicationState applicationState;
+    
 
     public ApplicationDTO() {
     }
 
-    public ApplicationDTO(Long id, int projectProposalCode, Student student, ProjectProposal projectProposal, String applyingMessage) {
+    public ApplicationDTO(Long id, int projectProposalCode, Student student, ProjectProposal projectProposal, String applyingMessage,
+            ApplicationState applicationState) {
         this.id = id;
         this.student = student;
         this.projectProposal = projectProposal;
         this.applyingMessage = applyingMessage;
         this.projectProposalCode = projectProposal.getCode();
+        this.applicationState = applicationState;
     }
 
     public void reset() {
@@ -74,5 +79,15 @@ public class ApplicationDTO implements Serializable {
     public void setId(Long id) {
         this.id = id;
     }
+
+    public ApplicationState getApplicationState() {
+        return applicationState;
+    }
+
+    public void setApplicationState(ApplicationState applicationState) {
+        this.applicationState = applicationState;
+    }
+    
+    
 
 }
