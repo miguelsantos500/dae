@@ -9,7 +9,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-@XmlRootElement(name = "Applications")
+@XmlRootElement(name = "Application")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ApplicationDTO implements Serializable {
 
@@ -28,13 +28,14 @@ public class ApplicationDTO implements Serializable {
     }
 
     public ApplicationDTO(Long id, int projectProposalCode, Student student, ProjectProposal projectProposal, String applyingMessage,
-            ApplicationState applicationState) {
+            ApplicationState applicationState, String documentName) {
         this.id = id;
         this.student = student;
         this.projectProposal = projectProposal;
         this.applyingMessage = applyingMessage;
         this.projectProposalCode = projectProposal.getCode();
         this.applicationState = applicationState;
+        this.documentName= documentName;
     }
 
     public void reset() {
@@ -86,6 +87,14 @@ public class ApplicationDTO implements Serializable {
 
     public void setApplicationState(ApplicationState applicationState) {
         this.applicationState = applicationState;
+    }
+
+    public String getDocumentName() {
+        return documentName;
+    }
+
+    public void setDocumentName(String documentName) {
+        this.documentName = documentName;
     }
     
     

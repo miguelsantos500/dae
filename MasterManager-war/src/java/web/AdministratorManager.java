@@ -2,6 +2,7 @@ package web;
 
 import dtos.ApplicationDTO;
 import dtos.CourseDTO;
+import dtos.DocumentApplicationDTO;
 import dtos.DocumentDTO;
 import dtos.InstitutionDTO;
 import dtos.ProjectProposalDTO;
@@ -781,29 +782,41 @@ public class AdministratorManager {
     public String createApplication(ActionEvent event) {
 
         try {
-         /*   DocumentDTO document = new DocumentDTO(uploadManager.getCompletePathFile(),
+            DocumentApplicationDTO document = new DocumentApplicationDTO(uploadManager.getCompletePathFile(),
                     uploadManager.getFilename(),
-                    uploadManager.getFile().getContentType());*/
+                    uploadManager.getFile().getContentType());
+            
+            //ir buscar a projectProposal via codigo
+           // UIParameter param = (UIParameter) component.findComponent("ppcode");
+            UIParameter param = (UIParameter) event.getComponent().findComponent("ppcode");
+            int code = Integer.parseInt(param.getValue().toString());
             
             //ir buscar o username do estudante via userManager
             String username = userManager.getUsername();
 
             //ir buscar a projectProposal via codigo
-          
-           
-            UIParameter param = (UIParameter) event.getComponent().findComponent("code");
-            int code = Integer.parseInt(param.getValue().toString());
+           // UIParameter param = (UIParameter) event.getComponent().findComponent("code");
+            
 
+            //cria a candidatura
             applicationBean.create(
                     username,
                     code,
                     newApplication.getApplyingMessage());
             
-            //nao devia estar a passar isto pelo link
+            //vai buscar o id da candidatura criada
             Long applcationId = newApplication.getId();
                     
-            newApplication.reset();
+            
            
+            //nao devia passar o id pelo link, ver como se tentou fazer acima... tb posso recorrer ao bean em vez de usar rota
+            client.target(URILookup.getBaseAPI())
+                    .path("/applications/addFileRecord")
+                    .path(String.valueOf(applcationId))
+                    .request(MediaType.APPLICATION_XML)
+                    .put(Entity.xml(document));
+            
+            newApplication.reset();
           // Form form = new Form();
            //form.param("username", username);
            //form.param("applcationId", String.valueOf(applcationId));
@@ -819,44 +832,14 @@ public class AdministratorManager {
              //       .post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED_TYPE))
             //         ;
             
-          //TODO - upload do dcumento ao criar uma nova candidatura
             
-           /* client.target(URILookup.getBaseAPI())
-                    .path("/applications/addFileApplication")
-                    .path(String.valueOf(applcationId))
-                    .request(MediaType.APPLICATION_XML)
-                    .put(Entity.xml(document));*/
-            
+           
         } catch (Exception e) {
             FacesExceptionHandler.handleException(e, "Erro inesperado no creeateApplication do AdministratorManager", component, logger);
             e.printStackTrace();
             return null;
         }
         return "student/student_index?faces-redirect=true";
-    }
-
-    //isto vai ser retirado porque o upload é feito aquando a criação da candidatura
-    public void uploadFileApplication(UIComponent component) {
-
-        try {
-            DocumentDTO document = new DocumentDTO(uploadManager.getCompletePathFile(),
-                    uploadManager.getFilename(),
-                    uploadManager.getFile().getContentType());
-
-            String username = userManager.getUsername();
-            UIParameter param = (UIParameter) component.findComponent("applicationFile");
-            String code = param.getValue().toString();
-
-            client.target(URILookup.getBaseAPI())
-                    .path("/applications/addFileApplication")
-                    .path(code)
-                    .path(username)
-                    .request(MediaType.APPLICATION_XML)
-                    .put(Entity.xml(document));
-
-        } catch (Exception e) {
-            FacesExceptionHandler.handleException(e, "Erro ao fazer o upload do ficheiro!", logger);
-        }
     }
 
     /*
@@ -948,6 +931,16 @@ public class AdministratorManager {
         this.searchableApplication = searchableApplication;
     }
     
+    public String approveApplication(boolean approved){
+        try {
+            applicationBean.approveApplication(currentApplication.getId(), approved);
+            //todo - mudar isto - nao sei quem aprova a candidatura
+            return "admin/admin_index?faces-redirect=true";
+        } catch (Exception e) {
+             FacesExceptionHandler.handleException(e, "Erro inesperado, tente mais tarde.", logger);
+            return null;
+        }
+    }
     
     ///////////////////////////////////////////Getters e setters tem que ser organizado//////////////////////////////////////////
     public ProjectProposalDTO getNewProjectProposal() {

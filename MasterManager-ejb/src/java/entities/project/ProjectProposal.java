@@ -11,6 +11,7 @@ import entities.users.Student;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import static javax.persistence.EnumType.STRING;
 import javax.persistence.Enumerated;
@@ -21,6 +22,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -92,6 +94,10 @@ public class ProjectProposal implements Serializable {
     
     @OneToMany(mappedBy="projectProposal")
     private List<Application> applications;
+    
+    @OneToOne(mappedBy="projectProposal", cascade=CascadeType.REMOVE)
+    
+    private Project project;
     
 
     public ProjectProposal() {

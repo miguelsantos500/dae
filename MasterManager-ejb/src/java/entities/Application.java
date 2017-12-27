@@ -25,8 +25,7 @@ import javax.validation.constraints.NotNull;
 @Table(name = "APPLICATIONS")
 @NamedQueries({
     @NamedQuery(name = "getAllApplications",
-            query = "SELECT a FROM Application a"),})
-
+            query = "SELECT a FROM Application a")})
 public class Application implements Serializable {
   
     @Id
@@ -46,7 +45,7 @@ public class Application implements Serializable {
    
    @OneToOne
    @JoinColumn(name = "FILE_ID")
-   private Document fileRecord;
+   private DocumentApplication fileRecord;
    
    @NotNull
     @Enumerated(STRING)
@@ -82,8 +81,6 @@ public class Application implements Serializable {
 
     
 
-    
-
     public String getApplyingMessage() {
         return applyingMessage;
     }
@@ -92,14 +89,14 @@ public class Application implements Serializable {
         this.applyingMessage = applyingMessage;
     }
     
-     public Document getFileRecord() {
+     public DocumentApplication getFileRecord() {
         if (this.fileRecord == null) {
-            return new Document();
+            return new DocumentApplication();
         }
         return fileRecord;
     }
 
-    public void setFileRecord(Document fileRecord) {
+    public void setFileRecord(DocumentApplication fileRecord) {
         this.fileRecord = fileRecord;
     }
 

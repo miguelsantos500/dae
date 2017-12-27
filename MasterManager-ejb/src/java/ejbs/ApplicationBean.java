@@ -6,12 +6,16 @@
 package ejbs;
 
 import dtos.ApplicationDTO;
+import dtos.DocumentApplicationDTO;
 import dtos.DocumentDTO;
 import dtos.ProjectProposalDTO;
 import entities.Application;
+import entities.ApplicationState;
 import entities.Document;
+import entities.DocumentApplication;
 import entities.project.ProjectProposal;
 import entities.users.Student;
+import exceptions.ApplicationNotPendingException;
 import exceptions.ApplicationNumberException;
 import exceptions.EntityAlreadyExistsException;
 import exceptions.EntityDoesNotExistException;
@@ -89,29 +93,19 @@ public class ApplicationBean {
         }
 
     }
-
-    @PUT
-    @Path("/addFileApplication/{applicationId}")
+    
+    
+    /*   @PUT
+    @Path("/addFileRecord/{code}")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void addFileRecord(@PathParam("applcationId") String idString, DocumentDTO document)
+    public void addFileRecord(@PathParam("code") String codeString, DocumentDTO doc)
             throws EntityDoesNotExistException {
-
         try {
-            Long id = Long.parseLong(idString);
-
-            //procura a application criada 
-            Application application = em.find(Application.class, id);
-
-            if (application == null) {
-                throw new EntityDoesNotExistException("Não existe nenhuma candidatura com esse id.");
+            int code = Integer.parseInt(codeString);
+            PublicTest publicTest = em.find(PublicTest.class, code);
+            if (publicTest == null) {
+                throw new EntityDoesNotExistException("Não existe nenhuma prova publica com esse código.");
             }
-
-            //   Document doc = new Document(document.getFilepath(), document.getDesiredName(), document.getMimeType(), application);
-        } catch (Exception e) {
-        }
-
-        /*  try {
-          
 
             Document document = new Document(doc.getFilepath(), doc.getDesiredName(), doc.getMimeType(), publicTest);
             em.persist(document);
@@ -121,8 +115,38 @@ public class ApplicationBean {
             throw e;
         } catch (Exception e) {
             throw new EJBException(e.getMessage());
-        }*/
+        }
+    } */
+
+    @PUT
+    @Path("/addFileRecord/{applcationId}")
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public void addFileRecord(@PathParam("applcationId") String idString, DocumentApplicationDTO doc)
+            throws EntityDoesNotExistException {
+        try {
+
+            Long id = Long.parseLong(idString);
+
+            //procura a application criada 
+            Application application = em.find(Application.class, id);
+
+            if (application == null) {
+                throw new EntityDoesNotExistException("Não existe nenhuma candidatura com esse id.");
+            }
+            
+            DocumentApplication document = new DocumentApplication(doc.getFilepath(), doc.getDesiredName(),
+                    doc.getMimeType(), application);
+            
+            em.persist(document);
+            application.setFileRecord(document);
+
+        } catch (EntityDoesNotExistException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new EJBException(e.getMessage());
+        }
     }
+
 
     public ApplicationDTO applicationToDTO(Application application) {
         return new ApplicationDTO(
@@ -131,7 +155,9 @@ public class ApplicationBean {
                 application.getStudent(),
                 application.getProjectProposal(),
                 application.getApplyingMessage(),
-                application.getApplicationState());
+                application.getApplicationState(),
+                application.getFileRecord().getDesiredName());
+
     }
 
     List<ApplicationDTO> applicationsToDTOs(List<Application> applications) {
@@ -224,12 +250,11 @@ public class ApplicationBean {
         }
     }
 
-  
     public List<ApplicationDTO> search(String searchableApplication, String username) {
         try {
             //vou buscar o estudante para que possa procurar apenas candidaturas dele
             Student student = em.find(Student.class, username);
-            
+
             List<Application> applications = student.getApplications();
             List<Application> matchedApplications = new LinkedList<>();
 
@@ -257,6 +282,32 @@ public class ApplicationBean {
             throw new EJBException(e.getMessage());
         }
 
+    }
+
+    public void approveApplication(Long id, boolean approved) {
+        try {
+            Application application = em.find(Application.class, id);
+            if (application == null) {
+                throw new EntityDoesNotExistException(
+                        "There is no Application with id: "
+                        + id);
+            }
+
+            if (application.getApplicationState() != ApplicationState.PENDING) {
+                throw new ApplicationNotPendingException(
+                        "This Application is not in state PENDING, is in state: "
+                        + application.getApplicationState());
+            }
+
+            if (approved) {
+                application.setApplicationState(ApplicationState.ACCEPTED);
+            } else {
+                application.setApplicationState(ApplicationState.NOT_ACCEPTED);
+            }
+
+        } catch (Exception e) {
+            throw new EJBException(e.getMessage());
+        }
     }
 
 }

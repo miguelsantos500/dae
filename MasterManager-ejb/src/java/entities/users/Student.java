@@ -2,6 +2,7 @@ package entities.users;
 
 import entities.Application;
 import entities.Course;
+import entities.project.Project;
 import entities.project.ProjectProposal;
 import entities.publictest.PublicTest;
 import entities.users.UserGroup.GROUP;
@@ -37,9 +38,12 @@ public class Student extends User implements Serializable {
     @JoinColumn(name = "PUBLIC_CODE")
     private PublicTest publicTest;
 
-    @ManyToOne(cascade=CascadeType.REMOVE)
-    @JoinColumn(name = "PROJECT_PROPOSAL_CODE")
-    private ProjectProposal projectProposal;
+   // @ManyToOne(cascade=CascadeType.REMOVE)
+    //@JoinColumn(name = "PROJECT_PROPOSAL_CODE")
+   // private ProjectProposal projectProposal;
+    @OneToOne(cascade=CascadeType.REMOVE)
+    @JoinColumn(name = "PROJECT_ID")
+    private Project project;
     
     @OneToMany(mappedBy="student", cascade=CascadeType.REMOVE)
     private List<Application> applications;
@@ -71,13 +75,13 @@ public class Student extends User implements Serializable {
         this.publicTest = publicTest;
     }
 
-    public ProjectProposal getProjectProposal() {
+ /*   public ProjectProposal getProjectProposal() {
         return projectProposal;
     }
 
     public void setProjectProposal(ProjectProposal projectProposal) {
         this.projectProposal = projectProposal;
-    }
+    }*/
 
     public List<Application> getApplications() {
         return applications;

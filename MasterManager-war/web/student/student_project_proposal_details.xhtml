@@ -95,12 +95,16 @@
                         value="#{administratorManager.newApplication.applyingMessage}"/>
                     <h:message for="message" errorStyle="color: red" />      
                     &nbsp;
-                    <h:commandLink value="Candidatar"
-                                   actionListener="#{administratorManager.createApplication}">
-                        <f:param name="code" id="code"
-                                 value="#{administratorManager.currentProjectProposal.code}" />
-                    </h:commandLink>
-      
+                    
+                    &nbsp;
+                        <p:growl id="curriculo" showDetail="true" />
+                        <p:fileUpload value="#{uploadManager.file}" mode="simple" skinSimple="true"/>
+                        <p:commandButton value="Candidatar" ajax="false" actionListener="#{uploadManager.upload}" >
+                            <f:actionListener binding="#{administratorManager.createApplication}"/>
+                            <f:param name="ppcode" id="ppcode"
+                                     value="#{administratorManager.currentProjectProposal.code}" />
+                        </p:commandButton>
+                
                 </h:form>
                 
                 <h:link value="Voltar" outcome="student_index"/>
