@@ -813,32 +813,24 @@ public class AdministratorManager {
     }
 
     ////////////////////////////////////////////APPLICATIONS///////////////////////////////////////////////////////////////////
-    public String createApplication(ActionEvent event) {
+    public void createApplication(UIComponent component) throws IOException {
 
         //ir buscar o username do estudante via userManager
         String username = userManager.getUsername();
 
         //ir buscar a projectProposal via codigo
-        UIParameter param = (UIParameter) event.getComponent().findComponent("ppcode");
+       UIParameter param = (UIParameter) component.findComponent("code");
         int code = Integer.parseInt(param.getValue().toString());
 
         try {
-            DocumentApplicationDTO document = new DocumentApplicationDTO(uploadManager.getCompletePathFile(),
+          /*  DocumentApplicationDTO document = new DocumentApplicationDTO(uploadManager.getCompletePathFile(),
+                    uploadManager.getFilename(),
+                    uploadManager.getFile().getContentType());*/
+          
+          DocumentDTO document = new DocumentDTO(uploadManager.getCompletePathFile(),
                     uploadManager.getFilename(),
                     uploadManager.getFile().getContentType());
             
-            //ir buscar a projectProposal via codigo
-           // UIParameter param = (UIParameter) component.findComponent("ppcode");
-           // UIParameter param = (UIParameter) event.getComponent().findComponent("ppcode");
-           // int code = Integer.parseInt(param.getValue().toString());
-            
-            //ir buscar o username do estudante via userManager
-           // String username = userManager.getUsername();
-
-            //ir buscar a projectProposal via codigo
-           // UIParameter param = (UIParameter) event.getComponent().findComponent("code");
-            
-
             //cria a candidatura
             applicationBean.create(
                     username,
@@ -874,13 +866,14 @@ public class AdministratorManager {
             //         ;
             
             
+       ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+       externalContext.redirect("http://localhost:8080/MasterManager-war/faces/student/student_index.xhtml");
            
         } catch (Exception e) {
             FacesExceptionHandler.handleException(e, "Erro inesperado no creeateApplication do AdministratorManager", component, logger);
             e.printStackTrace();
-            return null;
         }
-        return "student/student_index?faces-redirect=true";
+       // return "student/student_index?faces-redirect=true";
     }
 
     /*

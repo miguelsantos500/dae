@@ -28,7 +28,7 @@ public class DocumentApplication implements Serializable {
     
     private String mimeType;
     
-    @OneToOne(mappedBy="fileRecord")
+    //@OneToOne(mappedBy="fileRecord")
     private Application application;
     
     public DocumentApplication() {

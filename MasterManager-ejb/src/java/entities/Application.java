@@ -42,9 +42,13 @@ public class Application implements Serializable {
    @NotNull
    private String applyingMessage;
    
+   /*@OneToOne
+   @JoinColumn(name = "FILE_ID")
+   private DocumentApplication fileRecord;*/
+   
    @OneToOne
    @JoinColumn(name = "FILE_ID")
-   private DocumentApplication fileRecord;
+   private Document fileRecord;
    
    @NotNull
     @Enumerated(STRING)
@@ -88,14 +92,14 @@ public class Application implements Serializable {
         this.applyingMessage = applyingMessage;
     }
     
-     public DocumentApplication getFileRecord() {
+     public Document getFileRecord() {
         if (this.fileRecord == null) {
-            return new DocumentApplication();
+            return new Document();
         }
         return fileRecord;
     }
 
-    public void setFileRecord(DocumentApplication fileRecord) {
+    public void setFileRecord(Document fileRecord) {
         this.fileRecord = fileRecord;
     }
 

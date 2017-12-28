@@ -13,6 +13,7 @@ import entities.Application;
 import entities.ApplicationState;
 import entities.Document;
 import entities.DocumentApplication;
+import entities.EntitieGeneric;
 import entities.project.ProjectProposal;
 import entities.users.Student;
 import exceptions.ApplicationNotPendingException;
@@ -93,34 +94,11 @@ public class ApplicationBean {
 
     }
     
-    
-    /*   @PUT
-    @Path("/addFileRecord/{code}")
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void addFileRecord(@PathParam("code") String codeString, DocumentDTO doc)
-            throws EntityDoesNotExistException {
-        try {
-            int code = Integer.parseInt(codeString);
-            PublicTest publicTest = em.find(PublicTest.class, code);
-            if (publicTest == null) {
-                throw new EntityDoesNotExistException("Não existe nenhuma prova publica com esse código.");
-            }
-
-            Document document = new Document(doc.getFilepath(), doc.getDesiredName(), doc.getMimeType(), publicTest);
-            em.persist(document);
-            publicTest.setFileRecord(document);
-
-        } catch (EntityDoesNotExistException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new EJBException(e.getMessage());
-        }
-    } */
 
     @PUT
     @Path("/addFileRecord/{applcationId}")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void addFileRecord(@PathParam("applcationId") String idString, DocumentApplicationDTO doc)
+    public void addFileRecord(@PathParam("applcationId") String idString, DocumentDTO doc)
             throws EntityDoesNotExistException {
         try {
 
@@ -133,8 +111,12 @@ public class ApplicationBean {
                 throw new EntityDoesNotExistException("Não existe nenhuma candidatura com esse id.");
             }
             
-            DocumentApplication document = new DocumentApplication(doc.getFilepath(), doc.getDesiredName(),
-                    doc.getMimeType(), application);
+            EntitieGeneric<Application> generic = new EntitieGeneric<>(application); 
+            Document document = new Document(doc.getFilepath(), doc.getDesiredName(),
+                    doc.getMimeType(), generic);
+            
+          /*  DocumentApplication document = new DocumentApplication(doc.getFilepath(), doc.getDesiredName(),
+                    doc.getMimeType(), application);*/
             
             em.persist(document);
             application.setFileRecord(document);
