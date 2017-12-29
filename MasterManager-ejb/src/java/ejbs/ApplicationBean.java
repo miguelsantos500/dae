@@ -51,6 +51,8 @@ public class ApplicationBean {
 
     @EJB
     private ProjectProposalBean projectProposalBean;
+    @EJB
+    private ProjectBean projectBean;
 
     //recebe o username e o code do projectProposal e depois transforma em student e em projectProposal
     public Long create(String username, int code, String message) throws
@@ -303,12 +305,36 @@ public class ApplicationBean {
                         "This Application is not in state PENDING, is in state: "
                         + application.getApplicationState());
             }
-
+            
             application.setApplicationState(ApplicationState.ACCEPTED);
             em.merge(application);
+
             projectProposal.setProjectProposalState(ProjectProposalState.ASSIGNED);
             em.merge(projectProposal);
+            
+            rejectApplications(projectProposal.getCode());
+            
+            projectBean.create(projectProposal, application.getStudent());
+            
+        } catch (Exception e) {
+            throw new EJBException(e.getMessage());
+        }
+    }
+    
+    public void rejectApplications(int projectCode){
+        try {
 
+            List<Application> applications
+                    = em.createNamedQuery("getAllProjectProposalApplicants", Application.class).
+                            setParameter("code", projectCode).getResultList();
+            
+            for (Application application : applications) {
+                if (application.getApplicationState().equals(ApplicationState.PENDING)){
+                    application.setApplicationState(ApplicationState.NOT_ACCEPTED);
+                    em.merge(application);
+                }
+            }
+            
         } catch (Exception e) {
             throw new EJBException(e.getMessage());
         }
@@ -317,10 +343,11 @@ public class ApplicationBean {
     @GET
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Path("/allApplicants/{projectCode}")
-    public List<ApplicationDTO> getAllFinished(@PathParam("projectCode") String projectCode) {
+    public List<ApplicationDTO> getAllProjectProposalApplicants(@PathParam("projectCode") String projectCode) {
+
         try {
             List<Application> applications
-                    = em.createNamedQuery("getAllProjectProposalsFinished", Application.class).
+                    = em.createNamedQuery("getAllProjectProposalApplicants", Application.class).
                             setParameter("code", Integer.parseInt(projectCode)).getResultList();
             return applicationsToDTOs(applications);
         } catch (Exception e) {

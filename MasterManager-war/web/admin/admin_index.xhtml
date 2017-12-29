@@ -120,6 +120,12 @@
                             <f:setPropertyActionListener
                                 target="#{administratorManager.currentProjectProposal}" value="#{object}" />
                         </h:commandLink>
+                        &nbsp;
+                        <h:commandLink rendered="${object.projectProposalState == 'ACCEPTED'}" 
+                                       value="Seriação" action="admin_serialization?facesredirect=true">
+                            <f:setPropertyActionListener
+                                target="#{administratorManager.currentProjectProposal}" value="#{object}" />
+                        </h:commandLink>
                     </h:form>
                 </p:column>
             </em:dt>
