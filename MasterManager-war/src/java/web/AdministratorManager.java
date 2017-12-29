@@ -981,7 +981,7 @@ public class AdministratorManager {
         this.searchableApplication = searchableApplication;
     }
 
-    public String approveApplication(ActionEvent event) {
+    public void approveApplication(ActionEvent event) throws IOException {
         try {
             UIParameter param = (UIParameter) event.getComponent().findComponent("applicationId");
             String id = param.getValue().toString();
@@ -990,9 +990,9 @@ public class AdministratorManager {
             //todo - mudar isto - nao sei quem aprova a candidatura  
         } catch (Exception e) {
             FacesExceptionHandler.handleException(e, "Erro inesperado, tente mais tarde.", logger);
-            return null;
         }
-        return "admin/admin_index?faces-redirect=true";
+        ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+        externalContext.redirect("http://localhost:8080/MasterManager-war/faces/admin/admin_index.xhtml");
     }
 
     ///////////////////////////////////////////Getters e setters tem que ser organizado//////////////////////////////////////////
