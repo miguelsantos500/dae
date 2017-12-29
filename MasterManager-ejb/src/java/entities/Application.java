@@ -4,7 +4,6 @@ import entities.project.ProjectProposal;
 import entities.users.Student;
 import java.io.Serializable;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
 import static javax.persistence.EnumType.STRING;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
@@ -22,10 +21,11 @@ import javax.validation.constraints.NotNull;
 @Table(name = "APPLICATIONS")
 @NamedQueries({
     @NamedQuery(name = "getAllApplications",
-            query = "SELECT a FROM Application a"),
+            query = "SELECT a FROM Application a")
+    ,
     @NamedQuery(name = "getAllProjectProposalApplicants",
             query = "SELECT a FROM Application a "
-                    + "WHERE a.projectProposal.code = :code")})
+            + "WHERE a.projectProposal.code = :code")})
 public class Application implements Serializable {
 
     @Id
@@ -43,9 +43,12 @@ public class Application implements Serializable {
     @NotNull
     private String applyingMessage;
 
+    /*@OneToOne
+   @JoinColumn(name = "FILE_ID")
+   private DocumentApplication fileRecord;*/
     @OneToOne
     @JoinColumn(name = "FILE_ID")
-    private DocumentApplication fileRecord;
+    private Document fileRecord;
 
     @NotNull
     @Enumerated(STRING)
@@ -86,14 +89,14 @@ public class Application implements Serializable {
         this.applyingMessage = applyingMessage;
     }
 
-    public DocumentApplication getFileRecord() {
+    public Document getFileRecord() {
         if (this.fileRecord == null) {
-            return new DocumentApplication();
+            return new Document();
         }
         return fileRecord;
     }
 
-    public void setFileRecord(DocumentApplication fileRecord) {
+    public void setFileRecord(Document fileRecord) {
         this.fileRecord = fileRecord;
     }
 

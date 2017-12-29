@@ -41,9 +41,13 @@ public class ApplicationDTO implements Serializable {
     }
 
     public void reset() {
-        student = null;
+        this.student=null;
+        this.id= null;
         projectProposal = null;
+        this.projectProposalCode=0;
         applyingMessage = null;
+        this.applicationState=null;
+        this.documentName = null;
     }
 
     public Student getStudent() {

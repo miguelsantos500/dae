@@ -7,7 +7,7 @@ public class EntitieGeneric<T> {
         this.entitie = entitie;
     }
 
-    public T getEntitie() {
+    public T getEntity() {
         return entitie;
     }
 

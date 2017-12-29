@@ -99,9 +99,9 @@
                     
                     <p:growl id="curriculo" showDetail="true" />
                     <p:fileUpload value="#{uploadManager.file}" mode="simple" skinSimple="true"/>
-                    <p:commandButton value="Submit" ajax="false" actionListener="#{uploadManager.upload}" >
+                    <p:commandButton value="Candidatar" ajax="false" actionListener="#{uploadManager.upload}" >
                         <f:actionListener binding="#{administratorManager.createApplication(component)}"/>
-                        <f:param name="ppcode" id="ppcode"
+                        <f:param name="code" id="code"
                                  value="#{administratorManager.currentProjectProposal.code}" />
                     </p:commandButton>
                 </h:form>

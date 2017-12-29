@@ -31,18 +31,26 @@ public class Document implements Serializable {
 
     @OneToOne(mappedBy = "fileRecord", cascade = CascadeType.REMOVE)
     private PublicTest publicTest;
+    
+    @OneToOne(mappedBy = "fileRecord", cascade = CascadeType.REMOVE)
+    private Application application;
 
     public Document() {
 
     }
 
-    public Document(String filepath, String desiredName, String mimeType, EntitieGeneric<?> entitie) {
+    public Document(String filepath, String desiredName, String mimeType, EntitieGeneric<?> entity) {
         this.filepath = filepath;
         this.desiredName = desiredName;
         this.mimeType = mimeType;
-        if (entitie.getEntitie().getClass().equals(PublicTest.class)) {
-            this.publicTest = (PublicTest) entitie.getEntitie();
+        
+        if (entity.getEntity().getClass().equals(PublicTest.class)) {
+            this.publicTest = (PublicTest) entity.getEntity();
+        }else if(entity.getEntity().getClass().equals(Application.class)){
+            this.application = (Application) entity.getEntity();
         }
+        
+        
 
     }
 
@@ -85,4 +93,14 @@ public class Document implements Serializable {
     public void setStudent(PublicTest publicTest) {
         this.publicTest = publicTest;
     }
+
+    public Application getApplication() {
+        return application;
+    }
+
+    public void setApplication(Application application) {
+        this.application = application;
+    }
+    
+    
 }

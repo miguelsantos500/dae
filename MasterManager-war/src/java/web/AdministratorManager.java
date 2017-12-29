@@ -2,7 +2,6 @@ package web;
 
 import dtos.ApplicationDTO;
 import dtos.CourseDTO;
-import dtos.DocumentApplicationDTO;
 import dtos.DocumentDTO;
 import dtos.InstitutionDTO;
 import dtos.ObservationDTO;
@@ -99,6 +98,14 @@ public class AdministratorManager {
     private PublicTestDTO currentPublicTest;
     private ProjectProposalDTO currentProjectProposal;
     private ApplicationDTO currentApplication;
+
+    public ApplicationBean getApplicationBean() {
+        return applicationBean;
+    }
+
+    public void setApplicationBean(ApplicationBean applicationBean) {
+        this.applicationBean = applicationBean;
+    }
 
     /**
      * ***Searchable objects******
@@ -810,18 +817,21 @@ public class AdministratorManager {
     }
 
     ////////////////////////////////////////////APPLICATIONS///////////////////////////////////////////////////////////////////
-    public void createApplication(UIComponent component)
-            throws IOException {
+    public void createApplication(UIComponent component) throws IOException {
 
         //ir buscar o username do estudante via userManager
         String username = userManager.getUsername();
 
         //ir buscar a projectProposal via codigo
-        UIParameter param = (UIParameter) component.findComponent("ppcode");
+        UIParameter param = (UIParameter) component.findComponent("code");
         int code = Integer.parseInt(param.getValue().toString());
 
         try {
-            DocumentApplicationDTO document = new DocumentApplicationDTO(uploadManager.getCompletePathFile(),
+            /*  DocumentApplicationDTO document = new DocumentApplicationDTO(uploadManager.getCompletePathFile(),
+                    uploadManager.getFilename(),
+                    uploadManager.getFile().getContentType());*/
+
+            DocumentDTO document = new DocumentDTO(uploadManager.getCompletePathFile(),
                     uploadManager.getFilename(),
                     uploadManager.getFile().getContentType());
 
@@ -839,8 +849,10 @@ public class AdministratorManager {
                     code,
                     newApplication.getApplyingMessage());
 
-            //vai buscar o id da candidatura criada
-            Long applicationId = newApplication.getId();
+            Long applicationId = applicationBean.create(
+                    username,
+                    code,
+                    newApplication.getApplyingMessage());
 
             //nao devia passar o id pelo link, ver como se tentou fazer acima... tb posso recorrer ao bean em vez de usar rota
             client.target(URILookup.getBaseAPI())
@@ -862,28 +874,28 @@ public class AdministratorManager {
             //        .path("/applications/create")
             //        .request(MediaType.APPLICATION_XML)
             //       .post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED_TYPE))
-            //         ;
+            //         ;  
+            ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+            externalContext.redirect("http://localhost:8080/MasterManager-war/faces/student/student_index.xhtml");
         } catch (Exception e) {
             FacesExceptionHandler.handleException(e, "Erro inesperado no creeateApplication do AdministratorManager", component, logger);
             e.printStackTrace();
         }
-
-        ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
-        externalContext.redirect("http://localhost:8080/MasterManager-war/faces/student/student_index.xhtml");
+        // return "student/student_index?faces-redirect=true";
     }
 
-    /*
-    public void removeFileRecord(ActionEvent event) {
+    public void removeApplication(ActionEvent event) {
         try {
-            UIParameter param = (UIParameter) event.getComponent().findComponent("publicTestCode3");
+            UIParameter param = (UIParameter) event.getComponent().findComponent("publicTestCode");
             int code = Integer.parseInt(param.getValue().toString());
-            publicTestBean.removeFileRecord(code);
+            publicTestBean.remove(code);
         } catch (EntityDoesNotExistException e) {
             FacesExceptionHandler.handleException(e, e.getMessage(), logger);
         } catch (Exception e) {
             FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
         }
-    } */
+    }
+
     public Collection<ApplicationDTO> getAllStudentApplications() {
 
         Collection<ApplicationDTO> applications = null;
@@ -917,18 +929,17 @@ public class AdministratorManager {
         }
     }
 
-    public void removeApplication(ActionEvent event) {
+    public void removeDocumentApplication(ActionEvent event) {
 
         try {
             UIParameter param = (UIParameter) event.getComponent().findComponent("applicationId");
-            String id = param.getValue().toString();
-
-            applicationBean.remove(id);
-
-        } catch (Exception e) {
+            Long id = Long.parseLong(param.getValue().toString());
+            applicationBean.removeFileRecord(id);
+        } catch (EntityDoesNotExistException e) {
             FacesExceptionHandler.handleException(e, e.getMessage(), logger);
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
         }
-
     }
 
     public String updateApplication() {
@@ -1150,13 +1161,4 @@ public class AdministratorManager {
         this.currentApplication = currentApplication;
     }
 
-    public ApplicationBean getApplicationBean() {
-        return applicationBean;
-    }
-
-    public void setApplicationBean(ApplicationBean applicationBean) {
-        this.applicationBean = applicationBean;
-    }
-    
-    
 }

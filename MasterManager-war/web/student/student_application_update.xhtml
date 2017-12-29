@@ -7,59 +7,59 @@
         <title>CCP</title>
     </h:head>
     <h:body>
-        <h:form>                  
+        <h:form enctype="multipart/form-data">                  
             <h:panelGrid columns="3">
 
-               <h:outputLabel for="id" value="Identificador da candidatura: " />
-                    <h:outputText 
-                        id="id"
-                        value="#{administratorManager.currentApplication.id}"/>
+                <h:outputLabel for="id" value="Identificador da candidatura: " />
+                <h:outputText 
+                    id="id"
+                    value="#{administratorManager.currentApplication.id}"/>
 
-                    <h:outputLabel for="applicationState" value="Estado da candidatura: " />
-                    <h:outputText 
-                        id="applicationState"
-                        value="#{administratorManager.currentApplication.applicationState}"/>
-                    
-                    <h:outputLabel for="projectProposalCode" value="Código da proposta de projecto: " />
-                    <h:outputText 
-                        id="projectProposalCode"
-                        value="#{administratorManager.currentApplication.projectProposal.code}"/>
+                <h:outputLabel for="applicationState" value="Estado da candidatura: " />
+                <h:outputText 
+                    id="applicationState"
+                    value="#{administratorManager.currentApplication.applicationState}"/>
 
-                    <h:outputLabel for="projectProposalTitle" value="Titulo da proposta: " />
-                    <h:outputText 
-                        id="projectProposalTitle"
-                        value="#{administratorManager.currentApplication.projectProposal.title}"/>
+                <h:outputLabel for="projectProposalCode" value="Código da proposta de projecto: " />
+                <h:outputText 
+                    id="projectProposalCode"
+                    value="#{administratorManager.currentApplication.projectProposal.code}"/>
 
-                    <h:outputLabel for="projectProposalAbstract" value="Abstract da proposta: " />
-                    <h:outputText 
-                        id="projectProposalAbstract"
-                        value="#{administratorManager.currentApplication.projectProposal.projectAbstract}"/>
+                <h:outputLabel for="projectProposalTitle" value="Titulo da proposta: " />
+                <h:outputText 
+                    id="projectProposalTitle"
+                    value="#{administratorManager.currentApplication.projectProposal.title}"/>
 
-                    <h:outputLabel for="projectProposalWorkPlan" value="WorkPlan: " />
-                    <h:outputText 
-                        id="projectProposalWorkPlan"
-                        value="#{administratorManager.currentApplication.projectProposal.workPlan}"/>
+                <h:outputLabel for="projectProposalAbstract" value="Abstract da proposta: " />
+                <h:outputText 
+                    id="projectProposalAbstract"
+                    value="#{administratorManager.currentApplication.projectProposal.projectAbstract}"/>
 
-                    <h:outputLabel for="projectProposalWorkPlace" value="WorkPlace: " />
-                    <h:outputText 
-                        id="projectProposalWorkPlace"
-                        value="#{administratorManager.currentApplication.projectProposal.workPlace}"/>
+                <h:outputLabel for="projectProposalWorkPlan" value="WorkPlan: " />
+                <h:outputText 
+                    id="projectProposalWorkPlan"
+                    value="#{administratorManager.currentApplication.projectProposal.workPlan}"/>
+
+                <h:outputLabel for="projectProposalWorkPlace" value="WorkPlace: " />
+                <h:outputText 
+                    id="projectProposalWorkPlace"
+                    value="#{administratorManager.currentApplication.projectProposal.workPlace}"/>
 
 
-                    <h:outputLabel for="projectProposalBudget" value="Budget: " />
-                    <h:outputText 
-                        id="projectProposalBudget"
-                        value="#{administratorManager.currentApplication.projectProposal.budget}"/>
+                <h:outputLabel for="projectProposalBudget" value="Budget: " />
+                <h:outputText 
+                    id="projectProposalBudget"
+                    value="#{administratorManager.currentApplication.projectProposal.budget}"/>
 
-                    <h:outputLabel for="projectProposalProponent" value="ProponentUsername " />
-                    <h:outputText 
-                        id="projectProposalProponent"
-                        value="#{administratorManager.currentApplication.projectProposal.proponent.name}"/>
-                
+                <h:outputLabel for="projectProposalProponent" value="ProponentUsername " />
+                <h:outputText 
+                    id="projectProposalProponent"
+                    value="#{administratorManager.currentApplication.projectProposal.proponent.name}"/>
+
                 <br></br>
-                
+
                 <br></br>
-                
+
                 <!--campos a editar -->
                 <h:outputLabel for="message" value="Mensagem de motivação: " />
                 <h:inputText
@@ -71,20 +71,31 @@
                 </h:inputText>    
                 <h:message for="message" errorStyle="color: red" />
                 
-                <!--MOSTRAR O FICHEIRO ANEXADO ANTES E ANEXAR UM FICHEIRO DIFERENTE -->
+                <h:outputLabel for="document" value="Documentos: " />
+                        <h:outputText 
+                            id="document"
+                            value="#{administratorManager.currentApplication.documentName}">
+                            <f:param name="applicationId" id="applicationId"
+                                     value="#{administratorManager.currentApplication.id}" />
+                        </h:outputText>
+                        <br></br>
                 
+               
 
                 <h:commandButton
                     id="submit"
                     value="Actualizar"
                     action="#{administratorManager.updateApplication}" />
                 <h:message for="submit" style="color: red"/>
+
+
+
             </h:panelGrid>  
 
         </h:form>
         
         <h:messages errorStyle="color: red" />      
-        
+
         <h:link value="Voltar" outcome="student_index"/>
 
     </h:body>

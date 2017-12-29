@@ -6,10 +6,11 @@
 package ejbs;
 
 import dtos.ApplicationDTO;
-import dtos.DocumentApplicationDTO;
+import dtos.DocumentDTO;
 import entities.Application;
 import entities.ApplicationState;
-import entities.DocumentApplication;
+import entities.Document;
+import entities.EntitieGeneric;
 import entities.project.ProjectProposal;
 import entities.project.ProjectProposalState;
 import entities.users.Student;
@@ -52,9 +53,9 @@ public class ApplicationBean {
     private ProjectProposalBean projectProposalBean;
 
     //recebe o username e o code do projectProposal e depois transforma em student e em projectProposal
-    public void create(String username, int code, String message) throws
+    public Long create(String username, int code, String message) throws
             EntityDoesNotExistException, ApplicationNumberException {
-
+        Long newid = null;
         try {
             Student student = em.find(Student.class, username);
             if (student == null) {
@@ -77,6 +78,8 @@ public class ApplicationBean {
                 projectProposal.addApplication(application);
 
                 em.persist(application);
+                newid = application.getId();
+
             } else {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ja tem o num max de candidaturas", "candidaturas"));
 
@@ -84,35 +87,13 @@ public class ApplicationBean {
         } catch (Exception e) {
             throw new EJBException(e.getMessage());
         }
-
+        return newid;
     }
 
-    /*   @PUT
-    @Path("/addFileRecord/{code}")
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void addFileRecord(@PathParam("code") String codeString, DocumentDTO doc)
-            throws EntityDoesNotExistException {
-        try {
-            int code = Integer.parseInt(codeString);
-            PublicTest publicTest = em.find(PublicTest.class, code);
-            if (publicTest == null) {
-                throw new EntityDoesNotExistException("Não existe nenhuma prova publica com esse código.");
-            }
-
-            Document document = new Document(doc.getFilepath(), doc.getDesiredName(), doc.getMimeType(), publicTest);
-            em.persist(document);
-            publicTest.setFileRecord(document);
-
-        } catch (EntityDoesNotExistException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new EJBException(e.getMessage());
-        }
-    } */
     @PUT
     @Path("/addFileRecord/{applcationId}")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void addFileRecord(@PathParam("applcationId") String idString, DocumentApplicationDTO doc)
+    public void addFileRecord(@PathParam("applcationId") String idString, DocumentDTO doc)
             throws EntityDoesNotExistException {
         try {
 
@@ -125,9 +106,12 @@ public class ApplicationBean {
                 throw new EntityDoesNotExistException("Não existe nenhuma candidatura com esse id.");
             }
 
-            DocumentApplication document = new DocumentApplication(doc.getFilepath(), doc.getDesiredName(),
-                    doc.getMimeType(), application);
+            EntitieGeneric<Application> generic = new EntitieGeneric<>(application);
+            Document document = new Document(doc.getFilepath(), doc.getDesiredName(),
+                    doc.getMimeType(), generic);
 
+            /*  DocumentApplication document = new DocumentApplication(doc.getFilepath(), doc.getDesiredName(),
+                    doc.getMimeType(), application);*/
             em.persist(document);
             application.setFileRecord(document);
             //  em.merge(application);
@@ -139,6 +123,8 @@ public class ApplicationBean {
         }
     }
 
+    /* (Long id, int projectProposalCode, Student student, ProjectProposal projectProposal, String applyingMessage,
+            ApplicationState applicationState, String documentName) */
     public ApplicationDTO applicationToDTO(Application application) {
         return new ApplicationDTO(
                 application.getId(),
@@ -285,8 +271,8 @@ public class ApplicationBean {
                         "There is no Application with id: "
                         + id);
             }
-            
-            ProjectProposal projectProposal = em.find(ProjectProposal.class, 
+
+            ProjectProposal projectProposal = em.find(ProjectProposal.class,
                     application.getProjectProposal().getCode());
             if (projectProposal == null) {
                 throw new EntityDoesNotExistException(
@@ -303,13 +289,12 @@ public class ApplicationBean {
             em.merge(application);
             projectProposal.setProjectProposalState(ProjectProposalState.ASSIGNED);
             em.merge(projectProposal);
-            
-                    
+
         } catch (Exception e) {
             throw new EJBException(e.getMessage());
         }
     }
-    
+
     @GET
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Path("/allApplicants/{projectCode]")
@@ -322,6 +307,42 @@ public class ApplicationBean {
         } catch (Exception e) {
             throw new EJBException(e.getMessage());
         }
+    }
+
+    public void removeFileRecord(Long id) throws EntityDoesNotExistException {
+        try {
+            Application application = em.find(Application.class, id);
+            if (application == null) {
+                throw new EntityDoesNotExistException(
+                        "Não existe nenhuma candidatura com esse id.");
+            }
+
+            Document document = em.find(Document.class, application.getFileRecord().getId());
+            if (document == null) {
+                throw new EntityDoesNotExistException(
+                        "Não existe nenhum documento com esse código.");
+            }
+
+            em.remove(document);
+            application.setFileRecord(new Document());
+
+        } catch (EntityDoesNotExistException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new EJBException(e.getMessage());
+        }
+    }
+
+    public DocumentDTO getDocument(Long id) throws EntityDoesNotExistException {
+        System.out.println("Id: " + id);
+        Application application = em.find(Application.class, id);
+
+        if (application == null) {
+            throw new EntityDoesNotExistException();
+        }
+
+        return new DocumentDTO(application.getFileRecord().getId(), application.getFileRecord().getFilepath(),
+                application.getFileRecord().getDesiredName(), application.getFileRecord().getMimeType());
     }
 
 }
