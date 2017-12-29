@@ -102,6 +102,14 @@ public class AdministratorManager {
     private ProjectProposalDTO currentProjectProposal;
     private ApplicationDTO currentApplication;
 
+    public ApplicationBean getApplicationBean() {
+        return applicationBean;
+    }
+
+    public void setApplicationBean(ApplicationBean applicationBean) {
+        this.applicationBean = applicationBean;
+    }
+
     /**
      * ***Searchable objects******
      */
@@ -832,15 +840,15 @@ public class AdministratorManager {
                     uploadManager.getFile().getContentType());
             
             //cria a candidatura
-            applicationBean.create(
-                    username,
-                    code,
-                    newApplication.getApplyingMessage());
+           Long applicationId = applicationBean.create(
+                                username,
+                                 code,
+                                newApplication.getApplyingMessage());
             
             //vai buscar o id da candidatura criada
-            Long applicationId = newApplication.getId();
+         //   Long applicationId = newApplication.getId();
                     
-            
+         //   Long applicationId = currentApplication.getId();
            
             //nao devia passar o id pelo link, ver como se tentou fazer acima... tb posso recorrer ao bean em vez de usar rota
             client.target(URILookup.getBaseAPI())
@@ -876,19 +884,19 @@ public class AdministratorManager {
        // return "student/student_index?faces-redirect=true";
     }
 
-    /*
-    public void removeFileRecord(ActionEvent event) {
+   
+
+     public void removeApplication(ActionEvent event) {
         try {
-            UIParameter param = (UIParameter) event.getComponent().findComponent("publicTestCode3");
+            UIParameter param = (UIParameter) event.getComponent().findComponent("publicTestCode");
             int code = Integer.parseInt(param.getValue().toString());
-            publicTestBean.removeFileRecord(code);
+            publicTestBean.remove(code);
         } catch (EntityDoesNotExistException e) {
             FacesExceptionHandler.handleException(e, e.getMessage(), logger);
         } catch (Exception e) {
             FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
         }
-    } */
-
+    }
     
     public Collection<ApplicationDTO> getAllStudentApplications(){
         
@@ -909,21 +917,19 @@ public class AdministratorManager {
         return applications;
         
     }
-    
-    public void removeApplication(ActionEvent event){
-        
+
+     public void removeDocumentApplication(ActionEvent event) {
         try {
             UIParameter param = (UIParameter) event.getComponent().findComponent("applicationId");
-            String id = param.getValue().toString();
-            
-            applicationBean.remove(id);
-            
-        } catch (Exception e) {
+            Long id = Long.parseLong(param.getValue().toString());
+            applicationBean.removeFileRecord(id);
+        } catch (EntityDoesNotExistException e) {
             FacesExceptionHandler.handleException(e, e.getMessage(), logger);
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
         }
-        
     }
-    
+     
     public String updateApplication(){
         
         try {

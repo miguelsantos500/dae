@@ -77,8 +77,8 @@
             <br></br>
             <em:dt 
                 title="Todas as propostas de projecto" 
-                headers="#{['Tipo de projecto', 'Título', 'Proponente']}"
-                props="#{['projectTypeString', 'title', 'proponentUsername']}"
+                headers="#{['Código','Tipo de projecto', 'Título', 'Proponente']}"
+                props="#{['code', 'projectTypeString', 'title', 'proponentUsername']}"
                 list="#{administratorManager.getAllProjectProposals('all')}">
                 <p:column headerText="Acções">
                     <h:form>

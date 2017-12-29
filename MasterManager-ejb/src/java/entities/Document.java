@@ -93,4 +93,14 @@ public class Document implements Serializable {
     public void setStudent(PublicTest publicTest) {
         this.publicTest = publicTest;
     }
+
+    public Application getApplication() {
+        return application;
+    }
+
+    public void setApplication(Application application) {
+        this.application = application;
+    }
+    
+    
 }

@@ -59,9 +59,9 @@ public class ApplicationBean {
     private ProjectProposalBean projectProposalBean;
 
     //recebe o username e o code do projectProposal e depois transforma em student e em projectProposal
-    public void create(String username, int code, String message) throws
+    public Long create(String username, int code, String message) throws
             EntityDoesNotExistException, ApplicationNumberException {
-
+            Long newid = null;
         try {
             Student student = em.find(Student.class, username);
             if (student == null) {
@@ -84,6 +84,8 @@ public class ApplicationBean {
                 projectProposal.addApplication(application);
 
                 em.persist(application);
+                newid= application.getId();
+
             } else {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ja tem o num max de candidaturas", "candidaturas"));
 
@@ -91,7 +93,7 @@ public class ApplicationBean {
         } catch (Exception e) {
             throw new EJBException(e.getMessage());
         }
-
+        return newid;
     }
     
 
@@ -128,6 +130,9 @@ public class ApplicationBean {
             throw new EJBException(e.getMessage());
         }
     }
+    
+    /* (Long id, int projectProposalCode, Student student, ProjectProposal projectProposal, String applyingMessage,
+            ApplicationState applicationState, String documentName) */
 
 
     public ApplicationDTO applicationToDTO(Application application) {
@@ -291,5 +296,42 @@ public class ApplicationBean {
             throw new EJBException(e.getMessage());
         }
     }
+  
+    public void removeFileRecord(Long id) throws EntityDoesNotExistException {
+            try {
+            Application application =em.find(Application.class, id);
+            if(application == null){
+                throw new EntityDoesNotExistException(
+                        "Não existe nenhuma candidatura com esse id.");
+            }
+            
+            Document document = em.find(Document.class, application.getFileRecord().getId());
+             if (document == null) {
+                throw new EntityDoesNotExistException(
+                        "Não existe nenhum documento com esse código.");
+            }
+             
+             em.remove(document);
+             application.setFileRecord(new Document());
+             
+            
+        } catch (EntityDoesNotExistException e) {
+              throw e;
+        }catch (Exception e) {
+            throw new EJBException(e.getMessage());
+        }
+    }
 
+    public DocumentDTO getDocument(Long id) throws EntityDoesNotExistException {
+        System.out.println("Id: " + id);
+        Application application = em.find(Application.class, id);
+
+        if (application == null) {
+            throw new EntityDoesNotExistException();
+        }
+
+        return new DocumentDTO(application.getFileRecord().getId(), application.getFileRecord().getFilepath(),
+                application.getFileRecord().getDesiredName(), application.getFileRecord().getMimeType());
+    }
+    
 }

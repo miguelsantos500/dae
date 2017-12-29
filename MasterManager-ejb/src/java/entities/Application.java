@@ -46,6 +46,7 @@ public class Application implements Serializable {
    @JoinColumn(name = "FILE_ID")
    private DocumentApplication fileRecord;*/
    
+ 
    @OneToOne
    @JoinColumn(name = "FILE_ID")
    private Document fileRecord;

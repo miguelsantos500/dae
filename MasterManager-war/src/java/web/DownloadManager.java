@@ -13,6 +13,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIParameter;
 import javax.faces.context.FacesContext;
+import javax.ws.rs.core.Application;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 
@@ -26,6 +27,9 @@ public class DownloadManager implements Serializable {
     @EJB
     private PublicTestBean publicTestBean;
     
+     @EJB
+    private Application application;
+    
     public DownloadManager() {
         
     }
@@ -38,6 +42,7 @@ public class DownloadManager implements Serializable {
         this.code = code;
     }
    
+    //mudar para genérico
     public StreamedContent getFile() {
         try {
             UIComponent component = UIComponent.getCurrentComponent(FacesContext.getCurrentInstance());
