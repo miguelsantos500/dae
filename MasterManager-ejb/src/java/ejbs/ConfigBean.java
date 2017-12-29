@@ -154,6 +154,8 @@ public class ConfigBean {
             applicationBean.create("3333333", 1, "Não sei o que dizer.");
             applicationBean.create("3333333", 5, "...");
 
+            //adicionar ficheiros às candidaturas
+            //todo
             
             
             publicTestBean.create(1, "Title1", new Date(2000, 1, 1), "Sala yyy", "www.link.com", "2446546", "3243243", "Pedro Oliveia", "yyy@gmail.com", "1111111");
