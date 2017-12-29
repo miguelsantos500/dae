@@ -134,7 +134,7 @@ public class ProjectProposal implements Serializable {
         this.successRequirements = successRequirements;
         this.budget = budget;
         this.supports = supports;
-        this.projectProposalState = ProjectProposalState.PENDING;
+        this.projectProposalState = ProjectProposalState.ACCEPTED;
         this.applications = new LinkedList<>();
     }
 

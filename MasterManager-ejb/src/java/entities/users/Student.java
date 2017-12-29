@@ -101,5 +101,13 @@ public class Student extends User implements Serializable {
         applications.remove(app);
     }
 
+    public Project getProject() {
+        return project;
+    }
+
+    public void setProject(Project project) {
+        this.project = project;
+    }
+
 
 }
