@@ -1,4 +1,4 @@
-package web;
+package web.managedBeans;
 
 import dtos.ApplicationDTO;
 import dtos.CourseDTO;
@@ -52,6 +52,9 @@ import javax.ws.rs.core.Form;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import util.URILookup;
+import web.FacesExceptionHandler;
+import web.UploadManager;
+import web.UserManager;
 
 @ManagedBean
 @SessionScoped
@@ -119,7 +122,6 @@ public class AdministratorManager {
     private String searchableCourse;
     private String searchableInstitution;
     private String searchableProjectProposal;
-    private String searchableApplication;
 
     /**
      * ** Other ***
@@ -135,7 +137,7 @@ public class AdministratorManager {
     private String search;
 
     private UIComponent component;
-    private static final Logger logger = Logger.getLogger("web.AdministratorManager");
+    private static final Logger logger = Logger.getLogger("web.managedBeans.AdministratorManager");
 
     DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private String dateNow = dtf.format(LocalDate.now());
@@ -831,24 +833,18 @@ public class AdministratorManager {
         int code = Integer.parseInt(param.getValue().toString());
 
         try {
-          /*  DocumentApplicationDTO document = new DocumentApplicationDTO(uploadManager.getCompletePathFile(),
-                    uploadManager.getFilename(),
-                    uploadManager.getFile().getContentType());*/
-          
+      
           DocumentDTO document = new DocumentDTO(uploadManager.getCompletePathFile(),
                     uploadManager.getFilename(),
                     uploadManager.getFile().getContentType());
             
-            //cria a candidatura
+            //cria a candidatura e reeber o id gerado automaticamente
            Long applicationId = applicationBean.create(
                                 username,
                                  code,
                                 newApplication.getApplyingMessage());
             
-            //vai buscar o id da candidatura criada
-         //   Long applicationId = newApplication.getId();
-                    
-         //   Long applicationId = currentApplication.getId();
+           
            
             //nao devia passar o id pelo link, ver como se tentou fazer acima... tb posso recorrer ao bean em vez de usar rota
             client.target(URILookup.getBaseAPI())
@@ -883,20 +879,6 @@ public class AdministratorManager {
         }
        // return "student/student_index?faces-redirect=true";
     }
-
-   
-
-     public void removeApplication(ActionEvent event) {
-        try {
-            UIParameter param = (UIParameter) event.getComponent().findComponent("publicTestCode");
-            int code = Integer.parseInt(param.getValue().toString());
-            publicTestBean.remove(code);
-        } catch (EntityDoesNotExistException e) {
-            FacesExceptionHandler.handleException(e, e.getMessage(), logger);
-        } catch (Exception e) {
-            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
-        }
-    }
     
     public Collection<ApplicationDTO> getAllStudentApplications(){
         
@@ -920,13 +902,17 @@ public class AdministratorManager {
 
      public void removeDocumentApplication(ActionEvent event) {
         try {
-            UIParameter param = (UIParameter) event.getComponent().findComponent("applicationIdf");
-            Long applicationId = Long.parseLong(param.getValue().toString());
-            applicationBean.removeFileRecord(applicationId);
+            UIParameter param = (UIParameter) event.getComponent().findComponent("applicationId");
+            Long id = Long.parseLong(param.getValue().toString());
+            applicationBean.removeFileRecord(id);
+            
+     //       ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+     //   externalContext.redirect("http://localhost:8080/MasterManager-war/faces/student/student_application_update.xhtml");
+       
         } catch (EntityDoesNotExistException e) {
             FacesExceptionHandler.handleException(e, e.getMessage(), logger);
         } catch (Exception e) {
-            FacesExceptionHandler.handleException(e, "Unexpected error no remover ficheiro! Try again latter!", logger);
+            FacesExceptionHandler.handleException(e, "Unexpected error no removeDocumentApplication! Try again latter!", logger);
         }
     }
      
@@ -949,31 +935,9 @@ public class AdministratorManager {
         
         
     }
-    
-    
-    public List<ApplicationDTO> getSearchApplication(){
-        try {
-            //tenho que saber qual é o estudante para que ele procure só as candidaturas desse estudante
-            String username = userManager.getUsername();
-            List<ApplicationDTO> foundApplications = applicationBean.search(searchableApplication, username);
-            return foundApplications;
-        } catch (Exception e) {
-            FacesExceptionHandler.handleException(e, "Unexpected error on getSearchApplication()!", logger);
-            return null;
-        }
-    }
-
-    public String getSearchableApplication() {
-        return searchableApplication;
-    }
-
-    public void setSearchableApplication(String searchableApplication) {
-        this.searchableApplication = searchableApplication;
-    }
-    
     public String approveApplication(boolean approved){
         try {
-            applicationBean.approveApplication(currentApplication.getId(), approved);
+            applicationBean.approveApplication(currentApplication.getId());
             //todo - mudar isto - nao sei quem aprova a candidatura
             return "admin/admin_index?faces-redirect=true";
         } catch (Exception e) {

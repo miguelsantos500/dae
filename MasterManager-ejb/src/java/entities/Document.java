@@ -32,7 +32,7 @@ public class Document implements Serializable {
     @OneToOne(mappedBy = "fileRecord", cascade = CascadeType.REMOVE)
     private PublicTest publicTest;
     
-    @OneToOne(mappedBy = "fileRecord", cascade = CascadeType.REMOVE)
+    @OneToOne(mappedBy="fileRecord")
     private Application application;
 
     public Document() {
