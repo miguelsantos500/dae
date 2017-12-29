@@ -7,40 +7,34 @@ package ejbs;
 
 import dtos.ApplicationDTO;
 import dtos.DocumentApplicationDTO;
-import dtos.DocumentDTO;
-import dtos.ProjectProposalDTO;
 import entities.Application;
 import entities.ApplicationState;
-import entities.Document;
 import entities.DocumentApplication;
 import entities.project.ProjectProposal;
+import entities.project.ProjectProposalState;
 import entities.users.Student;
 import exceptions.ApplicationNotPendingException;
 import exceptions.ApplicationNumberException;
-import exceptions.EntityAlreadyExistsException;
 import exceptions.EntityDoesNotExistException;
 import exceptions.MyConstraintViolationException;
 import exceptions.Utils;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
-import javax.ejb.LocalBean;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.validation.ConstraintViolationException;
 import javax.ws.rs.Consumes;
-import static javax.ws.rs.HttpMethod.POST;
-import javax.ws.rs.POST;
+import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 /**
@@ -92,8 +86,7 @@ public class ApplicationBean {
         }
 
     }
-    
-    
+
     /*   @PUT
     @Path("/addFileRecord/{code}")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
@@ -116,7 +109,6 @@ public class ApplicationBean {
             throw new EJBException(e.getMessage());
         }
     } */
-
     @PUT
     @Path("/addFileRecord/{applcationId}")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
@@ -132,13 +124,13 @@ public class ApplicationBean {
             if (application == null) {
                 throw new EntityDoesNotExistException("Não existe nenhuma candidatura com esse id.");
             }
-            
+
             DocumentApplication document = new DocumentApplication(doc.getFilepath(), doc.getDesiredName(),
                     doc.getMimeType(), application);
-            
+
             em.persist(document);
             application.setFileRecord(document);
-          //  em.merge(application);
+            //  em.merge(application);
 
         } catch (EntityDoesNotExistException e) {
             throw e;
@@ -146,7 +138,6 @@ public class ApplicationBean {
             throw new EJBException(e.getMessage());
         }
     }
-
 
     public ApplicationDTO applicationToDTO(Application application) {
         return new ApplicationDTO(
@@ -156,7 +147,8 @@ public class ApplicationBean {
                 application.getProjectProposal(),
                 application.getApplyingMessage(),
                 application.getApplicationState(),
-                application.getFileRecord().getDesiredName());
+                application.getFileRecord().getDesiredName(),
+                application.getStudent().getName());
 
     }
 
@@ -170,7 +162,8 @@ public class ApplicationBean {
         return dtos;
     }
 
-    public List<ApplicationDTO> getStudentApplications(String username) throws EntityDoesNotExistException {
+    public List<ApplicationDTO> getStudentApplications(String username)
+            throws EntityDoesNotExistException {
 
         try {
             Student student = em.find(Student.class, username);
@@ -284,13 +277,20 @@ public class ApplicationBean {
 
     }
 
-    public void approveApplication(Long id, boolean approved) {
+    public void approveApplication(Long id) {
         try {
             Application application = em.find(Application.class, id);
             if (application == null) {
                 throw new EntityDoesNotExistException(
                         "There is no Application with id: "
                         + id);
+            }
+            
+            ProjectProposal projectProposal = em.find(ProjectProposal.class, 
+                    application.getProjectProposal().getCode());
+            if (projectProposal == null) {
+                throw new EntityDoesNotExistException(
+                        "There is no Project Propososal with");
             }
 
             if (application.getApplicationState() != ApplicationState.PENDING) {
@@ -299,12 +299,26 @@ public class ApplicationBean {
                         + application.getApplicationState());
             }
 
-            if (approved) {
-                application.setApplicationState(ApplicationState.ACCEPTED);
-            } else {
-                application.setApplicationState(ApplicationState.NOT_ACCEPTED);
-            }
-
+            application.setApplicationState(ApplicationState.ACCEPTED);
+            em.merge(application);
+            projectProposal.setProjectProposalState(ProjectProposalState.ASSIGNED);
+            em.merge(projectProposal);
+            
+                    
+        } catch (Exception e) {
+            throw new EJBException(e.getMessage());
+        }
+    }
+    
+    @GET
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Path("/allApplicants/{projectCode]")
+    public List<ApplicationDTO> getAllFinished(@PathParam("projectCode") String projectCode) {
+        try {
+            List<Application> applications
+                    = em.createNamedQuery("getAllProjectProposalsFinished", Application.class).
+                            setParameter("code", Integer.parseInt(projectCode)).getResultList();
+            return applicationsToDTOs(applications);
         } catch (Exception e) {
             throw new EJBException(e.getMessage());
         }

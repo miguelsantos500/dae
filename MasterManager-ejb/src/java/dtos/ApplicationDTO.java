@@ -22,13 +22,14 @@ public class ApplicationDTO implements Serializable {
     private String documentName;
     private int projectProposalCode;
     private ApplicationState applicationState;
+    private String studentName;
     
 
     public ApplicationDTO() {
     }
 
     public ApplicationDTO(Long id, int projectProposalCode, Student student, ProjectProposal projectProposal, String applyingMessage,
-            ApplicationState applicationState, String documentName) {
+            ApplicationState applicationState, String documentName, String studentName) {
         this.id = id;
         this.student = student;
         this.projectProposal = projectProposal;
@@ -36,6 +37,7 @@ public class ApplicationDTO implements Serializable {
         this.projectProposalCode = projectProposal.getCode();
         this.applicationState = applicationState;
         this.documentName= documentName;
+        this.studentName = studentName;
     }
 
     public void reset() {
@@ -95,6 +97,14 @@ public class ApplicationDTO implements Serializable {
 
     public void setDocumentName(String documentName) {
         this.documentName = documentName;
+    }
+
+    public String getStudentName() {
+        return studentName;
+    }
+
+    public void setStudentName(String studentName) {
+        this.studentName = studentName;
     }
     
     

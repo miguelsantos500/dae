@@ -84,7 +84,7 @@
 
                 <br/>
 
-                <h:form>
+                <h:form enctype="multipart/form-data">
                     <!--upload do ficheiro-->
                     <h:outputLabel for="message" value="Motivação: " />
                     <h:inputText
@@ -94,9 +94,9 @@
                         requiredMessage="Erro: A mensagem de motivação tem que ser preenchida."
                         value="#{administratorManager.newApplication.applyingMessage}"/>
                     <h:message for="message" errorStyle="color: red" />      
-                    &nbsp;
-
-                    &nbsp;
+                    
+                    <br/>
+                    
                     <p:growl id="curriculo" showDetail="true" />
                     <p:fileUpload value="#{uploadManager.file}" mode="simple" skinSimple="true"/>
                     <p:commandButton value="Submit" ajax="false" actionListener="#{uploadManager.upload}" >
@@ -104,7 +104,6 @@
                         <f:param name="ppcode" id="ppcode"
                                  value="#{administratorManager.currentProjectProposal.code}" />
                     </p:commandButton>
-
                 </h:form>
 
                 <h:link value="Voltar" outcome="student_index"/>

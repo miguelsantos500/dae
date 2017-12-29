@@ -32,7 +32,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
@@ -48,7 +47,6 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.Form;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import util.URILookup;
@@ -462,16 +460,16 @@ public class AdministratorManager {
         }
     }
 
-    public void redirect (String to) throws IOException {
-        if ("update".equals(to)){
+    public void redirect(String to) throws IOException {
+        if ("update".equals(to)) {
             ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
             externalContext.redirect("http://localhost:8080/MasterManager-war/faces/proponent/project_proposals_update.xhtml");
         }
-        if ("details".equals(to)){
+        if ("details".equals(to)) {
             ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
             externalContext.redirect("http://localhost:8080/MasterManager-war/faces/proponent/project_proposals_details.xhtml");
         }
-        if ("search".equals(to)){
+        if ("search".equals(to)) {
             ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
             externalContext.redirect("http://localhost:8080/MasterManager-war/faces/proponent/search_project_proposal.xhtml");
         }
@@ -533,17 +531,16 @@ public class AdministratorManager {
         }
 
     }*/
-
     public String addObservation() {
         try {
             projectProposalBean.updateProjectProposalState(
-                    currentProjectProposal.getCode(), 
+                    currentProjectProposal.getCode(),
                     newObservation.getProjectProposalState());
-            
+
             observationBean.create(newObservation.getMessage(),
-                    newObservation.getProjectProposalState().toString(), 
+                    newObservation.getProjectProposalState().toString(),
                     currentProjectProposal.getCode());
-            
+
             return "admin_index?faces-redirect=true";
         } catch (Exception e) {
             e.printStackTrace();
@@ -633,19 +630,19 @@ public class AdministratorManager {
 
     public void uploadFileRecord(UIComponent component) {
         try {
-            if (uploadManager.getFile().getSize() != 0){
+            if (uploadManager.getFile().getSize() != 0) {
                 DocumentDTO document = new DocumentDTO(uploadManager.getCompletePathFile(),
-                    uploadManager.getFilename(),
-                    uploadManager.getFile().getContentType());
+                        uploadManager.getFilename(),
+                        uploadManager.getFile().getContentType());
 
-            UIParameter param = (UIParameter) component.findComponent("publicTestCode2");
-            String code = param.getValue().toString();
+                UIParameter param = (UIParameter) component.findComponent("publicTestCode2");
+                String code = param.getValue().toString();
 
-            client.target(URILookup.getBaseAPI())
-                    .path("/publictests/addFileRecord")
-                    .path(code)
-                    .request(MediaType.APPLICATION_XML)
-                    .put(Entity.xml(document));
+                client.target(URILookup.getBaseAPI())
+                        .path("/publictests/addFileRecord")
+                        .path(code)
+                        .request(MediaType.APPLICATION_XML)
+                        .put(Entity.xml(document));
 
             }
         } catch (Exception e) {
@@ -813,74 +810,66 @@ public class AdministratorManager {
     }
 
     ////////////////////////////////////////////APPLICATIONS///////////////////////////////////////////////////////////////////
-    public String createApplication(ActionEvent event) {
+    public void createApplication(UIComponent component)
+            throws IOException {
 
         //ir buscar o username do estudante via userManager
         String username = userManager.getUsername();
 
         //ir buscar a projectProposal via codigo
-        UIParameter param = (UIParameter) event.getComponent().findComponent("ppcode");
+        UIParameter param = (UIParameter) component.findComponent("ppcode");
         int code = Integer.parseInt(param.getValue().toString());
 
         try {
             DocumentApplicationDTO document = new DocumentApplicationDTO(uploadManager.getCompletePathFile(),
                     uploadManager.getFilename(),
                     uploadManager.getFile().getContentType());
-            
+
             //ir buscar a projectProposal via codigo
-           // UIParameter param = (UIParameter) component.findComponent("ppcode");
-           // UIParameter param = (UIParameter) event.getComponent().findComponent("ppcode");
-           // int code = Integer.parseInt(param.getValue().toString());
-            
+            // UIParameter param = (UIParameter) component.findComponent("ppcode");
+            // UIParameter param = (UIParameter) event.getComponent().findComponent("ppcode");
+            // int code = Integer.parseInt(param.getValue().toString());
             //ir buscar o username do estudante via userManager
-           // String username = userManager.getUsername();
-
+            // String username = userManager.getUsername();
             //ir buscar a projectProposal via codigo
-           // UIParameter param = (UIParameter) event.getComponent().findComponent("code");
-            
-
+            // UIParameter param = (UIParameter) event.getComponent().findComponent("code");
             //cria a candidatura
             applicationBean.create(
                     username,
                     code,
                     newApplication.getApplyingMessage());
-            
+
             //vai buscar o id da candidatura criada
             Long applicationId = newApplication.getId();
-                    
-            
-           
+
             //nao devia passar o id pelo link, ver como se tentou fazer acima... tb posso recorrer ao bean em vez de usar rota
             client.target(URILookup.getBaseAPI())
                     .path("/applications/addFileRecord")
                     .path(String.valueOf(applicationId))
                     .request(MediaType.APPLICATION_XML)
                     .put(Entity.xml(document));
-            
-            newApplication.reset();
-          // Form form = new Form();
-           //form.param("username", username);
-           //form.param("applcationId", String.valueOf(applcationId));
-          // form.param("document", Entity.xml(document));
-         //  form.param("message", "hello");
 
-           //crio a application atraves de uma rota e passo todos os parametros no body em vez de passar
-           //como parametros
-         
-           //  client.target(URILookup.getBaseAPI())
+            newApplication.reset();
+            // Form form = new Form();
+            //form.param("username", username);
+            //form.param("applcationId", String.valueOf(applcationId));
+            // form.param("document", Entity.xml(document));
+            //  form.param("message", "hello");
+
+            //crio a application atraves de uma rota e passo todos os parametros no body em vez de passar
+            //como parametros
+            //  client.target(URILookup.getBaseAPI())
             //        .path("/applications/create")
             //        .request(MediaType.APPLICATION_XML)
-             //       .post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED_TYPE))
+            //       .post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED_TYPE))
             //         ;
-            
-            
-           
         } catch (Exception e) {
             FacesExceptionHandler.handleException(e, "Erro inesperado no creeateApplication do AdministratorManager", component, logger);
             e.printStackTrace();
-            return null;
         }
-        return "student/student_index?faces-redirect=true";
+
+        ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+        externalContext.redirect("http://localhost:8080/MasterManager-war/faces/student/student_index.xhtml");
     }
 
     /*
@@ -895,64 +884,73 @@ public class AdministratorManager {
             FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
         }
     } */
+    public Collection<ApplicationDTO> getAllStudentApplications() {
 
-    
-    public Collection<ApplicationDTO> getAllStudentApplications(){
-        
         Collection<ApplicationDTO> applications = null;
-        
-        try{
+
+        try {
             //vai buscar o estudante correntemente logado atraves do username
             String username = userManager.getUsername();
-            
-          applications =  applicationBean.getStudentApplications(username);
-          
-          
-        }catch
-        (Exception e) {
+
+            applications = applicationBean.getStudentApplications(username);
+
+        } catch (Exception e) {
             FacesExceptionHandler.handleException(e, "Erro inesperado", component, logger);
 
         }
         return applications;
-        
+
     }
-    
-    public void removeApplication(ActionEvent event){
-        
+
+    public List<ApplicationDTO> getAllProjectProposalApplicants() {
+        try {
+            return client.target(URILookup.getBaseAPI()).
+                    path("/applications/allApplicants").
+                    path(String.valueOf(currentProjectProposal.getCode())).
+                    request(MediaType.APPLICATION_XML).
+                    get(new GenericType<List<ApplicationDTO>>() {
+                    });
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!",
+                    logger);
+            return null;
+        }
+    }
+
+    public void removeApplication(ActionEvent event) {
+
         try {
             UIParameter param = (UIParameter) event.getComponent().findComponent("applicationId");
             String id = param.getValue().toString();
-            
+
             applicationBean.remove(id);
-            
+
         } catch (Exception e) {
             FacesExceptionHandler.handleException(e, e.getMessage(), logger);
         }
-        
+
     }
-    
-    public String updateApplication(){
-        
+
+    public String updateApplication() {
+
         try {
             WebTarget path = client.target(baseUri)
                     .path("/applications/update");
             System.out.println(path.getUri());
-                    path.request(MediaType.APPLICATION_XML)
+            path.request(MediaType.APPLICATION_XML)
                     .put(Entity.xml(currentApplication));
-        
+
         } catch (Exception e) {
             e.printStackTrace();
-             FacesExceptionHandler.handleException(e, "Unexpected error no updateApplication do AdministratorManager!", logger);
+            FacesExceptionHandler.handleException(e, "Unexpected error no updateApplication do AdministratorManager!", logger);
             return null;
         }
-        
+
         return "student_index?faces-redirect=true";
-        
-        
+
     }
-    
-    
-    public List<ApplicationDTO> getSearchApplication(){
+
+    public List<ApplicationDTO> getSearchApplication() {
         try {
             //tenho que saber qual é o estudante para que ele procure só as candidaturas desse estudante
             String username = userManager.getUsername();
@@ -971,18 +969,21 @@ public class AdministratorManager {
     public void setSearchableApplication(String searchableApplication) {
         this.searchableApplication = searchableApplication;
     }
-    
-    public String approveApplication(boolean approved){
+
+    public String approveApplication(ActionEvent event) {
         try {
-            applicationBean.approveApplication(currentApplication.getId(), approved);
-            //todo - mudar isto - nao sei quem aprova a candidatura
-            return "admin/admin_index?faces-redirect=true";
+            UIParameter param = (UIParameter) event.getComponent().findComponent("applicationId");
+            String id = param.getValue().toString();
+
+            applicationBean.approveApplication(Long.parseLong(id));
+            //todo - mudar isto - nao sei quem aprova a candidatura  
         } catch (Exception e) {
-             FacesExceptionHandler.handleException(e, "Erro inesperado, tente mais tarde.", logger);
+            FacesExceptionHandler.handleException(e, "Erro inesperado, tente mais tarde.", logger);
             return null;
         }
+        return "admin/admin_index?faces-redirect=true";
     }
-    
+
     ///////////////////////////////////////////Getters e setters tem que ser organizado//////////////////////////////////////////
     public ProjectProposalDTO getNewProjectProposal() {
         return newProjectProposal;
@@ -1149,6 +1150,13 @@ public class AdministratorManager {
         this.currentApplication = currentApplication;
     }
 
+    public ApplicationBean getApplicationBean() {
+        return applicationBean;
+    }
+
+    public void setApplicationBean(ApplicationBean applicationBean) {
+        this.applicationBean = applicationBean;
+    }
     
     
 }
