@@ -16,6 +16,7 @@ import entities.project.ProjectProposalState;
 import entities.users.Student;
 import exceptions.ApplicationNotPendingException;
 import exceptions.ApplicationNumberException;
+import exceptions.ApplicationStateException;
 import exceptions.EntityDoesNotExistException;
 import exceptions.MyConstraintViolationException;
 import exceptions.Utils;
@@ -56,7 +57,7 @@ public class ApplicationBean {
 
     //recebe o username e o code do projectProposal e depois transforma em student e em projectProposal
     public Long create(String username, int code, String message) throws
-            EntityDoesNotExistException, ApplicationNumberException {
+            EntityDoesNotExistException, ApplicationNumberException, ApplicationStateException {
         Long newid = null;
         try {
             
@@ -81,9 +82,10 @@ public class ApplicationBean {
                 if(verifyApplicationStateAccepted(a.getId())){
                     //mensagem a informar o estudante que já tem uma candidatura aceite
                     //todo - por isto no manager
-                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ja tem uma candidatura atribuida", 
-                            "candidaturas"));
-                   //fazer alguma coisa aqui
+                   // FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ja tem uma candidatura atribuida", 
+                    //        "candidaturas"));
+                    throw new ApplicationStateException("Já tem uma candidatura aceite");
+                  
                 }
                 
             }
@@ -100,7 +102,10 @@ public class ApplicationBean {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ja tem o num max de candidaturas", "candidaturas"));
 
             }
-        } catch (Exception e) {
+        } catch(ApplicationStateException |EntityDoesNotExistException e){
+            throw e;
+        }
+        catch (Exception e) {
             throw new EJBException(e.getMessage());
         }
         return newid;
@@ -398,11 +403,10 @@ public class ApplicationBean {
         boolean stateAccepted = false;
         
         Application application = em.find(Application.class, id);
-        
-        if(application.getApplicationState().ACCEPTED.toString().equals("ACCEPTED")){
-            stateAccepted = true;
+        if(application.getApplicationState()==ApplicationState.ACCEPTED){
+             stateAccepted = true;
         }
-        
+       
         return stateAccepted;
     }
     
@@ -412,10 +416,10 @@ public class ApplicationBean {
         
         Application application = em.find(Application.class, id);
         
-        if(application.getApplicationState().NOT_ACCEPTED.toString().equals("NOT_ACCEPTED")){
-            //mensagem
-            stateNotAccepted = true;
+        if(application.getApplicationState()==ApplicationState.NOT_ACCEPTED){
+             stateNotAccepted = true;
         }
+       
         return stateNotAccepted;
     }
     
@@ -426,10 +430,11 @@ public class ApplicationBean {
         
         Application application = em.find(Application.class, id);
         
-        if(application.getApplicationState().PENDING.toString().equals("PENDING")){
-            
-            statePending = true;
+        if(application.getApplicationState()==ApplicationState.PENDING){
+             statePending = true;
         }
+        
+       
         return statePending;
     }
     
