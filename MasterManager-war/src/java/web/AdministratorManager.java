@@ -920,13 +920,13 @@ public class AdministratorManager {
 
      public void removeDocumentApplication(ActionEvent event) {
         try {
-            UIParameter param = (UIParameter) event.getComponent().findComponent("applicationId");
-            Long id = Long.parseLong(param.getValue().toString());
-            applicationBean.removeFileRecord(id);
+            UIParameter param = (UIParameter) event.getComponent().findComponent("applicationIdf");
+            Long applicationId = Long.parseLong(param.getValue().toString());
+            applicationBean.removeFileRecord(applicationId);
         } catch (EntityDoesNotExistException e) {
             FacesExceptionHandler.handleException(e, e.getMessage(), logger);
         } catch (Exception e) {
-            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
+            FacesExceptionHandler.handleException(e, "Unexpected error no remover ficheiro! Try again latter!", logger);
         }
     }
      
