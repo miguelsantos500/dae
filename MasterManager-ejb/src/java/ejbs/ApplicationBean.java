@@ -296,7 +296,7 @@ public class ApplicationBean {
 
     @GET
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    @Path("/allApplicants/{projectCode]")
+    @Path("/allApplicants/{projectCode}")
     public List<ApplicationDTO> getAllFinished(@PathParam("projectCode") String projectCode) {
         try {
             List<Application> applications
