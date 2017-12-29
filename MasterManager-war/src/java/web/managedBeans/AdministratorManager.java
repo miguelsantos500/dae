@@ -122,6 +122,7 @@ public class AdministratorManager {
     private String searchableCourse;
     private String searchableInstitution;
     private String searchableProjectProposal;
+    private String searchableApplication;
 
     /**
      * ** Other ***
@@ -880,6 +881,18 @@ public class AdministratorManager {
         // return "student/student_index?faces-redirect=true";
     }
 
+    public void removeApplication(ActionEvent event) {
+        try {
+            UIParameter param = (UIParameter) event.getComponent().findComponent("publicTestCode");
+            int code = Integer.parseInt(param.getValue().toString());
+            publicTestBean.remove(code);
+        } catch (EntityDoesNotExistException e) {
+            FacesExceptionHandler.handleException(e, e.getMessage(), logger);
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
+        }
+    }
+
     public Collection<ApplicationDTO> getAllStudentApplications() {
 
         Collection<ApplicationDTO> applications = null;
@@ -898,7 +911,23 @@ public class AdministratorManager {
 
     }
 
+    public List<ApplicationDTO> getAllProjectProposalApplicants() {
+        try {
+            return client.target(URILookup.getBaseAPI()).
+                    path("/applications/allApplicants").
+                    path(String.valueOf(currentProjectProposal.getCode())).
+                    request(MediaType.APPLICATION_XML).
+                    get(new GenericType<List<ApplicationDTO>>() {
+                    });
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!",
+                    logger);
+            return null;
+        }
+    }
+
     public void removeDocumentApplication(ActionEvent event) {
+
         try {
             UIParameter param = (UIParameter) event.getComponent().findComponent("applicationId");
             Long id = Long.parseLong(param.getValue().toString());
@@ -929,18 +958,38 @@ public class AdministratorManager {
 
     }
 
-    public String approveApplication(ActionEvent event) {
+    public List<ApplicationDTO> getSearchApplication() {
+        try {
+            //tenho que saber qual é o estudante para que ele procure só as candidaturas desse estudante
+            String username = userManager.getUsername();
+            List<ApplicationDTO> foundApplications = applicationBean.search(searchableApplication, username);
+            return foundApplications;
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Unexpected error on getSearchApplication()!", logger);
+            return null;
+        }
+    }
+
+    public String getSearchableApplication() {
+        return searchableApplication;
+    }
+
+    public void setSearchableApplication(String searchableApplication) {
+        this.searchableApplication = searchableApplication;
+    }
+
+    public void approveApplication(ActionEvent event) throws IOException {
         try {
             UIParameter param = (UIParameter) event.getComponent().findComponent("applicationId");
             String id = param.getValue().toString();
 
             applicationBean.approveApplication(Long.parseLong(id));
             //todo - mudar isto - nao sei quem aprova a candidatura   
-            return "admin/admin_index?faces-redirect=true";
         } catch (Exception e) {
             FacesExceptionHandler.handleException(e, "Erro inesperado, tente mais tarde.", logger);
-            return null;
         }
+        ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+        externalContext.redirect("http://localhost:8080/MasterManager-war/faces/admin/admin_index.xhtml");
     }
 
     ///////////////////////////////////////////Getters e setters tem que ser organizado//////////////////////////////////////////
