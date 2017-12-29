@@ -1,4 +1,4 @@
-package web;
+package web.managedBeans;
 
 import dtos.ApplicationDTO;
 import dtos.CourseDTO;
@@ -52,6 +52,9 @@ import javax.ws.rs.core.Form;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import util.URILookup;
+import web.FacesExceptionHandler;
+import web.UploadManager;
+import web.UserManager;
 
 @ManagedBean
 @SessionScoped
@@ -119,7 +122,6 @@ public class AdministratorManager {
     private String searchableCourse;
     private String searchableInstitution;
     private String searchableProjectProposal;
-    private String searchableApplication;
 
     /**
      * ** Other ***
@@ -135,7 +137,7 @@ public class AdministratorManager {
     private String search;
 
     private UIComponent component;
-    private static final Logger logger = Logger.getLogger("web.AdministratorManager");
+    private static final Logger logger = Logger.getLogger("web.managedBeans.AdministratorManager");
 
     DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private String dateNow = dtf.format(LocalDate.now());
@@ -883,20 +885,6 @@ public class AdministratorManager {
         }
        // return "student/student_index?faces-redirect=true";
     }
-
-   
-
-     public void removeApplication(ActionEvent event) {
-        try {
-            UIParameter param = (UIParameter) event.getComponent().findComponent("publicTestCode");
-            int code = Integer.parseInt(param.getValue().toString());
-            publicTestBean.remove(code);
-        } catch (EntityDoesNotExistException e) {
-            FacesExceptionHandler.handleException(e, e.getMessage(), logger);
-        } catch (Exception e) {
-            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
-        }
-    }
     
     public Collection<ApplicationDTO> getAllStudentApplications(){
         
@@ -949,28 +937,6 @@ public class AdministratorManager {
         
         
     }
-    
-    
-    public List<ApplicationDTO> getSearchApplication(){
-        try {
-            //tenho que saber qual é o estudante para que ele procure só as candidaturas desse estudante
-            String username = userManager.getUsername();
-            List<ApplicationDTO> foundApplications = applicationBean.search(searchableApplication, username);
-            return foundApplications;
-        } catch (Exception e) {
-            FacesExceptionHandler.handleException(e, "Unexpected error on getSearchApplication()!", logger);
-            return null;
-        }
-    }
-
-    public String getSearchableApplication() {
-        return searchableApplication;
-    }
-
-    public void setSearchableApplication(String searchableApplication) {
-        this.searchableApplication = searchableApplication;
-    }
-    
     public String approveApplication(boolean approved){
         try {
             applicationBean.approveApplication(currentApplication.getId(), approved);

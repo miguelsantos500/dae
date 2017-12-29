@@ -6,39 +6,30 @@
 package ejbs;
 
 import dtos.ApplicationDTO;
-import dtos.DocumentApplicationDTO;
 import dtos.DocumentDTO;
-import dtos.ProjectProposalDTO;
 import entities.Application;
 import entities.ApplicationState;
 import entities.Document;
-import entities.DocumentApplication;
 import entities.EntitieGeneric;
 import entities.project.ProjectProposal;
 import entities.users.Student;
 import exceptions.ApplicationNotPendingException;
 import exceptions.ApplicationNumberException;
-import exceptions.EntityAlreadyExistsException;
 import exceptions.EntityDoesNotExistException;
 import exceptions.MyConstraintViolationException;
 import exceptions.Utils;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
-import javax.ejb.LocalBean;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.validation.ConstraintViolationException;
 import javax.ws.rs.Consumes;
-import static javax.ws.rs.HttpMethod.POST;
-import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -157,7 +148,8 @@ public class ApplicationBean {
         return dtos;
     }
 
-    public List<ApplicationDTO> getStudentApplications(String username) throws EntityDoesNotExistException {
+    public List<ApplicationDTO> getStudentApplications(String username) 
+            throws EntityDoesNotExistException, ApplicationNumberException {
 
         try {
             Student student = em.find(Student.class, username);
@@ -165,7 +157,7 @@ public class ApplicationBean {
             if (student == null) {
                 throw new EntityDoesNotExistException();
             }
-            List<Application> applications = new LinkedList<>();
+            List<Application> applications;
 
             applications = student.getApplications();
 
@@ -173,12 +165,11 @@ public class ApplicationBean {
 
                 //todo - mensagem a dizer que não há candidaturas para aquele estudante
                 throw new ApplicationNumberException("Não tem candidaturas.");
-
             }
 
             return applicationsToDTOs(applications);
 
-        } catch (EntityDoesNotExistException e) {
+        } catch (EntityDoesNotExistException | ApplicationNumberException e) {
             throw e;
         } catch (Exception e) {
             throw new EJBException(e.getMessage());

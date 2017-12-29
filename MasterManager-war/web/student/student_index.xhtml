@@ -25,13 +25,13 @@
             <br></br>
             
             <h:form>
-                <h:outputLabel for="search" value="Procurar candidatura " />
+                <h:outputLabel for="searchApplications" value="Procurar candidatura " />
                 <h:inputText 
                     id="searchApplications"
                     size="20"
                     required="true"
                     requiredMessage="Erro: campo não pode estar vazio!"
-                    value="#{administratorManager.searchableApplication}"/>
+                    value="#{studentManager.searchableApplication}"/>
 
                 <br></br>
 
@@ -49,21 +49,21 @@
                 title="As minhas candidaturas" 
                 headers="#{['Id da candidatura', 'Código da proposta', 'Mensagem', 'Estado']}"
                 props="#{['id', 'projectProposalCode', 'applyingMessage', 'applicationState']}"
-                list="#{administratorManager.allStudentApplications}">
+                list="#{studentManager.allStudentApplications}">
                 <p:column headerText="Acções">
                     <h:form>
                         <h:commandLink value="Consultar" action="student_application_details?facesredirect=true">
                             <f:setPropertyActionListener
-                                target="#{administratorManager.currentApplication}" value="#{object}" />
+                                target="#{studentManager.currentApplication}" value="#{object}" />
                         </h:commandLink>
                         &nbsp;
                         <h:commandLink value="Actualizar" action="student_application_update?facesredirect=true">
                             <f:setPropertyActionListener
-                                target="#{administratorManager.currentApplication}" value="#{object}" />
+                                target="#{studentManager.currentApplication}" value="#{object}" />
                         </h:commandLink>
                         &nbsp;
                         <h:commandLink value="Remover"
-                                       actionListener="#{administratorManager.removeApplication}">
+                                       actionListener="#{studentManager.removeApplication}">
                             <f:param name="applicationId" id="applicationId"
                                      value="#{object.id}" />
                         </h:commandLink>
