@@ -23,7 +23,7 @@ public class UploadManager {
     }
 
     public void upload() {
-
+        
         if (file.getSize() != 0) {
             try {
                 filename = file.getFileName().substring(file.getFileName().lastIndexOf("\\") + 1);
