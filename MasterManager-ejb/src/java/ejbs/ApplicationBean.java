@@ -150,8 +150,8 @@ public class ApplicationBean {
         return dtos;
     }
 
-    public List<ApplicationDTO> getStudentApplications(String username)
-            throws EntityDoesNotExistException {
+    public List<ApplicationDTO> getStudentApplications(String username) 
+            throws EntityDoesNotExistException, ApplicationNumberException {
 
         try {
             Student student = em.find(Student.class, username);
@@ -159,7 +159,7 @@ public class ApplicationBean {
             if (student == null) {
                 throw new EntityDoesNotExistException();
             }
-            List<Application> applications = new LinkedList<>();
+            List<Application> applications;
 
             applications = student.getApplications();
 
@@ -167,12 +167,11 @@ public class ApplicationBean {
 
                 //todo - mensagem a dizer que não há candidaturas para aquele estudante
                 throw new ApplicationNumberException("Não tem candidaturas.");
-
             }
 
             return applicationsToDTOs(applications);
 
-        } catch (EntityDoesNotExistException e) {
+        } catch (EntityDoesNotExistException | ApplicationNumberException e) {
             throw e;
         } catch (Exception e) {
             throw new EJBException(e.getMessage());
@@ -325,6 +324,7 @@ public class ApplicationBean {
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Path("/allApplicants/{projectCode}")
     public List<ApplicationDTO> getAllProjectProposalApplicants(@PathParam("projectCode") String projectCode) {
+
         try {
             List<Application> applications
                     = em.createNamedQuery("getAllProjectProposalApplicants", Application.class).
