@@ -5,9 +5,11 @@
  */
 package ejbs;
 
+import dtos.ObservationDTO;
 import entities.project.Observation;
 import entities.project.ProjectProposal;
 import entities.project.ProjectProposalState;
+import entities.users.CCPUser;
 import exceptions.EntityAlreadyExistsException;
 import exceptions.EntityDoesNotExistException;
 import exceptions.MyConstraintViolationException;
@@ -19,6 +21,8 @@ import javax.persistence.PersistenceContext;
 import javax.validation.ConstraintViolationException;
 import javax.ws.rs.Path;
 import exceptions.Utils;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -33,9 +37,9 @@ public class ObservationBean {
 
     @EJB
     private ProjectProposalBean projectProposalBean;
-    
-    public void create(String message,
-            String projectProposalStateString, int projectProposalCode)
+
+    public void create(String message, String projectProposalStateString,
+            int projectProposalCode, String ccpUserId)
             throws EntityAlreadyExistsException,
             EntityDoesNotExistException, MyConstraintViolationException {
         try {
@@ -48,12 +52,20 @@ public class ObservationBean {
                         + projectProposalCode + ")");
             }
 
-            ProjectProposalState state = Enum.valueOf(ProjectProposalState.class, 
+            CCPUser cCPUser = em.find(CCPUser.class, ccpUserId);
+            if (cCPUser == null) {
+                throw new EntityDoesNotExistException(
+                        "There is no CCP User with that code.("
+                        + ccpUserId + ")");
+            }
+
+            ProjectProposalState state = Enum.valueOf(ProjectProposalState.class,
                     projectProposalStateString);
-            
-            Observation observation = new Observation(message, state, projectProposal);
-            
+
+            Observation observation = new Observation(message, state, projectProposal, cCPUser);
+            projectProposal.addObservation(observation);
             em.persist(observation);
+            em.merge(projectProposal);
         } catch (EntityDoesNotExistException e) {
             throw e;
         } catch (ConstraintViolationException e) {
@@ -66,4 +78,19 @@ public class ObservationBean {
 
     }
 
+    public List<ObservationDTO> observationsToDTOs(
+            List<Observation> observations) {
+
+        List<ObservationDTO> dtos = new ArrayList<>();
+        for (Observation observation : observations) {
+            dtos.add(new ObservationDTO(
+                    observation.getMessage(),
+                    observation.getProjectProposalState(),
+                    observation.getProjectProposal().getCode(),
+                    observation.getcCPUser().getUsername()));
+                    
+        }
+        return dtos;
+
+    }
 }

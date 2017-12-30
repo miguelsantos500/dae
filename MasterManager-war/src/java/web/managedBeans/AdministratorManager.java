@@ -551,7 +551,7 @@ public class AdministratorManager {
 
             observationBean.create(newObservation.getMessage(),
                     newObservation.getProjectProposalState().toString(),
-                    currentProjectProposal.getCode());
+                    currentProjectProposal.getCode(), userManager.getUsername());
 
             return "admin_index?faces-redirect=true";
         } catch (Exception e) {
@@ -560,6 +560,24 @@ public class AdministratorManager {
             return null;
         }
     }
+    
+    public List<ObservationDTO> getAllObservations() {
+        try {
+            return client.target(URILookup.getBaseAPI()).
+                    path("/projectProposals").
+                    path(String.valueOf(currentProjectProposal.getCode())).
+                    path("/observations").
+                    request(MediaType.APPLICATION_XML).
+                    get(new GenericType<List<ObservationDTO>>() {
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+            FacesExceptionHandler.handleException(e, "Unexpected error! " + e.getMessage(),
+                    logger);
+            return null;
+        }
+    }
+    
 
     ////////////// PUBLIC TEST ///////////////////
     public String createPublicTest() {

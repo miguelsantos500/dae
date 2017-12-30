@@ -106,7 +106,6 @@ public class ProjectProposal implements Serializable {
     private List<Application> applications;
     
     @OneToOne(mappedBy="projectProposal", cascade=CascadeType.REMOVE)
-    
     private Project project;
     
 
@@ -250,12 +249,6 @@ public class ProjectProposal implements Serializable {
     public void setProjectProposalState(ProjectProposalState projectProposalState) {
         this.projectProposalState = projectProposalState;
     }
-    
-    
-    @Override
-    public String toString() {
-        return "entities.ProjectProposal[ id=" + code + " ]";
-    }
 
     public void removeApplication(Application app){
         applications.remove(app);
@@ -263,6 +256,27 @@ public class ProjectProposal implements Serializable {
     
     public void addApplication(Application application){
         applications.add(application);
+    }
+
+    public List<Observation> getObservations() {
+        return observations;
+    }
+
+    public void setObservations(List<Observation> observations) {
+        this.observations = observations;
+    }
+
+    public void removeObservation(Observation observation){
+        observations.remove(observation);
+    }
+    
+    public void addObservation(Observation observation){
+        observations.add(observation);
+    }
+    
+    @Override
+    public String toString() {
+        return "entities.ProjectProposal[ id=" + code + " ]";
     }
 
 }

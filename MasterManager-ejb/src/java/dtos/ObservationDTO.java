@@ -1,23 +1,32 @@
 
 package dtos;
 
-import entities.project.ProjectProposal;
 import entities.project.ProjectProposalState;
 import java.io.Serializable;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
+@XmlRootElement(name = "Observation")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class ObservationDTO implements Serializable{
 
-    protected String message;
-    protected ProjectProposalState projectProposalState;
-    protected ProjectProposal projectProposal;
+    private String message;
+    private ProjectProposalState projectProposalState;
+    private int projectProposalCode;
+    private String cCPUserUsername;
+    
+    
 
     public ObservationDTO() {
     }
 
-    public ObservationDTO(String message, ProjectProposalState projectProposalState, ProjectProposal projectProposal) {
+    public ObservationDTO(String message, ProjectProposalState projectProposalState,
+            int projectProposalCode, String cCPUserUsername) {
         this.message = message;
         this.projectProposalState = projectProposalState;
-        this.projectProposal = projectProposal;
+        this.projectProposalCode = projectProposalCode;
+        this.cCPUserUsername = cCPUserUsername;
     }
 
     
@@ -25,7 +34,8 @@ public class ObservationDTO implements Serializable{
     public void reset(){
         setMessage(null);
         setProjectProposalState(null);
-        setProjectProposal(null);
+        setProjectProposalCode(-1);
+        setcCPUserUsername(null);
     }
 
     public String getMessage() {
@@ -44,13 +54,25 @@ public class ObservationDTO implements Serializable{
         this.projectProposalState = projectProposalState;
     }
 
-    public ProjectProposal getProjectProposal() {
-        return projectProposal;
+    public int getProjectProposalCode() {
+        return projectProposalCode;
     }
 
-    public void setProjectProposal(ProjectProposal projectProposal) {
-        this.projectProposal = projectProposal;
+    public void setProjectProposalCode(int projectProposalCode) {
+        this.projectProposalCode = projectProposalCode;
     }
+
+    
+    public String getcCPUserUsername() {
+        return cCPUserUsername;
+    }
+
+    public void setcCPUserUsername(String cCPUserUsername) {
+        this.cCPUserUsername = cCPUserUsername;
+    }
+
+    
+    
     
     
 }

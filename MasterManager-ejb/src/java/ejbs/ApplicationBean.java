@@ -123,32 +123,7 @@ public class ApplicationBean {
         }
     }
 
-    /* (Long id, int projectProposalCode, Student student, ProjectProposal projectProposal, String applyingMessage,
-            ApplicationState applicationState, String documentName) */
-    public ApplicationDTO applicationToDTO(Application application) {
-        return new ApplicationDTO(
-                application.getId(),
-                application.getProjectProposal().getCode(),
-                application.getStudent(),
-                application.getProjectProposal(),
-                application.getApplyingMessage(),
-                application.getApplicationState(),
-                application.getFileRecord().getDesiredName(),
-                application.getStudent().getName());
-
-    }
-
-    List<ApplicationDTO> applicationsToDTOs(List<Application> applications) {
-        List<ApplicationDTO> dtos = new ArrayList<>();
-
-        for (Application a : applications) {
-            dtos.add(applicationToDTO(a));
-        }
-
-        return dtos;
-    }
-
-    public List<ApplicationDTO> getStudentApplications(String username) 
+    public List<ApplicationDTO> getStudentApplications(String username)
             throws EntityDoesNotExistException, ApplicationNumberException {
 
         try {
@@ -344,4 +319,28 @@ public class ApplicationBean {
                 application.getFileRecord().getDesiredName(), application.getFileRecord().getMimeType());
     }
 
+    /* (Long id, int projectProposalCode, Student student, ProjectProposal projectProposal, String applyingMessage,
+            ApplicationState applicationState, String documentName) */
+    public ApplicationDTO applicationToDTO(Application application) {
+        return new ApplicationDTO(
+                application.getId(),
+                application.getProjectProposal().getCode(),
+                application.getStudent(),
+                application.getProjectProposal(),
+                application.getApplyingMessage(),
+                application.getApplicationState(),
+                application.getFileRecord().getDesiredName(),
+                application.getStudent().getName());
+
+    }
+
+    List<ApplicationDTO> applicationsToDTOs(List<Application> applications) {
+        List<ApplicationDTO> dtos = new ArrayList<>();
+
+        for (Application a : applications) {
+            dtos.add(applicationToDTO(a));
+        }
+
+        return dtos;
+    }
 }
