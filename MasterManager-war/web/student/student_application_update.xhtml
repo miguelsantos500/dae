@@ -2,7 +2,10 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:f="http://java.sun.com/jsf/core">
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:em="http://xmlns.jcp.org/jsf/composite/emcomp">
     <h:head>
         <title>CCP</title>
     </h:head>
@@ -72,7 +75,7 @@
                 <h:message for="message" errorStyle="color: red" />
                 
                 <h:outputLabel for="document" value="Documentos: " />
-                        <h:outputText 
+                       <h:outputText 
                             id="document"
                             value="#{studentManager.currentApplication.documentName}">
                             <f:param name="applicationId" id="applicationId"
@@ -80,7 +83,20 @@
                         </h:outputText>
                         <br></br>
                 
-               
+               <h:commandLink value="Remover ficheiro" 
+                               actionListener="#{administratorManager.removeDocumentApplication}">
+                    <f:param name="applicationIdf" id="applicationIdf"
+                             value="#{administratorManager.currentApplication.id}" />
+                </h:commandLink>
+                        
+                <p:growl id="newCv" showDetail="true" />
+                    <p:fileUpload value="#{uploadManager.file}" mode="simple" skinSimple="true"/>
+                    
+                    <p:commandButton value="Anexar CV" ajax="false" actionListener="#{uploadManager.upload}" >
+                        <f:actionListener binding="#{studentManager.uploadFileRecord(component)}"/>
+                        <f:param name="appIdNewCv" id="appIdNewCv"
+                                 value="#{studentManager.currentApplication.id}" />
+                    </p:commandButton>
 
                 <h:commandButton
                     id="submit"

@@ -16,6 +16,7 @@ import entities.project.ProjectProposalState;
 import entities.users.Student;
 import exceptions.ApplicationNotPendingException;
 import exceptions.ApplicationNumberException;
+import exceptions.ApplicationStateException;
 import exceptions.EntityDoesNotExistException;
 import exceptions.MyConstraintViolationException;
 import exceptions.Utils;
@@ -51,19 +52,23 @@ public class ApplicationBean {
 
     @EJB
     private ProjectProposalBean projectProposalBean;
+    @EJB
+    private ProjectBean projectBean;
 
     //recebe o username e o code do projectProposal e depois transforma em student e em projectProposal
     public Long create(String username, int code, String message) throws
-            EntityDoesNotExistException, ApplicationNumberException {
+            EntityDoesNotExistException, ApplicationNumberException, ApplicationStateException {
         Long newid = null;
         try {
+            
             Student student = em.find(Student.class, username);
             if (student == null) {
                 throw new EntityDoesNotExistException("There is no student with that username.");
             }
 
             //se o estudante já se tiver candidatado a 5 propostas, não pode candidatar a mais nenhuma
-            int applicationsNumber = student.getApplications().size();
+            List<Application> studentApplications = student.getApplications();
+            int applicationsNumber = studentApplications.size();
 
             if (applicationsNumber < 5) {
                 ProjectProposal projectProposal = em.find(ProjectProposal.class, code);
@@ -72,6 +77,19 @@ public class ApplicationBean {
                     throw new EntityDoesNotExistException("There is no project proposal with that code.");
                 }
 
+            for(Application a: studentApplications){
+                
+                if(verifyApplicationStateAccepted(a.getId())){
+                    //mensagem a informar o estudante que já tem uma candidatura aceite
+                    //todo - por isto no manager
+                   // FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ja tem uma candidatura atribuida", 
+                    //        "candidaturas"));
+                    throw new ApplicationStateException("Já tem uma candidatura aceite");
+                  
+                }
+                
+            }
+                
                 Application application = new Application(student, projectProposal, message);
 
                 student.addApplication(application);
@@ -84,7 +102,10 @@ public class ApplicationBean {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ja tem o num max de candidaturas", "candidaturas"));
 
             }
-        } catch (Exception e) {
+        } catch(ApplicationStateException |EntityDoesNotExistException e){
+            throw e;
+        }
+        catch (Exception e) {
             throw new EJBException(e.getMessage());
         }
         return newid;
@@ -110,11 +131,8 @@ public class ApplicationBean {
             Document document = new Document(doc.getFilepath(), doc.getDesiredName(),
                     doc.getMimeType(), generic);
 
-            /*  DocumentApplication document = new DocumentApplication(doc.getFilepath(), doc.getDesiredName(),
-                    doc.getMimeType(), application);*/
             em.persist(document);
             application.setFileRecord(document);
-            //  em.merge(application);
 
         } catch (EntityDoesNotExistException e) {
             throw e;
@@ -160,12 +178,21 @@ public class ApplicationBean {
         try {
             Application application = em.find(Application.class, applicationDTO.getId());
 
+           
             if (application == null) {
                 throw new EntityDoesNotExistException(
                         "Não existe uma candidatura com o id: "
                         + applicationDTO.getId());
             }
 
+           if(verifyApplicationStateAccepted(application.getId())){
+               //nao pode actualizar uma candidatua que ja esta validada
+               return;
+           }else if(verifyApplicationStateNotAccepted(application.getId())){
+               //nao pode actualizar uma candidatura recusada
+               return;
+           }
+          
             application.setApplyingMessage(applicationDTO.getApplyingMessage());
 
             em.merge(application);
@@ -258,12 +285,36 @@ public class ApplicationBean {
                         "This Application is not in state PENDING, is in state: "
                         + application.getApplicationState());
             }
-
+            
             application.setApplicationState(ApplicationState.ACCEPTED);
             em.merge(application);
+
             projectProposal.setProjectProposalState(ProjectProposalState.ASSIGNED);
             em.merge(projectProposal);
+            
+            rejectApplications(projectProposal.getCode());
+            
+            projectBean.create(projectProposal, application.getStudent());
+            
+        } catch (Exception e) {
+            throw new EJBException(e.getMessage());
+        }
+    }
+    
+    public void rejectApplications(int projectCode){
+        try {
 
+            List<Application> applications
+                    = em.createNamedQuery("getAllProjectProposalApplicants", Application.class).
+                            setParameter("code", projectCode).getResultList();
+            
+            for (Application application : applications) {
+                if (application.getApplicationState().equals(ApplicationState.PENDING)){
+                    application.setApplicationState(ApplicationState.NOT_ACCEPTED);
+                    em.merge(application);
+                }
+            }
+            
         } catch (Exception e) {
             throw new EJBException(e.getMessage());
         }
@@ -272,10 +323,11 @@ public class ApplicationBean {
     @GET
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Path("/allApplicants/{projectCode}")
-    public List<ApplicationDTO> getAllFinished(@PathParam("projectCode") String projectCode) {
+    public List<ApplicationDTO> getAllProjectProposalApplicants(@PathParam("projectCode") String projectCode) {
+
         try {
             List<Application> applications
-                    = em.createNamedQuery("getAllProjectProposalsFinished", Application.class).
+                    = em.createNamedQuery("getAllProjectProposalApplicants", Application.class).
                             setParameter("code", Integer.parseInt(projectCode)).getResultList();
             return applicationsToDTOs(applications);
         } catch (Exception e) {
@@ -297,8 +349,10 @@ public class ApplicationBean {
                         "Não existe nenhum documento com esse código.");
             }
 
+            application.setFileRecord(null);
+            em.merge(application);
             em.remove(document);
-            application.setFileRecord(new Document());
+          //  application.setFileRecord(new Document());
 
         } catch (EntityDoesNotExistException e) {
             throw e;
@@ -318,6 +372,47 @@ public class ApplicationBean {
         return new DocumentDTO(application.getFileRecord().getId(), application.getFileRecord().getFilepath(),
                 application.getFileRecord().getDesiredName(), application.getFileRecord().getMimeType());
     }
+    
+    public boolean verifyApplicationStateAccepted(Long id){
+        
+        boolean stateAccepted = false;
+        
+        Application application = em.find(Application.class, id);
+        if(application.getApplicationState()==ApplicationState.ACCEPTED){
+             stateAccepted = true;
+        }
+       
+        return stateAccepted;
+    }
+    
+    public boolean verifyApplicationStateNotAccepted(Long id){
+        
+        boolean stateNotAccepted = false;
+        
+        Application application = em.find(Application.class, id);
+        
+        if(application.getApplicationState()==ApplicationState.NOT_ACCEPTED){
+             stateNotAccepted = true;
+        }
+       
+        return stateNotAccepted;
+    }
+    
+    
+    public boolean verifyApplicationStatePending(Long id){
+        
+        boolean statePending = false;
+        
+        Application application = em.find(Application.class, id);
+        
+        if(application.getApplicationState()==ApplicationState.PENDING){
+             statePending = true;
+        }
+        
+       
+        return statePending;
+    }
+    
 
     /* (Long id, int projectProposalCode, Student student, ProjectProposal projectProposal, String applyingMessage,
             ApplicationState applicationState, String documentName) */

@@ -140,7 +140,7 @@ public class PublicTestBean {
                 throw new EntityDoesNotExistException(
                         "Não existe nenhuma prova publica com esse código.");
             }
-
+            em.remove(publicTest.getFileRecord());
             em.remove(publicTest);
         } catch (EntityDoesNotExistException e) {
             throw e;
@@ -260,9 +260,10 @@ public class PublicTestBean {
                 throw new EntityDoesNotExistException(
                         "Não existe nenhum documento com esse código.");
             }
-
+            
+            publicTest.setFileRecord(null);
+            em.merge(publicTest);
             em.remove(document);
-            publicTest.setFileRecord(new Document());
         } catch (EntityDoesNotExistException e) {
             throw e;
         } catch (Exception e) {
@@ -271,7 +272,6 @@ public class PublicTestBean {
     }
 
     public DocumentDTO getDocument(int code) throws EntityDoesNotExistException {
-        System.out.println("CODE: " + code);
         PublicTest publicTest = em.find(PublicTest.class, code);
 
         if (publicTest == null) {

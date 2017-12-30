@@ -1,19 +1,16 @@
 package entities.project;
 
 import entities.Document;
-import entities.project.ProjectProposal;
 import entities.users.Student;
 import entities.users.Teacher;
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -32,7 +29,6 @@ public class Project implements Serializable {
     @OneToMany(mappedBy = "project")
     private List<Teacher> teachers;
 
-    @NotNull
     private String messageToTeacher;
 
     @NotNull
@@ -45,8 +41,7 @@ public class Project implements Serializable {
     private Document sourceCode;
     private Document assignment;
     private Document other;
-    
-     @NotNull
+
     private String documentsDescription;
 
     @NotNull
@@ -54,15 +49,13 @@ public class Project implements Serializable {
     private Student student;
 
     public Project() {
+        this.teachers = new LinkedList<>();
     }
 
-    public Project(List<Teacher> teachers, String messageToTeacher, 
-                    ProjectProposal projectProposal, Student student, String docDescription) {
-       
-        this.teachers = teachers;
-        this.messageToTeacher = messageToTeacher;
+    public Project(ProjectProposal projectProposal, Student student) {
         this.projectProposal = projectProposal;
         this.student = student;
+        this.teachers = new LinkedList<>();
     }
 
     public Long getId() {
@@ -80,8 +73,6 @@ public class Project implements Serializable {
     public void setTeachers(List<Teacher> teachers) {
         this.teachers = teachers;
     }
-
-    
 
     public String getMessageToTeacher() {
         return messageToTeacher;

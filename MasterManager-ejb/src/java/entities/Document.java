@@ -29,10 +29,11 @@ public class Document implements Serializable {
 
     private String mimeType;
 
-    @OneToOne(mappedBy = "fileRecord", cascade = CascadeType.REMOVE)
+    @OneToOne(mappedBy = "fileRecord")
     private PublicTest publicTest;
     
-    @OneToOne(mappedBy = "fileRecord", cascade = CascadeType.REMOVE)
+    @OneToOne(mappedBy="fileRecord")
+    @OneToOne(mappedBy = "fileRecord")
     private Application application;
 
     public Document() {
@@ -86,11 +87,11 @@ public class Document implements Serializable {
         this.mimeType = mimeType;
     }
 
-    public PublicTest getStudent() {
+    public PublicTest getPublicTest() {
         return publicTest;
     }
 
-    public void setStudent(PublicTest publicTest) {
+    public void setPublicTest(PublicTest publicTest) {
         this.publicTest = publicTest;
     }
 

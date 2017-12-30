@@ -23,6 +23,7 @@ import ejbs.users.TeacherBean;
 import entities.project.ProjectProposalState;
 import entities.project.ProjectType;
 import entities.users.UserGroup;
+import exceptions.ApplicationStateException;
 import exceptions.EntityAlreadyExistsException;
 import exceptions.EntityDoesNotExistException;
 import exceptions.MyConstraintViolationException;
@@ -35,6 +36,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
@@ -119,7 +121,6 @@ public class AdministratorManager {
     private String searchablePublicTest;
     private String searchableStudent;
     private String searchableTeacher;
-    private String searchableCourse;
     private String searchableInstitution;
     private String searchableProjectProposal;
 
@@ -133,8 +134,6 @@ public class AdministratorManager {
     private UserManager userManager;
 
     private String scientificAreasString;
-
-    private String search;
 
     private UIComponent component;
     private static final Logger logger = Logger.getLogger("web.managedBeans.AdministratorManager");
@@ -850,23 +849,17 @@ public class AdministratorManager {
         int code = Integer.parseInt(param.getValue().toString());
 
         try {
-            /*  DocumentApplicationDTO document = new DocumentApplicationDTO(uploadManager.getCompletePathFile(),
-                    uploadManager.getFilename(),
-                    uploadManager.getFile().getContentType());*/
 
             DocumentDTO document = new DocumentDTO(uploadManager.getCompletePathFile(),
                     uploadManager.getFilename(),
                     uploadManager.getFile().getContentType());
 
-            //cria a candidatura
+            //cria a candidatura e reeber o id gerado automaticamente
             Long applicationId = applicationBean.create(
                     username,
                     code,
                     newApplication.getApplyingMessage());
 
-            //vai buscar o id da candidatura criada
-            //   Long applicationId = newApplication.getId();
-            //   Long applicationId = currentApplication.getId();
             //nao devia passar o id pelo link, ver como se tentou fazer acima... tb posso recorrer ao bean em vez de usar rota
             client.target(URILookup.getBaseAPI())
                     .path("/applications/addFileRecord")
@@ -891,11 +884,28 @@ public class AdministratorManager {
             ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
             externalContext.redirect("http://localhost:8080/MasterManager-war/faces/student/student_index.xhtml");
 
+        } catch (ApplicationStateException e) {
+            FacesContext.getCurrentInstance()
+                    .addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(),
+                            "candidaturas"));
+
         } catch (Exception e) {
             FacesExceptionHandler.handleException(e, "Erro inesperado no creeateApplication do AdministratorManager", component, logger);
             e.printStackTrace();
         }
         // return "student/student_index?faces-redirect=true";
+    }
+
+    public void removeApplication(ActionEvent event) {
+        try {
+            UIParameter param = (UIParameter) event.getComponent().findComponent("publicTestCode");
+            int code = Integer.parseInt(param.getValue().toString());
+            publicTestBean.remove(code);
+        } catch (EntityDoesNotExistException e) {
+            FacesExceptionHandler.handleException(e, e.getMessage(), logger);
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
+        }
     }
 
     public Collection<ApplicationDTO> getAllStudentApplications() {
@@ -916,15 +926,34 @@ public class AdministratorManager {
 
     }
 
+    public List<ApplicationDTO> getAllProjectProposalApplicants() {
+        try {
+            return client.target(URILookup.getBaseAPI()).
+                    path("/applications/allApplicants").
+                    path(String.valueOf(currentProjectProposal.getCode())).
+                    request(MediaType.APPLICATION_XML).
+                    get(new GenericType<List<ApplicationDTO>>() {
+                    });
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!",
+                    logger);
+            return null;
+        }
+    }
+
     public void removeDocumentApplication(ActionEvent event) {
+
         try {
             UIParameter param = (UIParameter) event.getComponent().findComponent("applicationId");
             Long id = Long.parseLong(param.getValue().toString());
             applicationBean.removeFileRecord(id);
+
+            //       ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+            //   externalContext.redirect("http://localhost:8080/MasterManager-war/faces/student/student_application_update.xhtml");
         } catch (EntityDoesNotExistException e) {
             FacesExceptionHandler.handleException(e, e.getMessage(), logger);
         } catch (Exception e) {
-            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
+            FacesExceptionHandler.handleException(e, "Unexpected error no removeDocumentApplication! Try again latter!", logger);
         }
     }
 
@@ -946,19 +975,19 @@ public class AdministratorManager {
         return "student_index?faces-redirect=true";
 
     }
-
-    public String approveApplication(ActionEvent event) {
+    
+    public void approveApplication(ActionEvent event) throws IOException {
         try {
             UIParameter param = (UIParameter) event.getComponent().findComponent("applicationId");
             String id = param.getValue().toString();
 
             applicationBean.approveApplication(Long.parseLong(id));
             //todo - mudar isto - nao sei quem aprova a candidatura   
-            return "admin/admin_index?faces-redirect=true";
         } catch (Exception e) {
             FacesExceptionHandler.handleException(e, "Erro inesperado, tente mais tarde.", logger);
-            return null;
         }
+        ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+        externalContext.redirect("http://localhost:8080/MasterManager-war/faces/admin/admin_index.xhtml");
     }
 
     ///////////////////////////////////////////Getters e setters tem que ser organizado//////////////////////////////////////////
