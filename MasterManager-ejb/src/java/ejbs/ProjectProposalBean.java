@@ -7,6 +7,7 @@ package ejbs;
 
 import dtos.ObservationDTO;
 import dtos.ProjectProposalDTO;
+import ejbs.users.ProponentBean;
 import entities.project.Observation;
 import entities.project.ProjectProposal;
 import entities.project.ProjectProposalState;
@@ -48,9 +49,11 @@ public class ProjectProposalBean {
 
     @PersistenceContext
     private EntityManager em;
-    
+
     @EJB
     private ObservationBean observationBean;
+    @EJB
+    private ProponentBean proponentBean;
 
     public void create(int code, String projectTypeString,
             String title, List<String> scientificAreas, String proponentUsername,
@@ -188,7 +191,7 @@ public class ProjectProposalBean {
             throw new EJBException(e.getMessage());
         }
     }
-    
+
     public List<ProjectProposalDTO> search(String searchProjectProposal, String condition) {
         try {
             List<ProjectProposal> projects;
@@ -239,6 +242,13 @@ public class ProjectProposalBean {
                         + projectProposalState + ")");
             }*/
 
+            if (projectProposal.getProjectProposalState() != projectProposalState) {
+                proponentBean.sendEmailToProponent(projectProposal.getProponent().getUsername(),
+                        "Alteração de Estado de Proposta de Projecto",
+                        "A Sua Proposta de Projecto está agora no Estado "
+                        + projectProposalState + ".");
+            }
+
             projectProposal.setProjectProposalState(projectProposalState);
 
         } catch (ProjectProposalNotPendingException /*| ProjectProposalStateNotChangedException*/ e) {
@@ -255,7 +265,7 @@ public class ProjectProposalBean {
             @PathParam("projectProposalId") String idString) {
         try {
             System.err.println(idString);
-            ProjectProposal projectProposal = em.find(ProjectProposal.class, 
+            ProjectProposal projectProposal = em.find(ProjectProposal.class,
                     Integer.valueOf(idString));
             if (projectProposal == null) {
                 throw new EntityDoesNotExistException(
@@ -263,15 +273,14 @@ public class ProjectProposalBean {
                         + idString);
             }
             List<Observation> observations = projectProposal.getObservations();
-            
+
             System.err.println(observations.size());
             return observationBean.observationsToDTOs(observations);
-            
+
         } catch (Exception ex) {
             throw new EJBException(ex.getMessage());
         }
     }
-
 
     List<ProjectProposalDTO> projectProposalsToDTOs(
             List<ProjectProposal> projectProposals) {

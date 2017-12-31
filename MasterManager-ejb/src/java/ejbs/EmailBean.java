@@ -1,6 +1,8 @@
 package ejbs;
 
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.Resource;
 import javax.ejb.Stateless;
 import javax.mail.Message;
@@ -15,11 +17,16 @@ public class EmailBean {
 
     @Resource(name = "mail/dae")
     private Session mailSession;
+    
+    private static final Logger LOGGER = Logger.getLogger("ejbs.EmailBean");
 
     public void send(String to, String subject, String text) throws MessagingException {
 
         Message message = new MimeMessage(mailSession);
 
+        LOGGER.log(Level.INFO, "Sending email to {0}, subject: {1}, text: {2}", 
+                new Object[]{to, subject, text});
+        
         try {
             // Adjust the recipients. Here we have only one recipient.
             // The recipient's address must be an object of the InternetAddress class.

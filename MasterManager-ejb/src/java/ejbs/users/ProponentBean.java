@@ -26,7 +26,7 @@ public class ProponentBean {
 
     @PersistenceContext
     private EntityManager em;
-    
+
     @EJB
     EmailBean emailBean;
 
@@ -39,7 +39,7 @@ public class ProponentBean {
         try {
             Proponent proponent = em.find(Proponent.class, proponentDTO.getUsername());
             if (proponent == null) {
-                 throw new EntityDoesNotExistException("There is no proponent with that username.");
+                throw new EntityDoesNotExistException("There is no proponent with that username.");
             }
 
             proponent.setPassword(proponentDTO.getPassword());
@@ -69,37 +69,40 @@ public class ProponentBean {
             throw new EJBException(e.getMessage());
         }
     }
-    
+
     @GET
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Path("all")
-    public List<ProponentDTO> getAll(){
-        try{
+    public List<ProponentDTO> getAll() {
+        try {
             List<Proponent> proponents = em.createNamedQuery("getAllProponents").getResultList();
             return proponentsToDTOs(proponents);
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             throw new EJBException(e.getMessage());
         }
     }
 
-    public ProponentDTO proponentToDTO(Proponent proponent){
+    public ProponentDTO proponentToDTO(Proponent proponent) {
         return new ProponentDTO(
                 proponent.getUsername(),
                 null,
                 proponent.getName(),
                 proponent.getEmail());
     }
-    
+
     public List<ProponentDTO> proponentsToDTOs(List<Proponent> proponents) {
         List<ProponentDTO> proponentdtos = new ArrayList<>();
-        
-        for(Proponent p : proponents){
-            proponentdtos.add( proponentToDTO(p));
+
+        for (Proponent p : proponents) {
+            proponentdtos.add(proponentToDTO(p));
         }
         return proponentdtos;
     }
-        public void sendEmailToProponent(String username, String subject, String message) throws MessagingException, EntityDoesNotExistException {
+
+    public void sendEmailToProponent(String username, String subject,
+            String message)
+            throws MessagingException, EntityDoesNotExistException {
         try {
             Proponent proponent = em.find(Proponent.class, username);
             if (proponent == null) {
@@ -109,13 +112,12 @@ public class ProponentBean {
             emailBean.send(
                     proponent.getEmail(),
                     subject,
-                    "Bom dia " + proponent.getName() +"," + System.lineSeparator() +
-                            message);
-        
+                    "Bom dia " + proponent.getName() + "," + System.lineSeparator()
+                    + message);
+
         } catch (MessagingException | EntityDoesNotExistException e) {
             throw e;
         }
     }
-    
 
 }
