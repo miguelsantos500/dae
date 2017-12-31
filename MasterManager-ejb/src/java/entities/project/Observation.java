@@ -5,6 +5,7 @@
  */
 package entities.project;
 
+import entities.users.CCPUser;
 import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -12,15 +13,23 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 /**
  *
- * @author Migue
+ * @author Miguel
  */
 @Entity
 @Table(name = "OBSERVATIONS")
+@NamedQueries({
+    @NamedQuery(name = "getAllObservations",
+            query = "SELECT o FROM Observation o"),
+    @NamedQuery(name = "getAllProjectProposalObservations",
+            query = "SELECT o FROM Observation o "
+            + "WHERE o.projectProposal.code = :code")})
 public class Observation implements Serializable {
 
     @Id
@@ -36,15 +45,23 @@ public class Observation implements Serializable {
     @ManyToOne
     @JoinColumn(name = "PROJECT_PROPOSAL_CODE")
     private ProjectProposal projectProposal;
+    
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "CCPUSER_CODE")
+    private CCPUser cCPUser;
+    
 
     public Observation() {
     }
 
-    public Observation(String message, ProjectProposalState projectProposalState, ProjectProposal projectProposal) {
+    public Observation(String message, ProjectProposalState projectProposalState, 
+            ProjectProposal projectProposal, CCPUser cCPUser) {
         this.message = message;
         this.projectProposalState = projectProposalState;
         this.projectProposal = projectProposal;
-    }    
+        this.cCPUser = cCPUser;
+    }
 
     public Long getId() {
         return id;
@@ -78,6 +95,15 @@ public class Observation implements Serializable {
         this.projectProposal = projectProposal;
     }
 
+    public CCPUser getcCPUser() {
+        return cCPUser;
+    }
+
+    public void setcCPUser(CCPUser cCPUser) {
+        this.cCPUser = cCPUser;
+    }
+
+    
     
     
 }

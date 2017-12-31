@@ -5,7 +5,9 @@
  */
 package ejbs;
 
+import dtos.ObservationDTO;
 import dtos.ProjectProposalDTO;
+import entities.project.Observation;
 import entities.project.ProjectProposal;
 import entities.project.ProjectProposalState;
 import entities.project.ProjectType;
@@ -20,6 +22,7 @@ import exceptions.Utils;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -31,6 +34,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
@@ -44,6 +48,9 @@ public class ProjectProposalBean {
 
     @PersistenceContext
     private EntityManager em;
+    
+    @EJB
+    private ObservationBean observationBean;
 
     public void create(int code, String projectTypeString,
             String title, List<String> scientificAreas, String proponentUsername,
@@ -161,7 +168,6 @@ public class ProjectProposalBean {
             }
 
             //todo: actualizar bibliography e outras listas???, successRequirements, supports, scientificAreas
-           
             ProjectType projectType = ProjectType.valueOf(projectProposalDTO.getProjectTypeString());
             projectProposal.setProjectType(projectType);
             projectProposal.setTitle(projectProposalDTO.getTitle());
@@ -182,31 +188,7 @@ public class ProjectProposalBean {
             throw new EJBException(e.getMessage());
         }
     }
-
-    List<ProjectProposalDTO> projectProposalsToDTOs(
-            List<ProjectProposal> projectProposals) {
-
-        List<ProjectProposalDTO> dtos = new ArrayList<>();
-        for (ProjectProposal projectProposal : projectProposals) {
-            dtos.add(new ProjectProposalDTO(projectProposal.getCode(),
-                    projectProposal.getProjectType().name(),
-                    projectProposal.getTitle(),
-                    projectProposal.getProponent().getUsername(),
-                    projectProposal.getProjectAbstract(),
-                    projectProposal.getWorkPlan(),
-                    projectProposal.getWorkPlace(),
-                    projectProposal.getBudget(),
-                    projectProposal.getScientificAreas(),
-                    projectProposal.getObjectives(),
-                    projectProposal.getBibliography(),
-                    projectProposal.getSuccessRequirements(),
-                    projectProposal.getSupports(),
-                    projectProposal.getProjectProposalState()));
-        }
-        return dtos;
-
-    }
-
+    
     public List<ProjectProposalDTO> search(String searchProjectProposal, String condition) {
         try {
             List<ProjectProposal> projects;
@@ -250,18 +232,69 @@ public class ProjectProposalBean {
                         "This Project Proposal is not in state PENDING, ACCEPTED, NOT_ACCEPTED, is in state: "
                         + projectProposal.getProjectProposalState());
             }
+            /*
             if (projectProposal.getProjectProposalState() == projectProposalState) {
                 throw new ProjectProposalStateNotChangedException(
                         "There is no change in the Project Proposal State! ("
                         + projectProposalState + ")");
-            }
+            }*/
 
             projectProposal.setProjectProposalState(projectProposalState);
 
-        } catch (ProjectProposalNotPendingException | ProjectProposalStateNotChangedException e) {
+        } catch (ProjectProposalNotPendingException /*| ProjectProposalStateNotChangedException*/ e) {
             throw e;
         } catch (Exception ex) {
             throw new EJBException(ex.getMessage());
         }
     }
+
+    @GET
+    @Path("/{projectProposalId}/observations")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<ObservationDTO> getProjectProposalObservations(
+            @PathParam("projectProposalId") String idString) {
+        try {
+            System.err.println(idString);
+            ProjectProposal projectProposal = em.find(ProjectProposal.class, 
+                    Integer.valueOf(idString));
+            if (projectProposal == null) {
+                throw new EntityDoesNotExistException(
+                        "There is no Project Proposal with code: "
+                        + idString);
+            }
+            List<Observation> observations = projectProposal.getObservations();
+            
+            System.err.println(observations.size());
+            return observationBean.observationsToDTOs(observations);
+            
+        } catch (Exception ex) {
+            throw new EJBException(ex.getMessage());
+        }
+    }
+
+
+    List<ProjectProposalDTO> projectProposalsToDTOs(
+            List<ProjectProposal> projectProposals) {
+
+        List<ProjectProposalDTO> dtos = new ArrayList<>();
+        for (ProjectProposal projectProposal : projectProposals) {
+            dtos.add(new ProjectProposalDTO(projectProposal.getCode(),
+                    projectProposal.getProjectType().name(),
+                    projectProposal.getTitle(),
+                    projectProposal.getProponent().getUsername(),
+                    projectProposal.getProjectAbstract(),
+                    projectProposal.getWorkPlan(),
+                    projectProposal.getWorkPlace(),
+                    projectProposal.getBudget(),
+                    projectProposal.getScientificAreas(),
+                    projectProposal.getObjectives(),
+                    projectProposal.getBibliography(),
+                    projectProposal.getSuccessRequirements(),
+                    projectProposal.getSupports(),
+                    projectProposal.getProjectProposalState()));
+        }
+        return dtos;
+
+    }
+
 }

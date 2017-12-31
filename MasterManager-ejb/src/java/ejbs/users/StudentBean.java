@@ -7,8 +7,6 @@ import entities.users.Student;
 import exceptions.EntityAlreadyExistsException;
 import exceptions.EntityDoesNotExistException;
 import exceptions.MyConstraintViolationException;
-import exceptions.StudentAlreadyAppliedException;
-import exceptions.StudentNotAppliedException;
 import exceptions.Utils;
 import java.util.ArrayList;
 import java.util.Collection;

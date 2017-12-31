@@ -165,9 +165,7 @@ public class ApplicationBean {
         }
     }
 
-    
-
-    public List<ApplicationDTO> getStudentApplications(String username) 
+    public List<ApplicationDTO> getStudentApplications(String username)
             throws EntityDoesNotExistException, ApplicationNumberException {
 
         try {

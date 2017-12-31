@@ -18,77 +18,77 @@
                     <h:outputLabel for="code" value="Code: " />
                     <h:outputText 
                         id="code"
-                        value="#{administratorManager.currentProjectProposal.code}"/>
+                        value="#{proponentManager.currentProjectProposal.code}"/>
 
                     <h:outputLabel for="projectType" value="ProjectType: " />
                     <h:outputText 
                         id="projectType"
-                        value="#{administratorManager.currentProjectProposal.projectTypeString}"/>
+                        value="#{proponentManager.currentProjectProposal.projectTypeString}"/>
 
                     <h:outputLabel for="title" value="Title: " />
                     <h:outputText 
                         id="title"
-                        value="#{administratorManager.currentProjectProposal.title}"/>
+                        value="#{proponentManager.currentProjectProposal.title}"/>
 
                     <h:outputLabel for="projectAbstract" value="ProjectAbstract: " />
                     <h:outputText 
                         id="projectAbstract"
-                        value="#{administratorManager.currentProjectProposal.projectAbstract}"/>
+                        value="#{proponentManager.currentProjectProposal.projectAbstract}"/>
 
                     <h:outputLabel for="workPlan" value="WorkPlan: " />
                     <h:outputText 
                         id="workPlan"
-                        value="#{administratorManager.currentProjectProposal.workPlan}"/>
+                        value="#{proponentManager.currentProjectProposal.workPlan}"/>
 
                     <h:outputLabel for="workPlace" value="WorkPlace: " />
                     <h:outputText 
                         id="workPlace"
-                        value="#{administratorManager.currentProjectProposal.workPlace}"/>
+                        value="#{proponentManager.currentProjectProposal.workPlace}"/>
 
 
                     <h:outputLabel for="budget" value="Budget: " />
                     <h:outputText 
                         id="budget"
-                        value="#{administratorManager.currentProjectProposal.budget}"/>
+                        value="#{proponentManager.currentProjectProposal.budget}"/>
 
                     <h:outputLabel for="proponent" value="ProponentUsername " />
                     <h:outputText 
                         id="proponent"
-                        value="#{administratorManager.currentProjectProposal.proponentUsername}"/>
+                        value="#{proponentManager.currentProjectProposal.proponentUsername}"/>
 
                 </h:panelGrid>
 
 
                 <em:dt_list
                     headers="#{['Áreas Científicas']}"
-                    list="#{administratorManager.currentProjectProposal.scientificAreas}">
+                    list="#{proponentManager.currentProjectProposal.scientificAreas}">
                 </em:dt_list>
 
                 <em:dt_list
                     headers="#{['Objetivos']}"
-                    list="#{administratorManager.currentProjectProposal.objectives}">
+                    list="#{proponentManager.currentProjectProposal.objectives}">
                 </em:dt_list>
                 <em:dt_list
                     headers="#{['Bibliografia']}"
-                    list="#{administratorManager.currentProjectProposal.bibliography}">
+                    list="#{proponentManager.currentProjectProposal.bibliography}">
                 </em:dt_list>
                 <em:dt_list
-                    headers="#{['Requesitos de Sucesso']}"
-                    list="#{administratorManager.currentProjectProposal.successRequirements}">
+                    headers="#{['Requisitos de Sucesso']}"
+                    list="#{proponentManager.currentProjectProposal.successRequirements}">
                 </em:dt_list>
                 <em:dt_list
                     headers="#{['Apoios']}"
-                    list="#{administratorManager.currentProjectProposal.supports}">
+                    list="#{proponentManager.currentProjectProposal.supports}">
                 </em:dt_list>
 
 
                 <br/>
 
-                <h:outputLink rendered="${administratorManager.userManager.isUserInRole('Teacher')}" 
+                <h:outputLink rendered="${proponentManager.userManager.isUserInRole('Teacher')}" 
                               value="http://localhost:8080/MasterManager-war/faces/teacher/teacher_index.xhtml">
                     Voltar
                 </h:outputLink>
-                <h:outputLink rendered="${administratorManager.userManager.isUserInRole('Institution')}" 
+                <h:outputLink rendered="${proponentManager.userManager.isUserInRole('Institution')}" 
                               value="http://localhost:8080/MasterManager-war/faces/institution/institution_index.xhtml">
                     Voltar
                 </h:outputLink>

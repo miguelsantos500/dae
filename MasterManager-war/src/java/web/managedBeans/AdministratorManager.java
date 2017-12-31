@@ -339,7 +339,7 @@ public class AdministratorManager {
     }
 
     ////////////////////////////////////// PROJECT PROPOSAL /////////////////////////////////////////////////
-    public String createProjectProposal() {
+    public void createProjectProposal() throws IOException {
 
         try {
 
@@ -359,17 +359,16 @@ public class AdministratorManager {
                     newProjectProposal.getBudget(),
                     newProjectProposal.getSupports());
 
+            if (userManager.isUserInRole(UserGroup.GROUP.Teacher)) {
+                redirect("teacher_index");
+            }
+            redirect("institution_index");
+
         } catch (EntityAlreadyExistsException | EntityDoesNotExistException
                 | MyConstraintViolationException e) {
             FacesExceptionHandler.handleException(e, "Error Creating Project Proposal!",
                     component, logger);
-            return null;
         }
-        if (userManager.isUserInRole(UserGroup.GROUP.Teacher)) {
-            return "teacher_index?faces-redirect=true";
-        }
-
-        return "institution_index?faces-redirect=true";
 
     }
 
@@ -439,32 +438,22 @@ public class AdministratorManager {
 
     }
 
-    public String updateProjectProposal() {
+    public void updateProjectProposal() throws IOException {
         try {
             client.target(baseUri)
                     .path("projectProposals/update")
                     .request(MediaType.APPLICATION_XML)
                     .put(Entity.xml(currentProjectProposal));
 
+            if (userManager.isUserInRole(UserGroup.GROUP.Teacher)) {
+                redirect("teacher_index");
+            }
+            redirect("institution_index");
+
         } catch (Exception e) {
             FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
-            return null;
         }
 
-        if (userManager.isUserInRole(UserGroup.GROUP.Teacher)) {
-            return "teacher_index?faces-redirect=true";
-        }
-
-        return "institution_index?faces-redirect=true";
-
-    }
-
-    public String getSearchableProjectProposal() {
-        return searchableProjectProposal;
-    }
-
-    public void setSearchableProjectProposal(String searchableProjectProposal) {
-        this.searchableProjectProposal = searchableProjectProposal;
     }
 
     public List<ProjectProposalDTO> getSearchProjectProposal(String condition) {
@@ -489,6 +478,14 @@ public class AdministratorManager {
         if ("search".equals(to)) {
             ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
             externalContext.redirect("http://localhost:8080/MasterManager-war/faces/proponent/search_project_proposal.xhtml");
+        }
+        if ("teacher_index".equals(to)) {
+            ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+            externalContext.redirect("http://localhost:8080/MasterManager-war/faces/teacher/teacher_index.xhtml");
+        }
+        if ("institution_index".equals(to)) {
+            ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+            externalContext.redirect("http://localhost:8080/MasterManager-war/faces/instituition/institution_index.xhtml");
         }
     }
 
@@ -556,7 +553,7 @@ public class AdministratorManager {
 
             observationBean.create(newObservation.getMessage(),
                     newObservation.getProjectProposalState().toString(),
-                    currentProjectProposal.getCode());
+                    currentProjectProposal.getCode(), userManager.getUsername());
 
             return "admin_index?faces-redirect=true";
         } catch (Exception e) {
@@ -565,6 +562,24 @@ public class AdministratorManager {
             return null;
         }
     }
+    
+    public List<ObservationDTO> getAllObservations() {
+        try {
+            return client.target(URILookup.getBaseAPI()).
+                    path("/projectProposals").
+                    path(String.valueOf(currentProjectProposal.getCode())).
+                    path("/observations").
+                    request(MediaType.APPLICATION_XML).
+                    get(new GenericType<List<ObservationDTO>>() {
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+            FacesExceptionHandler.handleException(e, "Unexpected error! " + e.getMessage(),
+                    logger);
+            return null;
+        }
+    }
+    
 
     ////////////// PUBLIC TEST ///////////////////
     public String createPublicTest() {
@@ -898,18 +913,6 @@ public class AdministratorManager {
         // return "student/student_index?faces-redirect=true";
     }
 
-    public void removeApplication(ActionEvent event) {
-        try {
-            UIParameter param = (UIParameter) event.getComponent().findComponent("publicTestCode");
-            int code = Integer.parseInt(param.getValue().toString());
-            publicTestBean.remove(code);
-        } catch (EntityDoesNotExistException e) {
-            FacesExceptionHandler.handleException(e, e.getMessage(), logger);
-        } catch (Exception e) {
-            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
-        }
-    }
-
     public Collection<ApplicationDTO> getAllStudentApplications() {
 
         Collection<ApplicationDTO> applications = null;
@@ -1093,6 +1096,15 @@ public class AdministratorManager {
         this.searchableStudent = searchableStudent;
     }
 
+
+    public String getSearchableProjectProposal() {
+        return searchableProjectProposal;
+    }
+
+    public void setSearchableProjectProposal(String searchableProjectProposal) {
+        this.searchableProjectProposal = searchableProjectProposal;
+    }
+    
     public ProjectType[] getAllProjectTypes() {
         return ProjectType.values();
     }
