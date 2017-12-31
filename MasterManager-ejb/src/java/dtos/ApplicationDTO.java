@@ -19,24 +19,36 @@ public class ApplicationDTO implements Serializable {
     private Student student;
     private ProjectProposal projectProposal;
     private String applyingMessage;
-    private String documentName;
+    //private String documentName;
     private int projectProposalCode;
     private ApplicationState applicationState;
     private String studentName;
+    private String cvName;
+    private String certificateName;
+    private String presentationLetterName;
     
 
     public ApplicationDTO() {
     }
 
-    public ApplicationDTO(Long id, int projectProposalCode, Student student, ProjectProposal projectProposal, String applyingMessage,
-            ApplicationState applicationState, String documentName, String studentName) {
+    public ApplicationDTO(Long id, int projectProposalCode, Student student, 
+            ProjectProposal projectProposal, String applyingMessage,
+            ApplicationState applicationState, 
+           /* String documentName, */
+            String cvName,
+            String certificateName,
+            String presentationLetterName,
+            String studentName) {
         this.id = id;
         this.student = student;
         this.projectProposal = projectProposal;
         this.applyingMessage = applyingMessage;
         this.projectProposalCode = projectProposal.getCode();
         this.applicationState = applicationState;
-        this.documentName= documentName;
+        /*this.documentName= documentName;*/
+        this.cvName = cvName;
+        this.certificateName =certificateName;
+        this.presentationLetterName = presentationLetterName;
         this.studentName = studentName;
     }
 
@@ -47,7 +59,10 @@ public class ApplicationDTO implements Serializable {
         this.projectProposalCode=0;
         applyingMessage = null;
         this.applicationState=null;
-        this.documentName = null;
+       /* this.documentName = null;*/
+       this.cvName = null;
+        this.certificateName =null;
+        this.presentationLetterName = null;
     }
 
     public Student getStudent() {
@@ -95,13 +110,13 @@ public class ApplicationDTO implements Serializable {
         this.applicationState = applicationState;
     }
 
-    public String getDocumentName() {
+   /* public String getDocumentName() {
         return documentName;
     }
 
     public void setDocumentName(String documentName) {
         this.documentName = documentName;
-    }
+    }*/
 
     public String getStudentName() {
         return studentName;
@@ -110,6 +125,31 @@ public class ApplicationDTO implements Serializable {
     public void setStudentName(String studentName) {
         this.studentName = studentName;
     }
+
+    public String getCvName() {
+        return cvName;
+    }
+
+    public void setCvName(String cvName) {
+        this.cvName = cvName;
+    }
+
+    public String getCertificateName() {
+        return certificateName;
+    }
+
+    public void setCertificateName(String certificateName) {
+        this.certificateName = certificateName;
+    }
+
+    public String getPresentationLetterName() {
+        return presentationLetterName;
+    }
+
+    public void setPresentationLetterName(String presentationLetterName) {
+        this.presentationLetterName = presentationLetterName;
+    }
+    
     
     
 

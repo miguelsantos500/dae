@@ -97,9 +97,19 @@
                     
                     <br/>
                     
+                    <h:outputLabel for="curriculo" value="Anexar Currículo" />
                     <p:growl id="curriculo" showDetail="true" />
-                    <p:fileUpload value="#{uploadManager.file}" mode="simple" skinSimple="true"/>
-                    <p:commandButton value="Candidatar" ajax="false" actionListener="#{uploadManager.upload}" >
+                    <p:fileUpload value="#{uploadManager1.fileCv}" mode="simple" skinSimple="true"/>
+                    <br/>
+                    <h:outputLabel for="presentationLetter" value="Anexar Carta de Apresentação" />
+                     <p:growl id="presentationLetter" showDetail="true" />
+                     <p:fileUpload value="#{uploadManager1.filePresentationLetter}" mode="simple" skinSimple="true"/>
+                     <br/>
+                     <h:outputLabel for="certificate" value="Anexar Certificado" />
+                     <p:growl id="certificate" showDetail="true" />
+                     <p:fileUpload value="#{uploadManager1.fileCertificate}" mode="simple" skinSimple="true"/>
+                    <br/>
+                    <p:commandButton value="Candidatar" ajax="false" actionListener="#{uploadManager1.uploadFiles}" >
                         <f:actionListener binding="#{administratorManager.createApplication(component)}"/>
                         <f:param name="code" id="code"
                                  value="#{administratorManager.currentProjectProposal.code}" />

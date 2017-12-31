@@ -7,10 +7,13 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "DOCUMENTS")
@@ -32,9 +35,19 @@ public class Document implements Serializable {
     @OneToOne(mappedBy = "fileRecord")
     private PublicTest publicTest;
     
-    @OneToOne(mappedBy="fileRecord")
-    private Application application;
+    //acho que isto vai ter que ser manyToOne 
+   // @OneToOne(mappedBy = "fileRecord")
+   // private Application application;  
 
+    
+    ///////////////////////////////////////////////////////experiencia
+    @ManyToOne
+    @JoinColumn(name = "FILE_ID")
+    @NotNull(message = "Tem que anexar todos os documentos")
+    private Application application;
+ ///////////////////////////////////////////////////////fim experiencia
+    
+    
     public Document() {
 
     }

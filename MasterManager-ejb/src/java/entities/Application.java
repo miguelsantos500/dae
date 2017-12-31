@@ -3,6 +3,8 @@ package entities;
 import entities.project.ProjectProposal;
 import entities.users.Student;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import static javax.persistence.EnumType.STRING;
@@ -14,6 +16,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -44,19 +47,29 @@ public class Application implements Serializable {
     @NotNull
     private String applyingMessage;
 
-    /*@OneToOne
-   @JoinColumn(name = "FILE_ID")
-   private DocumentApplication fileRecord;*/
-   
-    @OneToOne(cascade = CascadeType.REMOVE)
+    /*  @OneToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "FILE_ID") 
-    private Document fileRecord;
+    private Document fileRecord;  */
+    @OneToMany(mappedBy = "application", cascade = CascadeType.REMOVE)
+    private List<Document> fileRecords;
 
+    /*@OneToMany(mappedBy="application", cascade=CascadeType.REMOVE)
+    private Document presentationLetter;
+    
+    @OneToMany(mappedBy="application", cascade=CascadeType.REMOVE)
+    private Document certificate;
+    
+    @OneToMany(mappedBy="application", cascade=CascadeType.REMOVE)
+    private Document cv;*/
+ /*   private Document presentationLetter;
+    private Document certificate;
+    private Document cv;*/
     @NotNull
     @Enumerated(STRING)
     private ApplicationState applicationState;
 
     public Application() {
+        this.fileRecords = new ArrayList<>(3);
     }
 
     public Application(Student student, ProjectProposal projectProposal, String applyingMessage) {
@@ -65,6 +78,8 @@ public class Application implements Serializable {
         this.projectProposal = projectProposal;
         this.applyingMessage = applyingMessage;
         this.applicationState = ApplicationState.PENDING;
+        this.fileRecords = new ArrayList<>(3);
+
     }
 
     public Student getStudent() {
@@ -91,7 +106,7 @@ public class Application implements Serializable {
         this.applyingMessage = applyingMessage;
     }
 
-    public Document getFileRecord() {
+    /*   public Document getFileRecord() {
         if (this.fileRecord == null) {
             return new Document();
         }
@@ -100,8 +115,7 @@ public class Application implements Serializable {
 
     public void setFileRecord(Document fileRecord) {
         this.fileRecord = fileRecord;
-    }
-
+    }*/
     public Long getId() {
         return id;
     }
@@ -116,6 +130,19 @@ public class Application implements Serializable {
 
     public void setApplicationState(ApplicationState applicationState) {
         this.applicationState = applicationState;
+    }
+
+ 
+    public List<Document> getFileRecords() {
+        return fileRecords;
+    }
+
+    public void setFileRecords(List<Document> fileRecords) {
+        this.fileRecords = fileRecords;
+    }
+    
+    public Document getFileByIndex(int index){
+        return fileRecords.get(index);
     }
 
 }

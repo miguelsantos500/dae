@@ -11,7 +11,7 @@
     </h:head>
     <h:body>
         <h:form enctype="multipart/form-data">                  
-            <h:panelGrid columns="3">
+            <h:panelGrid columns="2">
 
                 <h:outputLabel for="id" value="Identificador da candidatura: " />
                 <h:outputText 
@@ -73,30 +73,86 @@
                     value="#{studentManager.currentApplication.applyingMessage}" >
                 </h:inputText>    
                 <h:message for="message" errorStyle="color: red" />
-                
-                <h:outputLabel for="document" value="Documentos: " />
-                       <h:outputText 
-                            id="document"
-                            value="#{studentManager.currentApplication.documentName}">
-                            <f:param name="applicationId" id="applicationId"
-                                     value="#{studentManager.currentApplication.id}" />
-                        </h:outputText>
-                        <br></br>
-                
-               <h:commandLink value="Remover ficheiro" 
-                               actionListener="#{administratorManager.removeDocumentApplication}">
-                    <f:param name="applicationIdf" id="applicationIdf"
-                             value="#{administratorManager.currentApplication.id}" />
+
+                <h:outputLabel for="cv" value="Currículo: " />
+                <h:outputText 
+                    id="cv"
+                    value="#{studentManager.currentApplication.cvName}">
+                </h:outputText>
+                <br></br>
+                <h:commandLink value="Remover" 
+                               actionListener="#{studentManager.removeCv}">
+                    <f:param name="applicationIdCv" id="applicationIdCv"
+                             value="#{studentManager.currentApplication.id}" />
+                    <f:param name="name" id="nameCv"
+                             value="#{studentManager.currentApplication.cvName}" />
+                    <f:param name="index" id="indexCv"
+                             value="0" />
                 </h:commandLink>
-                        
+
+                <br></br>
+                <h:outputLabel for="newCv" value="Anexar Currículo" />
                 <p:growl id="newCv" showDetail="true" />
-                    <p:fileUpload value="#{uploadManager.file}" mode="simple" skinSimple="true"/>
-                    
-                    <p:commandButton value="Anexar CV" ajax="false" actionListener="#{uploadManager.upload}" >
-                        <f:actionListener binding="#{studentManager.uploadFileRecord(component)}"/>
-                        <f:param name="appIdNewCv" id="appIdNewCv"
-                                 value="#{studentManager.currentApplication.id}" />
-                    </p:commandButton>
+                <p:fileUpload value="#{uploadManager1.fileCv}" mode="simple" skinSimple="true"/>
+
+
+                <br></br>
+                <br></br>
+
+
+
+
+
+
+                <br></br>
+
+                <h:outputLabel for="resentationLetter" value="Carta de Apresentação " />
+                <h:outputText 
+                    id="presentationLetter"
+                    value="#{studentManager.currentApplication.presentationLetterName}">
+                </h:outputText>
+                <br></br>
+                <h:commandLink value="Remover" 
+                               actionListener="#{studentManager.removePresentationLetter}">
+                    <f:param name="applicationId" id="applicationIdRemovePL"
+                             value="#{studentManager.currentApplication.id}" />
+                    <f:param name="name" id="namePL"
+                             value="#{studentManager.currentApplication.presentationLetterName}" />
+                    <f:param name="index" id="indexPL"
+                             value="1" />
+                </h:commandLink>
+
+                <h:outputLabel for="newPresentationLetter" value="Anexar Carta de Apresentação" />
+                <p:growl id="newPresentationLetter" showDetail="true" />
+                <p:fileUpload value="#{uploadManager1.filePresentationLetter}" mode="simple" skinSimple="true"/>
+
+                <br></br>
+                <br></br>
+
+                <h:outputLabel for="certificate" value="Certificado " />
+                <h:outputText 
+                    id="certificate"
+                    value="#{studentManager.currentApplication.certificateName}">
+                </h:outputText>
+                <br></br>
+                <h:commandLink value="Remover" 
+                               actionListener="#{studentManager.removeCertificate}">
+                    <f:param name="applicationIdCertificate" id="applicationIdRemoveCert"
+                             value="#{studentManager.currentApplication.id}" />
+                    <f:param name="name" id="nameCert"
+                             value="#{studentManager.currentApplication.certificateName}" />
+                    <f:param name="index" id="indexCert"
+                             value="2" />
+                </h:commandLink>
+                <h:outputLabel for="newCertificate" value="Anexar Certificado" />
+                <p:growl id="newCertificate" showDetail="true" />
+                <p:fileUpload value="#{uploadManager1.fileCertificate}" mode="simple" skinSimple="true"/>
+
+                <br></br>
+                <br></br>
+
+                <!--vou ter que fazer metodos para anexar outros documentos -->
+
 
                 <h:commandButton
                     id="submit"
@@ -104,12 +160,10 @@
                     action="#{studentManager.updateApplication}" />
                 <h:message for="submit" style="color: red"/>
 
-
-
             </h:panelGrid>  
 
         </h:form>
-        
+
         <h:messages errorStyle="color: red" />      
 
         <h:link value="Voltar" outcome="student_index"/>
