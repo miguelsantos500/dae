@@ -53,7 +53,7 @@ public class UploadManager {
             }
         } else {
             FacesMessage message = new FacesMessage("ERRO :: Ficheiro: " + 
-                    file.getFileName() + " não selécionado ou vazio!");
+                    file.getFileName() + " não seleccionado ou vazio!");
             FacesContext.getCurrentInstance().addMessage(null, message);
         }
 
@@ -74,6 +74,7 @@ public class UploadManager {
     public void setCompletePathFile(String completePathFile) {
         this.completePathFile = completePathFile;
     }
+    
 
     public String getFilename() {
         return filename;
