@@ -943,7 +943,7 @@ public class AdministratorManager {
         }
     }
 
-    public void removeDocumentApplication(ActionEvent event) {
+ /*   public void removeDocumentApplication(ActionEvent event) {
 
         try {
             UIParameter param = (UIParameter) event.getComponent().findComponent("applicationId");
@@ -957,7 +957,7 @@ public class AdministratorManager {
         } catch (Exception e) {
             FacesExceptionHandler.handleException(e, "Unexpected error no removeDocumentApplication! Try again latter!", logger);
         }
-    }
+    }*/
 
     public String updateApplication() {
 

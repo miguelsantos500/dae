@@ -132,44 +132,17 @@ public class Application implements Serializable {
         this.applicationState = applicationState;
     }
 
-    /*   public Document getPresentationLetter() {
-        return presentationLetter;
-    }*/
-
- /* public void setPresentationLetter(Document presentationCard) {
-        this.presentationLetter = presentationCard;
-    }
-
-    public Document getCertificate() {
-        return certificate;
-    }
-
-    public void setCertificate(Document certificate) {
-        this.certificate = certificate;
-    }
-
-    public Document getCv() {
-        return cv;
-    }
-
-    public void setCv(Document cv) {
-        this.cv = cv;
-    }
-
-    //este metodo mapeia cada documento do array para um tipo especifico de documento
-    public void mappDocumentTypes(){
-        
-        cv = fileRecords.get(0);
-        presentationLetter = fileRecords.get(1);
-        certificate = fileRecords.get(2);
-             
-    }*/
+ 
     public List<Document> getFileRecords() {
         return fileRecords;
     }
 
     public void setFileRecords(List<Document> fileRecords) {
         this.fileRecords = fileRecords;
+    }
+    
+    public Document getFileByIndex(int index){
+        return fileRecords.get(index);
     }
 
 }

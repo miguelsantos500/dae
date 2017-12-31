@@ -14,6 +14,7 @@ import exceptions.ApplicationNumberException;
 import exceptions.EntityDoesNotExistException;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
@@ -168,6 +169,77 @@ public class StudentManager {
         }
     }
 
+    
+    public void removeCv(ActionEvent event){
+        
+            UIParameter param = (UIParameter) event.getComponent().findComponent("applicationIdCv");
+            Long id = Long.parseLong(param.getValue().toString());
+            
+            param = (UIParameter) event.getComponent().findComponent("nameCv");
+            String name = (String)param.getValue();
+            
+            param = (UIParameter) event.getComponent().findComponent("indexCv");
+            int index = Integer.parseInt(param.getValue().toString());
+            
+            removeDocument(id, index);
+            
+    }
+    
+    public void removePresentationLetter(ActionEvent event){
+         UIParameter param = (UIParameter) event.getComponent().findComponent("applicationIdRemovePL");
+            Long id = Long.parseLong(param.getValue().toString());
+            
+            param = (UIParameter) event.getComponent().findComponent("namePL");
+            String name = (String)param.getValue();
+            
+            param = (UIParameter) event.getComponent().findComponent("indexPL");
+            int index = Integer.parseInt(param.getValue().toString());
+            
+            removeDocument(id, index);
+    }
+    
+    public void removeCertificate(ActionEvent event){
+        UIParameter param = (UIParameter) event.getComponent().findComponent("applicationIdRemoveCert");
+            Long id = Long.parseLong(param.getValue().toString());
+            
+            param = (UIParameter) event.getComponent().findComponent("nameCert");
+            String name = (String)param.getValue();
+            
+            param = (UIParameter) event.getComponent().findComponent("indexCert");
+            int index = Integer.parseInt(param.getValue().toString());
+            
+            removeDocument(id, index);
+    }
+    
+     public void removeDocument(Long id, int index) {
+
+        try {
+           // UIParameter param = (UIParameter) event.getComponent().findComponent("applicationId");
+          //  Long id = Long.parseLong(param.getValue().toString());
+            
+         //   param = (UIParameter) event.getComponent().findComponent("name");
+         //   String name = (String)param.getValue();
+            
+          //  param = (UIParameter) event.getComponent().findComponent("index");
+          //  int index = Integer.parseInt(param.getValue().toString());
+          
+          
+            
+          //  logger.log(Level.SEVERE, "a_id:" + id + ", name: " + name + "index: " + index);
+            
+            applicationBean.removeFileRecord(id, index);
+            //applicationBean.removeFileRecord(id);
+
+            //       ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+            //   externalContext.redirect("http://localhost:8080/MasterManager-war/faces/student/student_application_update.xhtml");
+        /*} catch (EntityDoesNotExistException e) {
+            FacesExceptionHandler.handleException(e, e.getMessage(), logger);*/
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Unexpected error no removeDocumentApplication! Try again later!", logger);
+        }
+    }
+    
+    
     //GETTERS AND SETTERS
     public String getSearchableApplication() {
         return searchableApplication;

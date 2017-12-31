@@ -360,8 +360,8 @@ public class ApplicationBean {
             throw new EJBException(e.getMessage());
         }
     }
- //tem que passar a receber o id do documento que quer remover
-    public void removeFileRecord(Long id) throws EntityDoesNotExistException {
+ //recebe o id da candidatura e o index do documento a remover
+    public void removeFileRecord(Long id, int index) throws EntityDoesNotExistException {
         try {
             Application application = em.find(Application.class, id);
             if (application == null) {
@@ -369,10 +369,13 @@ public class ApplicationBean {
                         "Não existe nenhuma candidatura com esse id.");
             }
             
-            //id temporario para nao dar erro
-            int idTemporario = application.getFileRecords().get(0).getId();
-            Document document = em.find(Document.class, idTemporario);
+            //vai buscar o documento pelo id
+           // Document document = application.getFileByIndex(index);
             
+            //vai buscar o documento pelo id
+            Document document = em.find(Document.class, application.getFileByIndex(index).getId());
+           
+           
             //codigo anterior
            // Document document = em.find(Document.class, application.getFileRecord().getId());
             if (document == null) {
@@ -383,7 +386,6 @@ public class ApplicationBean {
             application.setFileRecords(null);
             em.merge(application);
             em.remove(document);
-          //  application.setFileRecord(new Document());
 
         } catch (EntityDoesNotExistException e) {
             throw e;
@@ -391,6 +393,8 @@ public class ApplicationBean {
             throw new EJBException(e.getMessage());
         }
     }
+    
+    
     
  //tem que passar a receber o id do documento 
    public DocumentDTO getDocument(Long id) throws EntityDoesNotExistException {
