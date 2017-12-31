@@ -18,15 +18,15 @@
                         size="10"
                         required="true"
                         requiredMessage="Erro: Código não pode estar vazio."
-                        value="#{administratorManager.newProjectProposal.code}"/>
+                        value="#{proponentManager.newProjectProposal.code}"/>
                     <h:message for="code" errorStyle="color: red" />
 
                     <h:outputLabel for="projectType" value="Project Types: " />
                     <h:selectOneMenu
                         id="projectType"
-                        value="#{administratorManager.newProjectProposal.projectTypeString}" >
+                        value="#{proponentManager.newProjectProposal.projectTypeString}" >
                         <f:selectItems
-                            value="#{administratorManager.allProjectTypes}"
+                            value="#{proponentManager.allProjectTypes}"
                             var="ccp"/>
                     </h:selectOneMenu>
                     <h:message for="projectType" errorStyle="color: red" />
@@ -37,21 +37,8 @@
                         size="50"
                         required="true"
                         requiredMessage="Erro: Título não pode estar vazio."
-                        value="#{administratorManager.newProjectProposal.title}"/>
+                        value="#{proponentManager.newProjectProposal.title}"/>
                     <h:message for="title" errorStyle="color: red" />                   
-
-
-                    <h:outputLabel for="proponent" value="Proponente: " />
-                    <h:selectOneMenu
-                        id="teacher"
-                        value="#{administratorManager.newProjectProposal.proponentUsername}" >
-                        <f:selectItems
-                            value="#{administratorManager.allProponents}"
-                            var="proponent"
-                            itemValue="#{proponent.username}"
-                            itemLabel="#{proponent.name}" />
-                    </h:selectOneMenu>
-                    <br></br>
                     
                     
                     <h:outputLabel for="workPlan" value="Plano de Trabalho " />
@@ -60,7 +47,7 @@
                         size="50"
                         required="true"
                         requiredMessage="Erro: Plano de Trabalho não pode estar vazio."
-                        value="#{administratorManager.newProjectProposal.workPlan}"/>
+                        value="#{proponentManager.newProjectProposal.workPlan}"/>
                     <h:message for="workPlan" errorStyle="color: red" />             
                     
                     
@@ -70,7 +57,7 @@
                         size="50"
                         required="true"
                         requiredMessage="Erro: Resumo do Project não pode estar vazio."
-                        value="#{administratorManager.newProjectProposal.projectAbstract}"/>
+                        value="#{proponentManager.newProjectProposal.projectAbstract}"/>
                     <h:message for="projectAbstract" errorStyle="color: red" />             
                     
                     
@@ -80,7 +67,7 @@
                         size="50"
                         required="true"
                         requiredMessage="Erro: Orçamento não pode estar vazio."
-                        value="#{administratorManager.newProjectProposal.budget}"/>
+                        value="#{proponentManager.newProjectProposal.budget}"/>
                     <h:message for="budget" errorStyle="color: red" />             
                     
                     
@@ -90,7 +77,7 @@
                         size="50"
                         required="true"
                         requiredMessage="Erro: Local de Trabalho não pode estar vazio."
-                        value="#{administratorManager.newProjectProposal.workPlace}"/>
+                        value="#{proponentManager.newProjectProposal.workPlace}"/>
                     <h:message for="workPlace" errorStyle="color: red" />             
                     
                     
@@ -103,7 +90,7 @@
                         id="inputScientificAreas"
                         required="true"
                         requiredMessage="Erro: Tem de adicionar pelo menos uma área científica."
-                        value="#{administratorManager.newProjectProposal.scientificAreasString}" />
+                        value="#{proponentManager.newProjectProposal.scientificAreasString}" />
                     <h:message for="inputScientificAreas" errorStyle="color: red" />      
                 </div >                     
                 <h:button id="addScientificArea" class="btn btn-primary"  value="Adicionar Área Científica" onclick="return false;"/>
@@ -115,7 +102,7 @@
                         id="inputObjectives"
                         required="true"
                         requiredMessage="Erro: Tem de adicionar pelo menos um objectivo."
-                        value="#{administratorManager.newProjectProposal.objectivesString}" />
+                        value="#{proponentManager.newProjectProposal.objectivesString}" />
                     <h:message for="inputObjectives" errorStyle="color: red" />      
                 </div >                     
                 <h:button id="addObjective" class="btn btn-primary"  value="Adicionar Objectivo" onclick="return false;"/>
@@ -128,7 +115,7 @@
                         id="inputBibliographyItems"
                         required="true"
                         requiredMessage="Erro: Tem de adicionar pelo menos um Item de Bibliografia."
-                        value="#{administratorManager.newProjectProposal.bibliographyString}" />
+                        value="#{proponentManager.newProjectProposal.bibliographyString}" />
                     <h:message for="inputBibliographyItems" errorStyle="color: red" />      
                 </div >                     
                 <h:button id="addBibliographyItem" class="btn btn-primary"  value="Adicionar Item de Bibliografia" onclick="return false;"/>
@@ -141,7 +128,7 @@
                         id="inputSuccessRequirements"
                         required="true"
                         requiredMessage="Erro: Tem de adicionar pelo menos um Requisito de Sucesso."
-                        value="#{administratorManager.newProjectProposal.successRequirementsString}" />
+                        value="#{proponentManager.newProjectProposal.successRequirementsString}" />
                     <h:message for="inputSuccessRequirements" errorStyle="color: red" />      
                 </div >                     
                 <h:button id="addSuccessRequirement" class="btn btn-primary"  value="Adicionar Requisito de Sucesso" onclick="return false;"/>
@@ -154,7 +141,7 @@
                         id="inputSupports"
                         required="true"
                         requiredMessage="Erro: Tem de adicionar pelo menos um Apoio."
-                        value="#{administratorManager.newProjectProposal.supportsString}" />
+                        value="#{proponentManager.newProjectProposal.supportsString}" />
                     <h:message for="inputSupports" errorStyle="color: red" />      
                 </div >                     
                 <h:button id="addSupport" class="btn btn-primary"  value="Adicionar Apoio" onclick="return false;"/>
@@ -163,8 +150,8 @@
                 <h:commandButton
                     id="submit"
                     value="Criar"
-                    binding="#{administratorManager.component}" 
-                    action="#{administratorManager.createProjectProposal}" />
+                    binding="#{proponentManager.component}" 
+                    action="#{proponentManager.createProjectProposal}" />
                 <h:message for="submit" style="color: red"/>
             </h:form>
 

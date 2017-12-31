@@ -55,6 +55,11 @@
                     <h:outputText 
                         id="proponent"
                         value="#{administratorManager.currentProjectProposal.proponentUsername}"/>
+                    
+                    <h:outputLabel for="projectProposalState" value="Project Proposal State " />
+                    <h:outputText 
+                        id="projectProposalState"
+                        value="#{administratorManager.currentProjectProposal.projectProposalState}"/>
 
                 </h:panelGrid>
 
@@ -73,13 +78,56 @@
                     list="#{administratorManager.currentProjectProposal.bibliography}">
                 </em:dt_list>
                 <em:dt_list
-                    headers="#{['Requesitos de Sucesso']}"
+                    headers="#{['Requisitos de Sucesso']}"
                     list="#{administratorManager.currentProjectProposal.successRequirements}">
                 </em:dt_list>
                 <em:dt_list
                     headers="#{['Apoios']}"
                     list="#{administratorManager.currentProjectProposal.supports}">
                 </em:dt_list>
+
+                
+                    <!-- OBSERVATIONS -->
+                    
+                    
+            <em:dt 
+                title="Observações" 
+                headers="#{['Mensagem', 'Estado da Proposta', 'CCPUser']}"
+                props="#{['message', 'projectProposalState', 'cCPUserUsername']}"
+                list="#{administratorManager.allObservations}">
+            </em:dt>
+                    
+                    
+                <h:form>
+
+                    <h:panelGrid columns="3">
+                        <h:outputLabel for="message" value="Mensagem: " />
+                        <h:inputText 
+                            id="message"
+                            size="10"
+                            required="true"
+                            requiredMessage="Erro: Mensagem não pode estar vazia."
+                            value="#{administratorManager.newObservation.message}"/>
+                        <h:message for="message" errorStyle="color: red" />
+
+                        <h:outputLabel for="projectProposalState" value="Estado a transitar: " />
+                        <h:selectOneMenu
+                            id="projectProposalState"
+                            value="#{administratorManager.newObservation.projectProposalState}" >
+                            <f:selectItems
+                                value="#{administratorManager.allProposalValidationStates}"
+                                var="ccp"/>
+                        </h:selectOneMenu>
+                        <h:message for="projectProposalState" errorStyle="color: red" />
+
+                        <h:commandButton
+                            id="submit"
+                            value="Adicionar Observação"
+                            binding="#{administratorManager.component}" 
+                            action="#{administratorManager.addObservation}" />
+                        <h:message for="submit" style="color: red"/>
+                    </h:panelGrid>
+                </h:form>
 
 
                 <br/>

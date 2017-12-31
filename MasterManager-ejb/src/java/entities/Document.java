@@ -32,7 +32,7 @@ public class Document implements Serializable {
     @OneToOne(mappedBy = "fileRecord")
     private PublicTest publicTest;
     
-    @OneToOne(mappedBy = "fileRecord")
+    @OneToOne(mappedBy="fileRecord")
     private Application application;
 
     public Document() {

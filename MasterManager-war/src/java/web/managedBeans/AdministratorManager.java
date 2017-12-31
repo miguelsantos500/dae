@@ -23,6 +23,7 @@ import ejbs.users.TeacherBean;
 import entities.project.ProjectProposalState;
 import entities.project.ProjectType;
 import entities.users.UserGroup;
+import exceptions.ApplicationStateException;
 import exceptions.EntityAlreadyExistsException;
 import exceptions.EntityDoesNotExistException;
 import exceptions.MyConstraintViolationException;
@@ -35,6 +36,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
@@ -119,10 +121,8 @@ public class AdministratorManager {
     private String searchablePublicTest;
     private String searchableStudent;
     private String searchableTeacher;
-    private String searchableCourse;
     private String searchableInstitution;
     private String searchableProjectProposal;
-    private String searchableApplication;
 
     /**
      * ** Other ***
@@ -134,8 +134,6 @@ public class AdministratorManager {
     private UserManager userManager;
 
     private String scientificAreasString;
-
-    private String search;
 
     private UIComponent component;
     private static final Logger logger = Logger.getLogger("web.managedBeans.AdministratorManager");
@@ -452,14 +450,6 @@ public class AdministratorManager {
 
     }
 
-    public String getSearchableProjectProposal() {
-        return searchableProjectProposal;
-    }
-
-    public void setSearchableProjectProposal(String searchableProjectProposal) {
-        this.searchableProjectProposal = searchableProjectProposal;
-    }
-
     public List<ProjectProposalDTO> getSearchProjectProposal(String condition) {
         try {
             List<ProjectProposalDTO> foundProjectProposals = projectProposalBean.search(searchableProjectProposal, condition);
@@ -557,7 +547,7 @@ public class AdministratorManager {
 
             observationBean.create(newObservation.getMessage(),
                     newObservation.getProjectProposalState().toString(),
-                    currentProjectProposal.getCode());
+                    currentProjectProposal.getCode(), userManager.getUsername());
 
             return "admin_index?faces-redirect=true";
         } catch (Exception e) {
@@ -566,6 +556,24 @@ public class AdministratorManager {
             return null;
         }
     }
+    
+    public List<ObservationDTO> getAllObservations() {
+        try {
+            return client.target(URILookup.getBaseAPI()).
+                    path("/projectProposals").
+                    path(String.valueOf(currentProjectProposal.getCode())).
+                    path("/observations").
+                    request(MediaType.APPLICATION_XML).
+                    get(new GenericType<List<ObservationDTO>>() {
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+            FacesExceptionHandler.handleException(e, "Unexpected error! " + e.getMessage(),
+                    logger);
+            return null;
+        }
+    }
+    
 
     ////////////// PUBLIC TEST ///////////////////
     public String createPublicTest() {
@@ -838,23 +846,17 @@ public class AdministratorManager {
         int code = Integer.parseInt(param.getValue().toString());
 
         try {
-            /*  DocumentApplicationDTO document = new DocumentApplicationDTO(uploadManager.getCompletePathFile(),
-                    uploadManager.getFilename(),
-                    uploadManager.getFile().getContentType());*/
 
             DocumentDTO document = new DocumentDTO(uploadManager.getCompletePathFile(),
                     uploadManager.getFilename(),
                     uploadManager.getFile().getContentType());
 
-            //cria a candidatura
+            //cria a candidatura e reeber o id gerado automaticamente
             Long applicationId = applicationBean.create(
                     username,
                     code,
                     newApplication.getApplyingMessage());
 
-            //vai buscar o id da candidatura criada
-            //   Long applicationId = newApplication.getId();
-            //   Long applicationId = currentApplication.getId();
             //nao devia passar o id pelo link, ver como se tentou fazer acima... tb posso recorrer ao bean em vez de usar rota
             client.target(URILookup.getBaseAPI())
                     .path("/applications/addFileRecord")
@@ -879,23 +881,16 @@ public class AdministratorManager {
             ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
             externalContext.redirect("http://localhost:8080/MasterManager-war/faces/student/student_index.xhtml");
 
+        } catch (ApplicationStateException e) {
+            FacesContext.getCurrentInstance()
+                    .addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(),
+                            "candidaturas"));
+
         } catch (Exception e) {
             FacesExceptionHandler.handleException(e, "Erro inesperado no creeateApplication do AdministratorManager", component, logger);
             e.printStackTrace();
         }
         // return "student/student_index?faces-redirect=true";
-    }
-
-    public void removeApplication(ActionEvent event) {
-        try {
-            UIParameter param = (UIParameter) event.getComponent().findComponent("publicTestCode");
-            int code = Integer.parseInt(param.getValue().toString());
-            publicTestBean.remove(code);
-        } catch (EntityDoesNotExistException e) {
-            FacesExceptionHandler.handleException(e, e.getMessage(), logger);
-        } catch (Exception e) {
-            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
-        }
     }
 
     public Collection<ApplicationDTO> getAllStudentApplications() {
@@ -937,52 +932,16 @@ public class AdministratorManager {
             UIParameter param = (UIParameter) event.getComponent().findComponent("applicationId");
             Long id = Long.parseLong(param.getValue().toString());
             applicationBean.removeFileRecord(id);
+
+            //       ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+            //   externalContext.redirect("http://localhost:8080/MasterManager-war/faces/student/student_application_update.xhtml");
         } catch (EntityDoesNotExistException e) {
             FacesExceptionHandler.handleException(e, e.getMessage(), logger);
         } catch (Exception e) {
-            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
+            FacesExceptionHandler.handleException(e, "Unexpected error no removeDocumentApplication! Try again latter!", logger);
         }
     }
-
-    public String updateApplication() {
-
-        try {
-            WebTarget path = client.target(baseUri)
-                    .path("/applications/update");
-            System.out.println(path.getUri());
-            path.request(MediaType.APPLICATION_XML)
-                    .put(Entity.xml(currentApplication));
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            FacesExceptionHandler.handleException(e, "Unexpected error no updateApplication do AdministratorManager!", logger);
-            return null;
-        }
-
-        return "student_index?faces-redirect=true";
-
-    }
-
-    public List<ApplicationDTO> getSearchApplication() {
-        try {
-            //tenho que saber qual é o estudante para que ele procure só as candidaturas desse estudante
-            String username = userManager.getUsername();
-            List<ApplicationDTO> foundApplications = applicationBean.search(searchableApplication, username);
-            return foundApplications;
-        } catch (Exception e) {
-            FacesExceptionHandler.handleException(e, "Unexpected error on getSearchApplication()!", logger);
-            return null;
-        }
-    }
-
-    public String getSearchableApplication() {
-        return searchableApplication;
-    }
-
-    public void setSearchableApplication(String searchableApplication) {
-        this.searchableApplication = searchableApplication;
-    }
-
+    
     public void approveApplication(ActionEvent event) throws IOException {
         try {
             UIParameter param = (UIParameter) event.getComponent().findComponent("applicationId");
@@ -1098,6 +1057,15 @@ public class AdministratorManager {
         this.searchableStudent = searchableStudent;
     }
 
+
+    public String getSearchableProjectProposal() {
+        return searchableProjectProposal;
+    }
+
+    public void setSearchableProjectProposal(String searchableProjectProposal) {
+        this.searchableProjectProposal = searchableProjectProposal;
+    }
+    
     public ProjectType[] getAllProjectTypes() {
         return ProjectType.values();
     }

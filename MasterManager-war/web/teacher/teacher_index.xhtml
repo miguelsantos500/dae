@@ -7,7 +7,7 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:em="http://xmlns.jcp.org/jsf/composite/emcomp">
     <ui:composition template="../templates/skeleton.xhtml">
-        <ui:define name="title">Professore</ui:define>
+        <ui:define name="title">Professor</ui:define>
         <ui:define name="main">
 
             <h:form>
@@ -18,21 +18,21 @@
                 title="Proposta de projecto" 
                 headers="#{['Tipo de projecto', 'Título', 'Proponente']}"
                 props="#{['projectTypeString', 'title', 'proponentUsername']}"
-                list="#{administratorManager.getAllProjectProposals('all')}">
+                list="#{proponentManager.getAllProjectProposals('all')}">
                 <p:column headerText="Acções">
                     <h:form>
-                        <h:commandLink value="Detalhes" action="#{administratorManager.redirect('details')}">
+                        <h:commandLink value="Detalhes" action="#{proponentManager.redirect('details')}">
                             <f:setPropertyActionListener
-                                target="#{administratorManager.currentProjectProposal}" value="#{object}" />
+                                target="#{proponentManager.currentProjectProposal}" value="#{object}" />
                         </h:commandLink>
                         &nbsp;
-                        <h:commandLink value="Actualizar" action="#{administratorManager.redirect('update')}">
+                        <h:commandLink value="Actualizar" action="#{proponentManager.redirect('update')}">
                             <f:setPropertyActionListener
-                                target="#{administratorManager.currentProjectProposal}" value="#{object}" />
+                                target="#{proponentManager.currentProjectProposal}" value="#{object}" />
                         </h:commandLink>
                         &nbsp;
                         <h:commandLink value="Remover"
-                                       actionListener="#{administratorManager.removeProjectProposal}">
+                                       actionListener="#{proponentManager.removeProjectProposal}">
                             <f:param name="projectProposalCode" id="projectProposalCode"
                                      value="#{object.code}" />
                         </h:commandLink>
@@ -55,14 +55,14 @@
                     size="20"
                     required="true"
                     requiredMessage="Erro: campo não pode estar vazio!"
-                    value="#{administratorManager.searchableProjectProposal}"/>
+                    value="#{proponentManager.searchableProjectProposal}"/>
 
                 <br></br>
 
                 <h:commandButton
                     id="searchProjectProposal"
                     value="Procurar"
-                    action="#{administratorManager.redirect('search')}" />    
+                    action="#{proponentManager.redirect('search')}" />    
                 <h:message for="searchProjectProposal" style="color: red" />   
 
             </h:form> 

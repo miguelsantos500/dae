@@ -5,7 +5,9 @@
  */
 package web.managedBeans;
 
+import static com.sun.xml.ws.security.addressing.impl.policy.Constants.logger;
 import dtos.ApplicationDTO;
+import dtos.DocumentDTO;
 import ejbs.ApplicationBean;
 import ejbs.PublicTestBean;
 import exceptions.ApplicationNumberException;
@@ -25,7 +27,9 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
+import util.URILookup;
 import web.FacesExceptionHandler;
+import web.UploadManager;
 import web.UserManager;
 
 /**
@@ -59,6 +63,9 @@ public class StudentManager {
      */
     @ManagedProperty(value = "#{userManager}")
     private UserManager userManager;
+
+    @ManagedProperty(value = "#{uploadManager}")
+    private UploadManager uploadManager;
 
     private static final Logger LOGGER = Logger.getLogger("web.managedBeans.StudentManager");
 
@@ -139,6 +146,28 @@ public class StudentManager {
         }
     }
 
+    public void uploadFileRecord(UIComponent component) {
+        try {
+            if (uploadManager.getFile().getSize() != 0) {
+                DocumentDTO document = new DocumentDTO(uploadManager.getCompletePathFile(),
+                        uploadManager.getFilename(),
+                        uploadManager.getFile().getContentType());
+
+                UIParameter param = (UIParameter) component.findComponent("appIdNewCv");
+                String appId = param.getValue().toString();
+
+                client.target(URILookup.getBaseAPI())
+                        .path("/applications/addFileRecord")
+                        .path(appId)
+                        .request(MediaType.APPLICATION_XML)
+                        .put(Entity.xml(document));
+
+            }
+        } catch (Exception e) {
+            FacesExceptionHandler.handleException(e, "Erro ao fazer o upload do ficheiro!", logger);
+        }
+    }
+
     //GETTERS AND SETTERS
     public String getSearchableApplication() {
         return searchableApplication;
@@ -170,6 +199,14 @@ public class StudentManager {
 
     public void setCurrentApplication(ApplicationDTO currentApplication) {
         this.currentApplication = currentApplication;
+    }
+
+    public UploadManager getUploadManager() {
+        return uploadManager;
+    }
+
+    public void setUploadManager(UploadManager uploadManager) {
+        this.uploadManager = uploadManager;
     }
 
 }

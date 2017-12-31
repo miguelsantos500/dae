@@ -3,6 +3,7 @@ package entities;
 import entities.project.ProjectProposal;
 import entities.users.Student;
 import java.io.Serializable;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import static javax.persistence.EnumType.STRING;
 import javax.persistence.Enumerated;
@@ -46,8 +47,9 @@ public class Application implements Serializable {
     /*@OneToOne
    @JoinColumn(name = "FILE_ID")
    private DocumentApplication fileRecord;*/
-    @OneToOne
-    @JoinColumn(name = "FILE_ID")
+   
+    @OneToOne(cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "FILE_ID") 
     private Document fileRecord;
 
     @NotNull
