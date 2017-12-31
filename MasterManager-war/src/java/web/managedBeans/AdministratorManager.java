@@ -453,14 +453,6 @@ public class AdministratorManager {
 
     }
 
-    public String getSearchableProjectProposal() {
-        return searchableProjectProposal;
-    }
-
-    public void setSearchableProjectProposal(String searchableProjectProposal) {
-        this.searchableProjectProposal = searchableProjectProposal;
-    }
-
     public List<ProjectProposalDTO> getSearchProjectProposal(String condition) {
         try {
             List<ProjectProposalDTO> foundProjectProposals = projectProposalBean.search(searchableProjectProposal, condition);
@@ -896,18 +888,6 @@ public class AdministratorManager {
         // return "student/student_index?faces-redirect=true";
     }
 
-    public void removeApplication(ActionEvent event) {
-        try {
-            UIParameter param = (UIParameter) event.getComponent().findComponent("publicTestCode");
-            int code = Integer.parseInt(param.getValue().toString());
-            publicTestBean.remove(code);
-        } catch (EntityDoesNotExistException e) {
-            FacesExceptionHandler.handleException(e, e.getMessage(), logger);
-        } catch (Exception e) {
-            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
-        }
-    }
-
     public Collection<ApplicationDTO> getAllStudentApplications() {
 
         Collection<ApplicationDTO> applications = null;
@@ -955,25 +935,6 @@ public class AdministratorManager {
         } catch (Exception e) {
             FacesExceptionHandler.handleException(e, "Unexpected error no removeDocumentApplication! Try again latter!", logger);
         }
-    }
-
-    public String updateApplication() {
-
-        try {
-            WebTarget path = client.target(baseUri)
-                    .path("/applications/update");
-            System.out.println(path.getUri());
-            path.request(MediaType.APPLICATION_XML)
-                    .put(Entity.xml(currentApplication));
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            FacesExceptionHandler.handleException(e, "Unexpected error no updateApplication do AdministratorManager!", logger);
-            return null;
-        }
-
-        return "student_index?faces-redirect=true";
-
     }
     
     public void approveApplication(ActionEvent event) throws IOException {
@@ -1091,6 +1052,15 @@ public class AdministratorManager {
         this.searchableStudent = searchableStudent;
     }
 
+
+    public String getSearchableProjectProposal() {
+        return searchableProjectProposal;
+    }
+
+    public void setSearchableProjectProposal(String searchableProjectProposal) {
+        this.searchableProjectProposal = searchableProjectProposal;
+    }
+    
     public ProjectType[] getAllProjectTypes() {
         return ProjectType.values();
     }

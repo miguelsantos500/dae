@@ -99,10 +99,10 @@ public class ProjectProposal implements Serializable {
     private ProjectProposalState projectProposalState;
     
     
-    @OneToMany(mappedBy="projectProposal")
+    @OneToMany(mappedBy="projectProposal", cascade=CascadeType.REMOVE)
     private List<Observation> observations;
     
-    @OneToMany(mappedBy="projectProposal")
+    @OneToMany(mappedBy="projectProposal", cascade=CascadeType.REMOVE)
     private List<Application> applications;
     
     @OneToOne(mappedBy="projectProposal", cascade=CascadeType.REMOVE)

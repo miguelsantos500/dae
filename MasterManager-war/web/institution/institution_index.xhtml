@@ -13,26 +13,26 @@
             <h:form>
                 <h:commandButton value="Logout" action="#{userManager.logout}" />  
             </h:form> 
-            
+
             <em:dt 
                 title="Proposta de projecto" 
                 headers="#{['Tipo de projecto', 'Título', 'Proponente']}"
                 props="#{['projectTypeString', 'title', 'proponentUsername']}"
-                list="#{administratorManager.getAllProjectProposals('all')}">
+                list="#{proponentManager.getAllProjectProposals('all')}">
                 <p:column headerText="Acções">
                     <h:form>
-                        <h:commandLink value="Detalhes" action="#{administratorManager.redirect('details')}">
+                        <h:commandLink value="Detalhes" action="#{proponentManager.redirect('details')}">
                             <f:setPropertyActionListener
-                                target="#{administratorManager.currentProjectProposal}" value="#{object}" />
+                                target="#{proponentManager.currentProjectProposal}" value="#{object}" />
                         </h:commandLink>
                         &nbsp;
-                        <h:commandLink value="Actualizar" action="#{administratorManager.redirect('update')}">
+                        <h:commandLink value="Actualizar" action="#{proponentManager.redirect('update')}">
                             <f:setPropertyActionListener
-                                target="#{administratorManager.currentProjectProposal}" value="#{object}" />
+                                target="#{proponentManager.currentProjectProposal}" value="#{object}" />
                         </h:commandLink>
                         &nbsp;
                         <h:commandLink value="Remover"
-                                       actionListener="#{administratorManager.removeProjectProposal}">
+                                       actionListener="#{proponentManager.removeProjectProposal}">
                             <f:param name="projectProposalCode" id="projectProposalCode"
                                      value="#{object.code}" />
                         </h:commandLink>
@@ -45,9 +45,9 @@
 
             <h:outputLink class="btn btn-primary" 
                           value="http://localhost:8080/MasterManager-war/faces/proponent/project_proposals_create.xhtml">
-                          Nova proposta de trabalho
+                Nova proposta de trabalho
             </h:outputLink>
-            
+
             <h:form>
                 <h:outputLabel for="search" value="Procurar proposta: " />
                 <h:inputText 
@@ -55,17 +55,19 @@
                     size="20"
                     required="true"
                     requiredMessage="Erro: campo não pode estar vazio!"
-                    value="#{administratorManager.searchableProjectProposal}"/>
+                    value="#{proponentManager.searchableProjectProposal}"/>
 
                 <br></br>
 
                 <h:commandButton
                     id="searchProjectProposal"
                     value="Procurar"
-                    action="#{administratorManager.redirect('search')}" />    
+                    action="#{proponentManager.redirect('search')}" />    
                 <h:message for="searchProjectProposal" style="color: red" />   
 
             </h:form> 
+
+
         </ui:define>
     </ui:composition>
 </html>

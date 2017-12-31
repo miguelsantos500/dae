@@ -13,19 +13,21 @@
                 <h:outputLabel for="code" value="Código: " />
                 <h:outputText 
                     id="code"
-                    value="#{administratorManager.currentProjectProposal.code}"/>
+                    value="#{proponentManager.currentProjectProposal.code}"/>
                 <br></br>
                 
                  <h:outputLabel for="projectType" value="Tipo de projecto: " />
                 <h:selectOneMenu
                     id="projectType"
-                    value="#{administratorManager.currentProjectProposal.projectTypeString}" >
+                    value="#{proponentManager.currentProjectProposal.projectTypeString}" >
                     <f:selectItems
-                        value="#{administratorManager.allProjectTypes}"
+                        value="#{proponentManager.allProjectTypes}"
                         var="projectType"
                         itemValue="#{projectType}"
                         itemLabel="#{projectType}" />
                 </h:selectOneMenu>
+                 
+                 <br></br>
 
                 <h:outputLabel for="title" value="Título: " />
                 <h:inputText 
@@ -33,7 +35,7 @@
                     size="52"
                     required="true"
                     requiredMessage="Error: Name cannot be empty."                            
-                    value="#{administratorManager.currentProjectProposal.title}" />
+                    value="#{proponentManager.currentProjectProposal.title}" />
                 <h:message for="title" errorStyle="color: red" />
 
                 <h:outputLabel for="proponent" value="Proponente: " />
@@ -42,7 +44,7 @@
                     size="52"
                     required="true"
                     requiredMessage="Error: Proponente cannot be empty."                            
-                    value="#{administratorManager.currentProjectProposal.proponent.name}" >
+                    value="#{proponentManager.currentProjectProposal.proponentUsername}" >
                 </h:inputText>    
                 <h:message for="proponent" errorStyle="color: red" />
 
@@ -52,7 +54,7 @@
                     size="52"
                     required="true"
                     requiredMessage="Error: Abstract cannot be empty."                            
-                    value="#{administratorManager.currentProjectProposal.projectAbstract}" >
+                    value="#{proponentManager.currentProjectProposal.projectAbstract}" >
                 </h:inputText>    
                 <h:message for="projectAbstract" errorStyle="color: red" />
                 
@@ -62,7 +64,7 @@
                     size="52"
                     required="true"
                     requiredMessage="Error: Plano de trabalho cannot be empty."                            
-                    value="#{administratorManager.currentProjectProposal.workPlan}" >
+                    value="#{proponentManager.currentProjectProposal.workPlan}" >
                 </h:inputText>    
                 <h:message for="workPlan" errorStyle="color: red" />
                 
@@ -72,7 +74,7 @@
                     size="52"
                     required="true"
                     requiredMessage="Error: Local de trabalho cannot be empty."                            
-                    value="#{administratorManager.currentProjectProposal.workPlace}" >
+                    value="#{proponentManager.currentProjectProposal.workPlace}" >
                 </h:inputText>    
                 <h:message for="workPlace" errorStyle="color: red" />
                 
@@ -83,7 +85,7 @@
                 <h:commandButton
                     id="submit"
                     value="Update"
-                    action="#{administratorManager.updateProjectProposal}" />
+                    action="#{proponentManager.updateProjectProposal}" />
                 <h:message for="submit" style="color: red"/>
             </h:panelGrid>  
 
