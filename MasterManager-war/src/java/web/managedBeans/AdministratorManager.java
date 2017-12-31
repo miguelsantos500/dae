@@ -336,7 +336,7 @@ public class AdministratorManager {
     }
 
     ////////////////////////////////////// PROJECT PROPOSAL /////////////////////////////////////////////////
-    public String createProjectProposal() {
+    public void createProjectProposal() throws IOException {
 
         try {
 
@@ -356,17 +356,16 @@ public class AdministratorManager {
                     newProjectProposal.getBudget(),
                     newProjectProposal.getSupports());
 
+            if (userManager.isUserInRole(UserGroup.GROUP.Teacher)) {
+                redirect("teacher_index");
+            }
+            redirect("institution_index");
+
         } catch (EntityAlreadyExistsException | EntityDoesNotExistException
                 | MyConstraintViolationException e) {
             FacesExceptionHandler.handleException(e, "Error Creating Project Proposal!",
                     component, logger);
-            return null;
         }
-        if (userManager.isUserInRole(UserGroup.GROUP.Teacher)) {
-            return "teacher_index?faces-redirect=true";
-        }
-
-        return "institution_index?faces-redirect=true";
 
     }
 
@@ -435,23 +434,21 @@ public class AdministratorManager {
 
     }
 
-    public String updateProjectProposal() {
+    public void updateProjectProposal() throws IOException {
         try {
             client.target(baseUri)
                     .path("projectProposals/update")
                     .request(MediaType.APPLICATION_XML)
                     .put(Entity.xml(currentProjectProposal));
 
+            if (userManager.isUserInRole(UserGroup.GROUP.Teacher)) {
+                redirect("teacher_index");
+            }
+            redirect("institution_index");
+
         } catch (Exception e) {
             FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
-            return null;
         }
-
-        if (userManager.isUserInRole(UserGroup.GROUP.Teacher)) {
-            return "teacher_index?faces-redirect=true";
-        }
-
-        return "institution_index?faces-redirect=true";
 
     }
 
@@ -485,6 +482,14 @@ public class AdministratorManager {
         if ("search".equals(to)) {
             ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
             externalContext.redirect("http://localhost:8080/MasterManager-war/faces/proponent/search_project_proposal.xhtml");
+        }
+        if ("teacher_index".equals(to)) {
+            ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+            externalContext.redirect("http://localhost:8080/MasterManager-war/faces/teacher/teacher_index.xhtml");
+        }
+        if ("institution_index".equals(to)) {
+            ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+            externalContext.redirect("http://localhost:8080/MasterManager-war/faces/instituition/institution_index.xhtml");
         }
     }
 
