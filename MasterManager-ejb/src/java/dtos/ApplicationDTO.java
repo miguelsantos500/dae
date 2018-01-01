@@ -27,6 +27,10 @@ public class ApplicationDTO implements Serializable {
     private String certificateName;
     private String presentationLetterName;
     
+    private String cvPath;
+    private String certificatePath;
+    private String presentationLetterPath;
+    
 
     public ApplicationDTO() {
     }
@@ -38,6 +42,9 @@ public class ApplicationDTO implements Serializable {
             String cvName,
             String certificateName,
             String presentationLetterName,
+            String cvPath,
+            String certificatePath,
+            String presentationLetterPath,
             String studentName) {
         this.id = id;
         this.student = student;
@@ -47,8 +54,13 @@ public class ApplicationDTO implements Serializable {
         this.applicationState = applicationState;
         /*this.documentName= documentName;*/
         this.cvName = cvName;
-        this.certificateName =certificateName;
+        this.certificateName = certificateName;
         this.presentationLetterName = presentationLetterName;
+        
+        this.cvPath = cvPath;
+        this.certificatePath = certificatePath;
+        this.presentationLetterPath = presentationLetterPath;
+        
         this.studentName = studentName;
     }
 
@@ -149,6 +161,32 @@ public class ApplicationDTO implements Serializable {
     public void setPresentationLetterName(String presentationLetterName) {
         this.presentationLetterName = presentationLetterName;
     }
+
+    public String getCvPath() {
+        return cvPath;
+    }
+
+    public void setCvPath(String cvPath) {
+        this.cvPath = cvPath;
+    }
+
+    public String getCertificatePath() {
+        return certificatePath;
+    }
+
+    public void setCertificatePath(String certificatePath) {
+        this.certificatePath = certificatePath;
+    }
+
+    public String getPresentationLetterPath() {
+        return presentationLetterPath;
+    }
+
+    public void setPresentationLetterPath(String presentationLetterPath) {
+        this.presentationLetterPath = presentationLetterPath;
+    }
+    
+    
     
     
     

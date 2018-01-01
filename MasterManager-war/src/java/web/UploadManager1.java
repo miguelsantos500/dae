@@ -78,8 +78,8 @@ public class UploadManager1 {
         uploadSpecificFile(this.filePresentationLetter);
         uploadSpecificFile(this.fileCertificate);
     }
-    
-        private void uploadSpecificFile(UploadedFile specificFile) {
+
+    public void uploadSpecificFile(UploadedFile specificFile) {
 
         if (specificFile.getSize() != 0) {
             try {
@@ -114,10 +114,11 @@ public class UploadManager1 {
             FacesContext.getCurrentInstance().addMessage(null, message);
         }
     }
-    
 
     public void resetFilesArray() {
         files.clear();
+        completePathFiles.clear();
+        filenames.clear();
     }
 
     public List<UploadedFile> getFiles() {
@@ -139,7 +140,7 @@ public class UploadManager1 {
     }
 
     public UploadedFile getFile(int index) {
-        if (files.size() < index) {
+        if (files.size() <= index) {
             return null;
         }
         return files.get(index);
@@ -196,7 +197,5 @@ public class UploadManager1 {
     public void setFileCertificate(UploadedFile fileCertificate) {
         this.fileCertificate = fileCertificate;
     }
-
-
 
 }

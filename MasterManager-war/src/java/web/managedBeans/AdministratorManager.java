@@ -852,13 +852,6 @@ public class AdministratorManager {
         int code = Integer.parseInt(param.getValue().toString());
 
         try {
-            /*
-            DocumentDTO document = new DocumentDTO(uploadManager.getCompletePathFile(),
-                    uploadManager.getFilename(),
-                    uploadManager.getFile().getContentType());
-             */
-
-            ///////////////////////////////////////////////////////***gerar array de documentos para passar
             List<DocumentDTO> documents = new LinkedList<>();
 
             List<UploadedFile> files = uploadManager1.getFiles();
@@ -870,15 +863,6 @@ public class AdministratorManager {
                         files.get(i).getContentType()
                 ));
             }
-
-            /*
-            for(UploadedFile f: uploadManager1.getFiles()){
-                documents.add(new DocumentDTO(uploadManager1.getCompletePathFile(),
-                                uploadManager1.getFilename(),
-                                f.getContentType()));
-            }
-             */
-            ///////////////////////////////////////////////////////////////////*******
             //cria a candidatura e reeber o id gerado automaticamente
             Long applicationId = applicationBean.create(
                     username,
