@@ -55,6 +55,7 @@ public class ApplicationBean {
     @EJB
     private ProjectBean projectBean;
 
+
     //recebe o username e o code do projectProposal e depois transforma em student e em projectProposal
     public Long create(String username, int code, String message) throws
             EntityDoesNotExistException, ApplicationNumberException, ApplicationStateException {
@@ -356,7 +357,9 @@ public class ApplicationBean {
             rejectApplications(projectProposal.getCode());
 
             projectBean.create(projectProposal, application.getStudent());
-
+            
+            //emailBean.send(application.getStudent().getEmail(), "TESTE", "TESTE");
+            
         } catch (Exception e) {
             throw new EJBException(e.getMessage());
         }

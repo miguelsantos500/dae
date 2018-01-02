@@ -26,6 +26,8 @@ public class EmailBean {
 
         LOGGER.log(Level.INFO, "Sending email to {0}, subject: {1}, text: {2}", 
                 new Object[]{to, subject, text});
+        LOGGER.log(Level.INFO, "PROPERTIES: {0}", 
+                new Object[]{mailSession.getProperties()});
         
         try {
             // Adjust the recipients. Here we have only one recipient.

@@ -12,6 +12,7 @@ import dtos.PublicTestDTO;
 import dtos.StudentDTO;
 import dtos.TeacherDTO;
 import ejbs.ApplicationBean;
+import ejbs.EmailBean;
 import ejbs.ObservationBean;
 import ejbs.ProjectProposalBean;
 import ejbs.PublicTestBean;
@@ -85,7 +86,9 @@ public class AdministratorManager {
     private ApplicationBean applicationBean;
     @EJB
     private ObservationBean observationBean;
-
+    @EJB
+    private EmailBean emailBean;
+    
     /**
      * ** newObjects ***
      */
@@ -971,7 +974,8 @@ public class AdministratorManager {
             String id = param.getValue().toString();
 
             applicationBean.approveApplication(Long.parseLong(id));
-            //todo - mudar isto - nao sei quem aprova a candidatura   
+            emailBean.send("dae.master.manager@gmail.com", "TESTE", "TESTE");
+            
         } catch (Exception e) {
             FacesExceptionHandler.handleException(e, "Erro inesperado, tente mais tarde.", logger);
         }
