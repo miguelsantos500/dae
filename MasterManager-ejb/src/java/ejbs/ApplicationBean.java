@@ -54,6 +54,8 @@ public class ApplicationBean {
     private ProjectProposalBean projectProposalBean;
     @EJB
     private ProjectBean projectBean;
+    @EJB
+    private EmailBean emailBean;
 
 
     //recebe o username e o code do projectProposal e depois transforma em student e em projectProposal
@@ -358,7 +360,12 @@ public class ApplicationBean {
 
             projectBean.create(projectProposal, application.getStudent());
             
-            //emailBean.send(application.getStudent().getEmail(), "TESTE", "TESTE");
+            emailBean.send(application.getStudent().getEmail(), "Candidatura", 
+                    "A sua candidatura para o projeto " + projectProposal.getTitle() +
+                    " foi aceite.\n\nBom Trabalho!");
+            emailBean.send(projectProposal.getProponent().getEmail(), "Proposta de Trabalho", 
+                    "O estudante " + application.getStudent().getEmail() + " foi aceite para "
+                            + "realizar a sua proposta de trabalho.");
             
         } catch (Exception e) {
             throw new EJBException(e.getMessage());

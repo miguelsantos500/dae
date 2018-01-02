@@ -86,8 +86,6 @@ public class AdministratorManager {
     private ApplicationBean applicationBean;
     @EJB
     private ObservationBean observationBean;
-    @EJB
-    private EmailBean emailBean;
     
     /**
      * ** newObjects ***
@@ -974,8 +972,6 @@ public class AdministratorManager {
             String id = param.getValue().toString();
 
             applicationBean.approveApplication(Long.parseLong(id));
-            emailBean.send("dae.master.manager@gmail.com", "TESTE", "TESTE");
-            
         } catch (Exception e) {
             FacesExceptionHandler.handleException(e, "Erro inesperado, tente mais tarde.", logger);
         }
