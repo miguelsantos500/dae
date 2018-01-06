@@ -5,6 +5,7 @@ import ejbs.users.CourseBean;
 import ejbs.users.InstitutionBean;
 import ejbs.users.StudentBean;
 import ejbs.users.TeacherBean;
+import entities.project.ProjectProposalState;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -140,6 +141,23 @@ public class ConfigBean {
                     new LinkedList<>(Arrays.asList("Pass", "Have more than 12")),
                     "Literaly Zero Euros",
                     new LinkedList<>(Arrays.asList("Mum", "Pops")));
+            
+            projectProposalBean.create(8, "PROJECT", "Projecto Finalizado 1",
+                    new LinkedList<>(Arrays.asList("Programming", "Management")),
+                    "3243245", "Resumo finalizado 1",
+                    new LinkedList<>(Arrays.asList("Ter boa nota")),
+                    new ArrayList<>(Arrays.asList("Wikipedia", "Google")),
+                    "Do it the day before", "ESTG",
+                    new LinkedList<>(Arrays.asList("Passar")),
+                    "Literaly Zero Euros",
+                    new LinkedList<>(Arrays.asList("João")));
+            
+            
+            projectProposalBean.updateProjectProposalState(8, ProjectProposalState.FINISHED);
+            
+            
+            
+            
 
             
             applicationBean.create("s1", 1, "Quero ser estudante.");
