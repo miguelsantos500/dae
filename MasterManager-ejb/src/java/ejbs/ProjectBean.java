@@ -8,6 +8,7 @@ package ejbs;
 import entities.project.Project;
 import entities.project.ProjectProposal;
 import entities.users.Student;
+import entities.users.Teacher;
 import exceptions.EntityAlreadyExistsException;
 import exceptions.EntityDoesNotExistException;
 import exceptions.MyConstraintViolationException;
@@ -30,12 +31,20 @@ public class ProjectBean {
     @PersistenceContext
     private EntityManager em;
     
-    public void create(ProjectProposal projectProposal, Student student)
+    public void create(ProjectProposal projectProposal, Student student, 
+            String proponentUsername )
             throws EntityAlreadyExistsException,
             EntityDoesNotExistException, MyConstraintViolationException {
         try {
             Project project = new Project(projectProposal, student);
             em.persist(project);
+            
+            Teacher teacher = em.find(Teacher.class, proponentUsername);
+            if (teacher != null){
+                project.addTeacher(teacher);
+                teacher.setProject(project);
+                em.merge(teacher);
+            }
             student.setProject(project);
             em.merge(student);
         } catch (ConstraintViolationException e) {

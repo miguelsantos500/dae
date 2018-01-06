@@ -358,7 +358,8 @@ public class ApplicationBean {
 
             rejectApplications(projectProposal.getCode());
 
-            projectBean.create(projectProposal, application.getStudent());
+            projectBean.create(projectProposal, application.getStudent(), 
+                    projectProposal.getProponent().getUsername());
             
             emailBean.send(application.getStudent().getEmail(), "Candidatura", 
                     "A sua candidatura para o projeto " + projectProposal.getTitle() +

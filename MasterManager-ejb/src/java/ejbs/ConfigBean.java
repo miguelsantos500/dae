@@ -53,7 +53,7 @@ public class ConfigBean {
             courseBean.create(5, "MEI-CM");
             courseBean.create(6, "MGSIM");
 
-            studentBean.create("s1", "s1", "s1", "dae.master.manager@gmail.com", 1);
+            studentBean.create("s1", "s1", "s1", "dae.ei.ipleiria@gmail.com", 1);
             studentBean.create("1111111", "Manuel", "Manuel", "dae.ei.ipleiria@gmail.com", 1);
             studentBean.create("2222222", "Antonio", "Antonio", "dae.ei.ipleiria@gmail.com", 1);
             studentBean.create("3333333", "Ana", "Ana", "dae.ei.ipleiria@gmail.com", 2);

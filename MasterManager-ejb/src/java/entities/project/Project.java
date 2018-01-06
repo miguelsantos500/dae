@@ -97,5 +97,13 @@ public class Project implements Serializable {
     public void setStudent(Student student) {
         this.student = student;
     }
+    
+    public void addTeacher(Teacher teacher) {
+        this.teachers.add(teacher);
+    }
+    
+    public void removeTeacher(Teacher teacher) {
+        this.teachers.remove(teacher);
+    }
 
 }
