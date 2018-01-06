@@ -72,7 +72,7 @@ public class CCPUserBean {
             CCPUser ccpuser = em.find(CCPUser.class, username);
             if (ccpuser == null) {
                 throw new EntityDoesNotExistException(
-                        "Não existe um utilizador CCP com esse username");
+                        "There is no CCP user with thar username");
             }
 
             em.remove(ccpuser);
@@ -83,7 +83,7 @@ public class CCPUserBean {
             throw new EJBException(e.getMessage());
         }
     }
-    
+
     public boolean isCCPUser(String email) {
         try {
             List<CCPUser> ccpUsers = em.createNamedQuery("getAllCCPUsers").getResultList();
@@ -92,7 +92,7 @@ public class CCPUserBean {
                     return true;
                 }
             }
-            
+
             return false;
         } catch (Exception e) {
             throw new EJBException(e.getMessage());

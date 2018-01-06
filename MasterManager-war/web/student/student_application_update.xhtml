@@ -7,7 +7,7 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:em="http://xmlns.jcp.org/jsf/composite/emcomp">
     <h:head>
-        <title>CCP</title>
+        <title>Actualizar Candidatura</title>
     </h:head>
     <h:body>          
         <h:panelGrid columns="2">
@@ -37,23 +37,23 @@
                 id="projectProposalAbstract"
                 value="#{studentManager.currentApplication.projectProposal.projectAbstract}"/>
 
-            <h:outputLabel for="projectProposalWorkPlan" value="WorkPlan: " />
+            <h:outputLabel for="projectProposalWorkPlan" value="Plano de Trabalho: " />
             <h:outputText 
                 id="projectProposalWorkPlan"
                 value="#{studentManager.currentApplication.projectProposal.workPlan}"/>
 
-            <h:outputLabel for="projectProposalWorkPlace" value="WorkPlace: " />
+            <h:outputLabel for="projectProposalWorkPlace" value="Local de Trabalho: " />
             <h:outputText 
                 id="projectProposalWorkPlace"
                 value="#{studentManager.currentApplication.projectProposal.workPlace}"/>
 
 
-            <h:outputLabel for="projectProposalBudget" value="Budget: " />
+            <h:outputLabel for="projectProposalBudget" value="Orçamento: " />
             <h:outputText 
                 id="projectProposalBudget"
                 value="#{studentManager.currentApplication.projectProposal.budget}"/>
 
-            <h:outputLabel for="projectProposalProponent" value="ProponentUsername " />
+            <h:outputLabel for="projectProposalProponent" value="Username do Proponente:" />
             <h:outputText 
                 id="projectProposalProponent"
                 value="#{studentManager.currentApplication.projectProposal.proponent.name}"/>
@@ -68,7 +68,7 @@
                     id="message"
                     size="52"
                     required="true"
-                    requiredMessage="Error: A mensagem não pode estar vazia."                            
+                    requiredMessage="Erro: A Mensagem não pode estar vazia."                            
                     value="#{studentManager.currentApplication.applyingMessage}" >
                 </h:inputText>    
                 <h:message for="message" errorStyle="color: red" />
@@ -84,7 +84,7 @@
                 <br></br>
 
                 <h:outputLabel for="newCv" value="Anexar Currículo" id="lblFileCV"/>
-                <p:fileUpload value="#{uploadManager1.fileCv}" mode="simple" skinSimple="true" id="fuCV"/>
+                <p:fileUpload value="#{uploadManager.fileCv}" mode="simple" skinSimple="true" id="fuCV"/>
                 <p:growl id="newCv" showDetail="true" />
 
                 <br></br>
@@ -100,7 +100,7 @@
                 <br></br>
 
                 <h:outputLabel for="newPresentationLetter" value="Anexar Carta de Apresentação" id="lblFilePL"/>
-                <p:fileUpload value="#{uploadManager1.filePresentationLetter}" mode="simple" skinSimple="true" id="fuPL"/>
+                <p:fileUpload value="#{uploadManager.filePresentationLetter}" mode="simple" skinSimple="true" id="fuPL"/>
                 <p:growl id="newPresentationLetter" showDetail="true" />
 
                 <br></br>
@@ -116,7 +116,7 @@
                 <br></br>
 
                 <h:outputLabel for="newCertificate" value="Anexar Certificado"  id="lblFileCert"/>
-                <p:fileUpload value="#{uploadManager1.fileCertificate}" mode="simple" skinSimple="true" id="fuCert"/>
+                <p:fileUpload value="#{uploadManager.fileCertificate}" mode="simple" skinSimple="true" id="fuCert"/>
                 <p:growl id="newCertificate" showDetail="true" />
 
                 <br></br>

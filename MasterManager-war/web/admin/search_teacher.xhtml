@@ -7,14 +7,14 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:em="http://xmlns.jcp.org/jsf/composite/emcomp">
     <ui:composition template="../templates/skeleton.xhtml">
-        <ui:define name="title">CCP</ui:define>
+        <ui:define name="title">Procurar Professor</ui:define>
         <ui:define name="main">
             <em:dt 
                 title="Professores encontrados" 
                headers="#{['Username', 'Nome', 'Email']}"
                 props="#{['username', 'name', 'email']}"
                 list="#{administratorManager.searchTeacher}">
-                <p:column headerText="Actions">
+                <p:column headerText="Acções">
                     <h:form>
                         <h:commandLink value="Detalhes" action="teacher_details?facesredirect=true">
                             <f:setPropertyActionListener

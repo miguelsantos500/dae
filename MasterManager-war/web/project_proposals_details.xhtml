@@ -9,18 +9,18 @@
     <h:body>
 
         <ui:composition template="./templates/skeleton.xhtml">
-            <ui:define name="title">CCP</ui:define>
+            <ui:define name="title">Detalhes da Proposta de Projecto</ui:define>
             <ui:define name="main">
 
 
                 <h:panelGrid columns="2">
 
-                    <h:outputLabel for="code" value="Code: " />
+                    <h:outputLabel for="code" value="Código " />
                     <h:outputText 
                         id="code"
                         value="#{administratorManager.currentProjectProposal.code}"/>
 
-                    <h:outputLabel for="projectType" value="ProjectType: " />
+                    <h:outputLabel for="projectType" value="Tipo de Proposta: " />
                     <h:outputText 
                         id="projectType"
                         value="#{administratorManager.currentProjectProposal.projectTypeString}"/>
@@ -30,28 +30,28 @@
                         id="title"
                         value="#{administratorManager.currentProjectProposal.title}"/>
 
-                    <h:outputLabel for="projectAbstract" value="ProjectAbstract: " />
+                    <h:outputLabel for="projectAbstract" value="Abstract: " />
                     <h:outputText 
                         id="projectAbstract"
                         value="#{administratorManager.currentProjectProposal.projectAbstract}"/>
 
-                    <h:outputLabel for="workPlan" value="WorkPlan: " />
+                    <h:outputLabel for="workPlan" value="Plano de Trabalho: " />
                     <h:outputText 
                         id="workPlan"
                         value="#{administratorManager.currentProjectProposal.workPlan}"/>
 
-                    <h:outputLabel for="workPlace" value="WorkPlace: " />
+                    <h:outputLabel for="workPlace" value="Local de trabalho: " />
                     <h:outputText 
                         id="workPlace"
                         value="#{administratorManager.currentProjectProposal.workPlace}"/>
 
 
-                    <h:outputLabel for="budget" value="Budget: " />
+                    <h:outputLabel for="budget" value="Orçamento: " />
                     <h:outputText 
                         id="budget"
                         value="#{administratorManager.currentProjectProposal.budget}"/>
 
-                    <h:outputLabel for="proponent" value="ProponentUsername " />
+                    <h:outputLabel for="proponent" value="Username do proponente: " />
                     <h:outputText 
                         id="proponent"
                         value="#{administratorManager.currentProjectProposal.proponentUsername}"/>

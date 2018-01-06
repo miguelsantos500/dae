@@ -19,7 +19,7 @@ public class ApplicationDTO implements Serializable {
     private Student student;
     private ProjectProposal projectProposal;
     private String applyingMessage;
-    //private String documentName;
+    
     private int projectProposalCode;
     private ApplicationState applicationState;
     private String studentName;
@@ -37,8 +37,7 @@ public class ApplicationDTO implements Serializable {
 
     public ApplicationDTO(Long id, int projectProposalCode, Student student, 
             ProjectProposal projectProposal, String applyingMessage,
-            ApplicationState applicationState, 
-           /* String documentName, */
+            ApplicationState applicationState,
             String cvName,
             String certificateName,
             String presentationLetterName,
@@ -52,7 +51,6 @@ public class ApplicationDTO implements Serializable {
         this.applyingMessage = applyingMessage;
         this.projectProposalCode = projectProposal.getCode();
         this.applicationState = applicationState;
-        /*this.documentName= documentName;*/
         this.cvName = cvName;
         this.certificateName = certificateName;
         this.presentationLetterName = presentationLetterName;
@@ -71,7 +69,6 @@ public class ApplicationDTO implements Serializable {
         this.projectProposalCode=0;
         applyingMessage = null;
         this.applicationState=null;
-       /* this.documentName = null;*/
        this.cvName = null;
         this.certificateName =null;
         this.presentationLetterName = null;

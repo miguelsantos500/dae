@@ -57,7 +57,6 @@ public class ApplicationBean {
     @EJB
     private EmailBean emailBean;
 
-
     //recebe o username e o code do projectProposal e depois transforma em student e em projectProposal
     public Long create(String username, int code, String message) throws
             EntityDoesNotExistException, ApplicationNumberException, ApplicationStateException {
@@ -83,11 +82,8 @@ public class ApplicationBean {
                 for (Application a : studentApplications) {
 
                     if (verifyApplicationStateAccepted(a.getId())) {
-                        //mensagem a informar o estudante que já tem uma candidatura aceite
-                        //todo - por isto no manager
-                        // FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ja tem uma candidatura atribuida", 
-                        //        "candidaturas"));
-                        throw new ApplicationStateException("Já tem uma candidatura aceite");
+
+                        throw new ApplicationStateException("There is already an accepted application.");
 
                     }
 
@@ -102,7 +98,9 @@ public class ApplicationBean {
                 newid = application.getId();
 
             } else {
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ja tem o num max de candidaturas", "candidaturas"));
+
+                throw new ApplicationNumberException("This student had achived "
+                        + "the maximum number of applications: 5.");
 
             }
         } catch (ApplicationStateException | EntityDoesNotExistException e) {
@@ -126,14 +124,11 @@ public class ApplicationBean {
             Application application = em.find(Application.class, id);
 
             if (application == null) {
-                throw new EntityDoesNotExistException("Não existe nenhuma candidatura com esse id.");
+                throw new EntityDoesNotExistException("There is no application with that id!");
             }
 
             EntitieGeneric<Application> generic = new EntitieGeneric<>(application);
-            /*  Document document = new Document(doc.getFilepath(), doc.getDesiredName(),
-                    doc.getMimeType(), generic);*/
 
-            //////////////////////////////////////////////////EXPERIENCIA
             //cria a lista de documentos a persistir na bd
             List<Document> documents = new LinkedList<>();
             for (DocumentDTO d : docs) {
@@ -151,10 +146,7 @@ public class ApplicationBean {
             //application.mappDocumentTypes();
 
             em.merge(application);
-            ////////////////////////////////////////////////////////FIM EXPERIENCIA
 
-            // em.persist(document);
-            // application.setFileRecord(document);
         } catch (EntityDoesNotExistException e) {
             throw e;
         } catch (Exception e) {
@@ -177,8 +169,7 @@ public class ApplicationBean {
 
             if (applications.isEmpty()) {
 
-                //todo - mensagem a dizer que não há candidaturas para aquele estudante
-                throw new ApplicationNumberException("Não tem candidaturas.");
+                throw new ApplicationNumberException("There are no applications for this student.");
             }
 
             return applicationsToDTOs(applications);
@@ -194,23 +185,26 @@ public class ApplicationBean {
     @PUT
     @Path("/update")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void update(ApplicationDTO applicationDTO) throws MyConstraintViolationException, EntityDoesNotExistException {
+    public void update(ApplicationDTO applicationDTO) throws MyConstraintViolationException,
+            EntityDoesNotExistException, ApplicationStateException {
 
         try {
             Application application = em.find(Application.class, applicationDTO.getId());
 
             if (application == null) {
                 throw new EntityDoesNotExistException(
-                        "Não existe uma candidatura com o id: "
+                        "There is no application with id: "
                         + applicationDTO.getId());
             }
 
             if (verifyApplicationStateAccepted(application.getId())) {
-                //nao pode actualizar uma candidatua que ja esta validada
-                return;
+
+                throw new ApplicationStateException("Uma candidatura aceite não pode ser editada!");
+
             } else if (verifyApplicationStateNotAccepted(application.getId())) {
-                //nao pode actualizar uma candidatura recusada
-                return;
+
+                throw new ApplicationStateException("Uma candidatura recusada não pode ser editada!");
+
             }
 
             application.setApplyingMessage(applicationDTO.getApplyingMessage());
@@ -218,20 +212,26 @@ public class ApplicationBean {
             em.merge(application);
 
         } catch (EntityDoesNotExistException e) {
+
             throw e;
+
         } catch (ConstraintViolationException e) {
+
             throw new MyConstraintViolationException(
                     Utils.getConstraintViolationMessages(e));
+
         } catch (Exception e) {
+
             throw new EJBException(e.getMessage());
+
         }
     }
-    
-    public void update(ApplicationDTO applicationDTO, DocumentDTO[] documents) 
-            throws MyConstraintViolationException, EntityDoesNotExistException {
-        
+
+    public void update(ApplicationDTO applicationDTO, DocumentDTO[] documents)
+            throws MyConstraintViolationException, EntityDoesNotExistException, ApplicationStateException {
+
         update(applicationDTO);
-        
+
         try {
             Application application = em.find(Application.class, applicationDTO.getId());
 
@@ -240,27 +240,31 @@ public class ApplicationBean {
                         "Não existe uma candidatura com o id: "
                         + applicationDTO.getId());
             }
-            
+
             List<Document> fileRecords = application.getFileRecords();
-            
+
+            for (Document d : fileRecords) {
+                em.remove(d);
+            }
+
             List<DocumentDTO> updatedDocuments = new LinkedList<>();
-            
-            for(int i = 0; i< documents.length; i++) {
+
+            for (int i = 0; i < documents.length; i++) {
                 DocumentDTO documentDTO = documents[i];
                 DocumentDTO updatedDocument;
                 Document fileRecord = fileRecords.get(i);
-                if(documentDTO == null){
+                if (documentDTO == null) {
                     updatedDocument = new DocumentDTO(fileRecord.getFilepath(),
                             fileRecord.getDesiredName(), fileRecord.getMimeType());
-                }else{
+                } else {
                     updatedDocument = documentDTO;
                 }
-                
+
                 updatedDocuments.add(updatedDocument);
-                
+
             }
             addFileRecord(String.valueOf(application.getId()), updatedDocuments);
-            
+
         } catch (EntityDoesNotExistException e) {
             throw e;
         } catch (ConstraintViolationException e) {
@@ -283,6 +287,10 @@ public class ApplicationBean {
 
             //removo a candidatura da lista de candidaturas do estudante
             application.getStudent().removeApplication(application);
+
+            for (Document d : application.getFileRecords()) {
+                em.remove(d);
+            }
 
             //apago a candiatura da tabela
             em.remove(application);
@@ -308,14 +316,17 @@ public class ApplicationBean {
                     matchedApplications.add(a);
 
                     //procura por codigo da projectProposal associada à candidatura
-                } else if ((Integer.toString(a.getProjectProposal().getCode())).contains(searchableApplication)) {
+                } else if ((Integer.toString(a.getProjectProposal().getCode()))
+                        .contains(searchableApplication)) {
                     matchedApplications.add(a);
 
                     //procura pelo titulo da proposta de projecto associada à candidatura
-                } else if ((a.getProjectProposal().getTitle().toUpperCase()).contains(searchableApplication.toUpperCase())) {
+                } else if ((a.getProjectProposal().getTitle().toUpperCase())
+                        .contains(searchableApplication.toUpperCase())) {
                     matchedApplications.add(a);
                     //procura pelo tipo de project proposal associado à candidatura
-                } else if ((a.getProjectProposal().getProjectType().toString().toUpperCase()).contains(searchableApplication.toUpperCase())) {
+                } else if ((a.getProjectProposal().getProjectType().toString()
+                        .toUpperCase()).contains(searchableApplication.toUpperCase())) {
                     matchedApplications.add(a);
                 }
 
@@ -327,8 +338,7 @@ public class ApplicationBean {
         }
 
     }
-    
-    
+
     public void approveApplication(Long id) {
         try {
             Application application = em.find(Application.class, id);
@@ -359,25 +369,25 @@ public class ApplicationBean {
 
             rejectApplications(projectProposal.getCode());
 
-            projectBean.create(projectProposal, application.getStudent(), 
+            projectBean.create(projectProposal, application.getStudent(),
                     projectProposal.getProponent().getUsername());
-            
+
             List<Application> aux = new LinkedList<>();
             aux.addAll(application.getStudent().getApplications());
-            
+
             for (Application app : aux) {
                 if (app.getApplicationState().equals(ApplicationState.PENDING)) {
                     remove(String.valueOf(app.getId()));
                 }
             }
-            
-            /*emailBean.send(application.getStudent().getEmail(), "Candidatura", 
-                    "A sua candidatura para o projeto " + projectProposal.getTitle() +
-                    " foi aceite.\n\nBom Trabalho!");
-            emailBean.send(projectProposal.getProponent().getEmail(), "Proposta de Trabalho", 
+
+            emailBean.send(application.getStudent().getEmail(), "Candidatura",
+                    "A sua candidatura para o projeto " + projectProposal.getTitle()
+                    + " foi aceite.\n\nBom Trabalho!");
+            emailBean.send(projectProposal.getProponent().getEmail(), "Proposta de Trabalho",
                     "O estudante " + application.getStudent().getEmail() + " foi aceite para "
-                            + "realizar a sua proposta de trabalho.");*/
-            
+                    + "realizar a sua proposta de trabalho.");
+
         } catch (Exception e) {
             throw new EJBException(e.getMessage());
         }
@@ -423,24 +433,20 @@ public class ApplicationBean {
             Application application = em.find(Application.class, id);
             if (application == null) {
                 throw new EntityDoesNotExistException(
-                        "Não existe nenhuma candidatura com esse id.");
+                        "There is no application with that id.");
             }
 
-            //vai buscar o documento pelo id
-            // Document document = application.getFileByIndex(index);
             //vai buscar o documento pelo id
             Document document = em.find(Document.class, application.getFileByIndex(index).getId());
 
-            //codigo anterior
-            // Document document = em.find(Document.class, application.getFileRecord().getId());
             if (document == null) {
                 throw new EntityDoesNotExistException(
-                        "Não existe nenhum documento com esse código.");
+                        "There is no document with that code.");
             }
 
             application.setFileRecords(null);
-            em.merge(application);
             em.remove(document);
+            em.merge(application);
 
         } catch (EntityDoesNotExistException e) {
             throw e;
@@ -458,7 +464,7 @@ public class ApplicationBean {
             throw new EntityDoesNotExistException();
         }
 
-        //ESTA HARDCODED PARA PODER TESTAS
+        //ESTA HARDCODED PARA PODER TESTAR
         return new DocumentDTO(application.getFileRecords().get(0).getId(), application.getFileRecords().get(0).getFilepath(),
                 application.getFileRecords().get(0).getDesiredName(), application.getFileRecords().get(0).getMimeType());
 
@@ -505,8 +511,6 @@ public class ApplicationBean {
         return statePending;
     }
 
-    /* (Long id, int projectProposalCode, Student student, ProjectProposal projectProposal, String applyingMessage,
-            ApplicationState applicationState, String documentName) */
     public ApplicationDTO applicationToDTO(Application application) {
 
         List<Document> fileRecords = application.getFileRecords();
@@ -515,11 +519,11 @@ public class ApplicationBean {
         String cv = "";
         String presentationLetter = "";
         String certificate = "";
-        
+
         String cvPath = "";
         String presentationLetterPath = "";
         String certificatePath = "";
-        
+
         if (size > 0) {
             cv = fileRecords.get(0).getDesiredName();
             cvPath = fileRecords.get(0).getFilepath();
@@ -540,7 +544,6 @@ public class ApplicationBean {
                 application.getProjectProposal(),
                 application.getApplyingMessage(),
                 application.getApplicationState(),
-                /* application.getFileRecord().getDesiredName(),*/
                 cv,
                 certificate,
                 presentationLetter,

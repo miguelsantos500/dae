@@ -55,7 +55,7 @@ public class ProponentManager {
      * ** currentObjects ***
      */
     private ProjectProposalDTO currentProjectProposal;
-    
+
     /**
      * ***Searchable objects******
      */
@@ -86,7 +86,8 @@ public class ProponentManager {
         try {
 
             projectProposalBean.create(
-                    newProjectProposal.getCode(), newProjectProposal.getProjectTypeString(),
+                    newProjectProposal.getCode(), 
+                    newProjectProposal.getProjectTypeString(),
                     newProjectProposal.getTitle(),
                     newProjectProposal.getScientificAreas(),
                     userManager.getUsername(),
@@ -98,7 +99,7 @@ public class ProponentManager {
                     newProjectProposal.getSuccessRequirements(),
                     newProjectProposal.getBudget(),
                     newProjectProposal.getSupports());
-            
+
             if (userManager.isUserInRole(UserGroup.GROUP.Teacher)) {
                 redirect("teacher_index");
             }
@@ -110,8 +111,7 @@ public class ProponentManager {
                     component, LOGGER);
         }
     }
-    
-    
+
     public List<ProjectProposalDTO> getAllProjectProposals(String path) {
         List<ProjectProposalDTO> returnedProjectProposals = null;
         try {
@@ -128,22 +128,22 @@ public class ProponentManager {
         }
         return returnedProjectProposals;
     }
-    
-    
+
     public void updateProjectProposal() {
         try {
             client.target(baseUri)
                     .path("projectProposals/update")
                     .request(MediaType.APPLICATION_XML)
                     .put(Entity.xml(currentProjectProposal));
-            
+
             if (userManager.isUserInRole(UserGroup.GROUP.Teacher)) {
                 redirect("teacher_index");
             }
             redirect("institution_index");
 
         } catch (Exception e) {
-            FacesExceptionHandler.handleException(e, "Unexpected error! " + e.getMessage(), LOGGER);
+            FacesExceptionHandler.handleException(e, "Unexpected error! " + 
+                    e.getMessage(), LOGGER);
         }
     }
 
@@ -158,21 +158,19 @@ public class ProponentManager {
         }
 
     }
-    
-    
 
     public List<ProjectProposalDTO> getSearchProjectProposal(String condition) {
         try {
-            List<ProjectProposalDTO> foundProjectProposals = projectProposalBean.search(searchableProjectProposal, condition);
+            List<ProjectProposalDTO> foundProjectProposals = 
+                    projectProposalBean.search(searchableProjectProposal, condition);
             return foundProjectProposals;
         } catch (Exception e) {
-            FacesExceptionHandler.handleException(e, 
-                    "Unexpected error on getSearchProjectProposal()! " 
-                            + e.getMessage(), LOGGER);
+            FacesExceptionHandler.handleException(e,
+                    "Unexpected error on getSearchProjectProposal()! "
+                    + e.getMessage(), LOGGER);
             return null;
         }
     }
-    
 
     public void redirect(String to) throws IOException {
         ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();

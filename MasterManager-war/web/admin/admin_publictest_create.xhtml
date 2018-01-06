@@ -5,7 +5,7 @@
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:p="http://primefaces.org/ui">
     <h:head>
-        <title>Create Public Test</title>
+        <title>Criar Prova Pública</title>
     </h:head>
     <h:body>
         <h:form>                  
@@ -92,7 +92,7 @@
                 <br></br>
 
 
-                <h:outputLabel for="outsideTeacherName" value="Nome do professore de fora(Membro do Júri): " />
+                <h:outputLabel for="outsideTeacherName" value="Nome do professor de fora(Membro do Júri): " />
                 <h:inputText
                     id="outsideTeacherName"
                     size="50"
@@ -106,7 +106,7 @@
                     id="outsideTeacherEmail"
                     size="50"
                     required="true"
-                    requiredMessage="Erro: Email do professore de fora não pode estar vazio."
+                    requiredMessage="Erro: Email do professor de fora não pode estar vazio."
                     value="#{administratorManager.newPublicTest.outsideTeacherEmail}">
                     <f:validateRegex pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]" />
                 </h:inputText>

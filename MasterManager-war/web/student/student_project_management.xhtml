@@ -4,7 +4,7 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core">
     <h:head>
-        <title>CCP</title>
+        <title>Gestão do Projecto</title>
     </h:head>
     <h:body>
         <h:form>                  
@@ -12,15 +12,9 @@
 
                <h:outputLabel for="id" value="Id do projecto: " />
                
-               //TODO ISTO TUDO
                     <h:outputText 
                         id="id"
                         value="#{administratorManager.currentApplication.id}"/>
-
-                    <h:outputLabel for="applicationState" value="Estado da candidatura: " />
-                    <h:outputText 
-                        id="applicationState"
-                        value="#{administratorManager.currentApplication.applicationState}"/>
                     
                     <h:outputLabel for="projectProposalCode" value="Código da proposta de projecto: " />
                     <h:outputText 
@@ -37,23 +31,23 @@
                         id="projectProposalAbstract"
                         value="#{administratorManager.currentApplication.projectProposal.projectAbstract}"/>
 
-                    <h:outputLabel for="projectProposalWorkPlan" value="WorkPlan: " />
+                    <h:outputLabel for="projectProposalWorkPlan" value="Plano de Trabalho: " />
                     <h:outputText 
                         id="projectProposalWorkPlan"
                         value="#{administratorManager.currentApplication.projectProposal.workPlan}"/>
 
-                    <h:outputLabel for="projectProposalWorkPlace" value="WorkPlace: " />
+                    <h:outputLabel for="projectProposalWorkPlace" value="Local de Trabalho: " />
                     <h:outputText 
                         id="projectProposalWorkPlace"
                         value="#{administratorManager.currentApplication.projectProposal.workPlace}"/>
 
 
-                    <h:outputLabel for="projectProposalBudget" value="Budget: " />
+                    <h:outputLabel for="projectProposalBudget" value="Orçamento: " />
                     <h:outputText 
                         id="projectProposalBudget"
                         value="#{administratorManager.currentApplication.projectProposal.budget}"/>
 
-                    <h:outputLabel for="projectProposalProponent" value="ProponentUsername " />
+                    <h:outputLabel for="projectProposalProponent" value="Username do Proponente:" />
                     <h:outputText 
                         id="projectProposalProponent"
                         value="#{administratorManager.currentApplication.projectProposal.proponent.name}"/>
@@ -68,14 +62,12 @@
                     id="message"
                     size="52"
                     required="true"
-                    requiredMessage="Error: A mensagem não pode estar vazia."                            
+                    requiredMessage="Erro: A Mensagem não pode estar vazia."                            
                     value="#{administratorManager.currentApplication.applyingMessage}" >
                 </h:inputText>    
                 <h:message for="message" errorStyle="color: red" />
                 
-                <!--MOSTRAR O FICHEIRO ANEXADO ANTES E ANEXAR UM FICHEIRO DIFERENTE -->
                 
-
                 <h:commandButton
                     id="submit"
                     value="Actualizar"

@@ -5,7 +5,7 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://java.sun.com/jsf/core">
     <h:head>
-        <title>Atualizar Prova Publica</title>
+        <title>Atualizar Prova Pública</title>
     </h:head>
     <h:body>
         <h:form>                  
@@ -63,7 +63,7 @@
                     value="#{administratorManager.currentPublicTest.studentName}"/>
                 <br></br>
 
-                <h:outputLabel for="ccp" value="Atual President do Júri(Membro da CCP): " />
+                <h:outputLabel for="ccp" value="Presidente actual do Júri(Membro da CCP): " />
                 <h:outputText 
                     id="ccp"
                     value="#{administratorManager.currentPublicTest.juryPresidentName}"/>
@@ -92,16 +92,16 @@
                     id="outsideTeacherName"
                     size="50"
                     required="true"
-                    requiredMessage="Erro: Professore de fora não pode estar vazio."
+                    requiredMessage="Erro: Professor de fora não pode estar vazio."
                     value="#{administratorManager.currentPublicTest.outsideTeacherName}"/>
                 <h:message for="outsideTeacherName" errorStyle="color: red" />
 
-                <h:outputLabel for="outsideTeacherEmail" value="Email do professore de fora: " />
+                <h:outputLabel for="outsideTeacherEmail" value="Email do professor de fora: " />
                 <h:inputText
                     id="outsideTeacherEmail"
                     size="50"
                     required="true"
-                    requiredMessage="Erro: Email do professore de fora não pode estar vazio."
+                    requiredMessage="Erro: Email do professor de fora não pode estar vazio."
                     value="#{administratorManager.currentPublicTest.outsideTeacherEmail}">
                     <f:validateRegex pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]" />
                 </h:inputText>

@@ -53,17 +53,6 @@ public class Application implements Serializable {
     @OneToMany(mappedBy = "application", cascade = CascadeType.REMOVE)
     private List<Document> fileRecords;
 
-    /*@OneToMany(mappedBy="application", cascade=CascadeType.REMOVE)
-    private Document presentationLetter;
-    
-    @OneToMany(mappedBy="application", cascade=CascadeType.REMOVE)
-    private Document certificate;
-    
-    @OneToMany(mappedBy="application", cascade=CascadeType.REMOVE)
-    private Document cv;*/
- /*   private Document presentationLetter;
-    private Document certificate;
-    private Document cv;*/
     @NotNull
     @Enumerated(STRING)
     private ApplicationState applicationState;
@@ -106,16 +95,6 @@ public class Application implements Serializable {
         this.applyingMessage = applyingMessage;
     }
 
-    /*   public Document getFileRecord() {
-        if (this.fileRecord == null) {
-            return new Document();
-        }
-        return fileRecord;
-    }
-
-    public void setFileRecord(Document fileRecord) {
-        this.fileRecord = fileRecord;
-    }*/
     public Long getId() {
         return id;
     }
