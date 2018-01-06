@@ -63,17 +63,23 @@ public class ConfigBean {
             studentBean.create("7777777", "Alzira", "Alzira", "dae.ei.ipleiria@gmail.com", 4);
             studentBean.create("8888888", "Pedro", "Pedro", "dae.ei.ipleiria@gmail.com", 4);
             
-            teacherBean.create("t1", "t1", "t1", "t1.jose.ipleiria@gmail.com");
-            teacherBean.create("3243243", "José", "José", "dae.jose.ipleiria@gmail.com");
-            teacherBean.create("2446546", "Tati", "Tati", "dae.tati.ipleiria@gmail.com");
-            teacherBean.create("9473829", "Marco", "Marco", "dae.marco.ipleiria@gmail.com");
-            teacherBean.create("3243244", "Carlos", "Carlos", "dae.carlos.ipleiria@gmail.com");
-            teacherBean.create("3243245", "Leonel", "Leonel", "dae.leonel.ipleiria@gmail.com");
-            teacherBean.create("3243247", "Ricardo", "Ricardo", "dae.ricardo.ipleiria@gmail.com");
+            teacherBean.create("t1", "t1", "t1", "dae.ei.ipleiria@gmail.com@gmail.com");
+            teacherBean.create("3243243", "José", "José", "dae.ei.ipleiria@gmail.com");
+            teacherBean.create("2446546", "Tati", "Tati", "dae.ei.ipleiria@gmail.com");
+            teacherBean.create("9473829", "Marco", "Marco", "dae.ei.ipleiria@gmail.com");
+            teacherBean.create("3243244", "Carlos", "Carlos", "dae.ei.ipleiria@gmail.com");
+            teacherBean.create("3243245", "Leonel", "Leonel", "dae.ei.ipleiria@gmail.com");
+            teacherBean.create("3243247", "Ricardo", "Ricardo", "dae.ei.ipleiria@gmail.com");
+            
+            institutionBean.create("xxx1", "ESTG", "ESTG", "dae.ei.ipleiria@gmail.com");
+            institutionBean.create("xxx2", "ESECS", "ESECS", "dae.ei.ipleiria@gmail.com");
+            institutionBean.create("xxx3", "ARTES", "ARTES", "dae.ei.ipleiria@gmail.com");
+            institutionBean.create("xxx4", "ENFIM", "ENFIM", "dae.ei.ipleiria@gmail.com");
+            institutionBean.create("xxx5", "INSTITUICAO", "INSTITUICAO", "dae.ei.ipleiria@gmail.com");
 
             projectProposalBean.create(1, "PROJECT", "My First Project",
                     new LinkedList<>(Arrays.asList("Programming", "Management")),
-                    "3243243", "This is my first abstract",
+                    "xxx1", "This is my first abstract",
                     new LinkedList<>(Arrays.asList("Pass", "Have more than 12")),
                     new ArrayList<>(Arrays.asList("Wikipedia", "Google")),
                     "Do it the day before", "My Basement",
@@ -163,13 +169,6 @@ public class ConfigBean {
             publicTestBean.create(3, "Title3", new Date(2000, 1, 1), "Sala zzz", "www.link.com", "3243245", "3243247", "Joao Oliveia", "zzz@gmail.com", "3333333");
             publicTestBean.create(4, "Title4", new Date(2000, 1, 1), "Sala aaa", "www.link.com", "3243247", "3243244", "Ricado Tati", "aaa@gmail.com", "4444444");
 
-            institutionBean.create("xxx1", "ESTG", "ESTG", "estg.ipleiria@ipleiria.pt");
-            institutionBean.create("xxx2", "ESECS", "ESECS", "esecs.ipleiria@ipleiria.pt");
-            institutionBean.create("xxx3", "ARTES", "ARTES", "aartes.ipleiria@ipleiria.pt");
-            institutionBean.create("xxx4", "ENFIM", "ENFIM", "enfim.ipleiria@ipleiria.pt");
-            institutionBean.create("xxx5", "INSTITUICAO", "INSTITUICAO", "instituicao.ipleiria@ipleiria.pt");
-            
-            
             
         } catch (Exception e) {
             e.printStackTrace();
