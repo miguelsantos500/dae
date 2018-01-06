@@ -63,9 +63,15 @@ public class PublicTestBean {
                 throw new EntityDoesNotExistException(
                         "Não existe nenhum estudante com esse username");
             }
-            em.persist(new PublicTest(code, title, testDateTime,
-                    place, link, juryPresident, advisor, outsideTeacherName,
-                    outsideTeacherEmail, student));
+            PublicTest publicTest = new PublicTest(code, title, testDateTime,
+                                    place, link, juryPresident, advisor, outsideTeacherName,
+                                    outsideTeacherEmail, student);
+            em.persist(publicTest);
+            
+            student.setPublicTest(publicTest);
+            em.merge(student);
+            advisor.addPublicTest(publicTest);
+            juryPresident.addPublicTest(publicTest);
         } catch (EntityAlreadyExistsException | EntityDoesNotExistException e) {
             throw e;
         } catch (Exception e) {
@@ -140,6 +146,13 @@ public class PublicTestBean {
                 throw new EntityDoesNotExistException(
                         "Não existe nenhuma prova publica com esse código.");
             }
+            
+            publicTest.getStudent().setPublicTest(null);
+            em.merge(publicTest.getStudent());
+            
+            publicTest.getJuryPresident().removePublicTest(publicTest);
+            publicTest.getAdvisor().removePublicTest(publicTest);
+            
             em.remove(publicTest.getFileRecord());
             em.remove(publicTest);
         } catch (EntityDoesNotExistException e) {
