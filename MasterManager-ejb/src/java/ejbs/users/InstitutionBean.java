@@ -34,7 +34,7 @@ public class InstitutionBean {
         try {
             if (em.find(User.class, username) != null) {
                 throw new EntityAlreadyExistsException(
-                        "Um utilizador já existe com esse username.");
+                        "There is already a user with that username.");
             }
             em.persist(new Institution(username, password, name, email));
         } catch (EntityAlreadyExistsException e) {
@@ -51,7 +51,7 @@ public class InstitutionBean {
             Institution institution = em.find(Institution.class, username);
             if (institution == null) {
                 throw new EntityDoesNotExistException(
-                        "Não existe um utilizador Instituição com esse username");
+                        "There is no Institution with that username.");
             }
             institution.setName(name);
             institution.setEmail(email);
@@ -73,7 +73,7 @@ public class InstitutionBean {
             Institution institution = em.find(Institution.class, username);
             if (institution == null) {
                 throw new EntityDoesNotExistException(
-                        "Não existe um utilizador Instituição com esse username.");
+                        "There is no Institution with that username.");
             }
 
             em.remove(institution);
@@ -90,7 +90,8 @@ public class InstitutionBean {
     @Path("all")
     public List<InstitutionDTO> getAll() {
         try {
-            List<Institution> institutions = em.createNamedQuery("getAllInstitutions").getResultList();
+            List<Institution> institutions = 
+                    em.createNamedQuery("getAllInstitutions").getResultList();
             return institutionsToDTOs(institutions);
         } catch (Exception e) {
             e.printStackTrace();
@@ -119,12 +120,13 @@ public class InstitutionBean {
     @Path("/update")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public void updateInstitution(InstitutionDTO institutionDTO)
-            throws MyConstraintViolationException {
+            throws MyConstraintViolationException, Exception {
 
         try {
             Institution institution = em.find(Institution.class, institutionDTO.getUsername());
             if (institution == null) {
-                //  throw new EntityDoesNotExistsException("There is no student with that username.");
+                  throw new EntityDoesNotExistException("There is no student "
+                          + "with that username.");
             }
 
             institution.setPassword(institutionDTO.getPassword());

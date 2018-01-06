@@ -6,6 +6,7 @@ import entities.users.Teacher;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -36,7 +37,6 @@ public class Project implements Serializable {
     @JoinColumn(name = "PROJECT_PROPOSAL_CODE")
     private ProjectProposal projectProposal;
 
-    //TODO por isto a funcionar!
     private Document articles;
     private Document sourceCode;
     private Document assignment;

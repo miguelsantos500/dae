@@ -4,7 +4,7 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core">
     <h:head>
-        <title>CCP</title>
+        <title>Detalhes do Professor</title>
     </h:head>
     <h:body>
         <h:panelGrid columns="2">
@@ -14,7 +14,7 @@
                 id="username"
                 value="#{administratorManager.currentTeacher.username}"/>
 
-            <h:outputLabel for="name" value="Name: " />
+            <h:outputLabel for="name" value="Nome: " />
             <h:outputText 
                 id="name"
                 value="#{administratorManager.currentTeacher.name}"/>
@@ -30,7 +30,7 @@
 
         <br/>
 
-        <h:link value="Return" outcome="admin_index"/>
+        <h:link value="Voltar" outcome="admin_index"/>
         
         <h:messages errorStyle="color: red" />        
         

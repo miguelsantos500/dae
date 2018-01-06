@@ -6,7 +6,7 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:p="http://primefaces.org/ui">
     <ui:composition template="../templates/skeleton.xhtml">
-        <ui:define name="title">Create Project Proposal</ui:define>
+        <ui:define name="title">Criar Proposta de Projecto</ui:define>
         <ui:define name="main">
 
             <h:form>                    
@@ -21,7 +21,7 @@
                         value="#{proponentManager.newProjectProposal.code}"/>
                     <h:message for="code" errorStyle="color: red" />
 
-                    <h:outputLabel for="projectType" value="Project Types: " />
+                    <h:outputLabel for="projectType" value="Tipos de Projecto: " />
                     <h:selectOneMenu
                         id="projectType"
                         value="#{proponentManager.newProjectProposal.projectTypeString}" >
@@ -89,11 +89,12 @@
                     <h:inputHidden
                         id="inputScientificAreas"
                         required="true"
-                        requiredMessage="Erro: Tem de adicionar pelo menos uma área científica."
+                        requiredMessage="Erro: Tem que adicionar pelo menos uma área científica."
                         value="#{proponentManager.newProjectProposal.scientificAreasString}" />
                     <h:message for="inputScientificAreas" errorStyle="color: red" />      
                 </div >                     
-                <h:button id="addScientificArea" class="btn btn-primary"  value="Adicionar Área Científica" onclick="return false;"/>
+                <h:button id="addScientificArea" class="btn btn-primary"  
+                          value="Adicionar Área Científica" onclick="return false;"/>
                 <br></br>
                 
 
@@ -105,7 +106,8 @@
                         value="#{proponentManager.newProjectProposal.objectivesString}" />
                     <h:message for="inputObjectives" errorStyle="color: red" />      
                 </div >                     
-                <h:button id="addObjective" class="btn btn-primary"  value="Adicionar Objectivo" onclick="return false;"/>
+                <h:button id="addObjective" class="btn btn-primary"  
+                          value="Adicionar Objectivo" onclick="return false;"/>
                 <br></br>
                 
                 

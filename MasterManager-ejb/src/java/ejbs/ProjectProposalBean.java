@@ -66,7 +66,8 @@ public class ProjectProposalBean {
 
         try {
             if (em.find(ProjectProposal.class, code) != null) {
-                throw new EntityAlreadyExistsException("A Project Proposal with that code already exists");
+                throw new EntityAlreadyExistsException("A Project Proposal "
+                        + "with that code already exists");
             }
             //TODO: Mudar para uma nova Interface
             Proponent proponentUser = em.find(Proponent.class, proponentUsername);
@@ -81,8 +82,6 @@ public class ProjectProposalBean {
                     projectAbstract, objectives, bibliography, workPlan, workPlace,
                     successRequirements, budget, supports);
             em.persist(projectProposal);
-            //TODO
-            //proponentUser.addProjectProposal(projectProposal);
         } catch (EntityAlreadyExistsException | EntityDoesNotExistException e) {
             throw e;
         } catch (ConstraintViolationException e) {
@@ -137,9 +136,6 @@ public class ProjectProposalBean {
                 throw new EntityDoesNotExistException("There is no Project Proposal with that code.");
             }
 
-            //TODO
-            //: DO
-            //projectProposal.getProponent().removeProjectProposal(projectProposal);
             em.remove(projectProposal);
 
         } catch (EntityDoesNotExistException e) {
@@ -159,18 +155,18 @@ public class ProjectProposalBean {
             ProjectProposal projectProposal = em.find(ProjectProposal.class, projectProposalDTO.getCode());
             if (projectProposal == null) {
                 throw new EntityDoesNotExistException(
-                        "Não existe uma Proposta de Trabalho com o código: "
+                        "There is no project proposal with code: "
                         + projectProposalDTO.getCode());
             }
 
             Proponent proponent = em.find(Proponent.class, projectProposalDTO.getProponentUsername());
             if (proponent == null) {
                 throw new EntityDoesNotExistException(
-                        "Não existe um Proponente com o Username:"
+                        "There is no proponent with username:"
                         + projectProposalDTO.getProponentUsername());
             }
 
-            //todo: actualizar bibliography e outras listas???, successRequirements, supports, scientificAreas
+            //todo: actualizar bibliography e outras listas, successRequirements, supports, scientificAreas
             ProjectType projectType = ProjectType.valueOf(projectProposalDTO.getProjectTypeString());
             projectProposal.setProjectType(projectType);
             projectProposal.setTitle(projectProposalDTO.getTitle());
@@ -235,12 +231,6 @@ public class ProjectProposalBean {
                         "This Project Proposal is not in state PENDING, ACCEPTED, NOT_ACCEPTED, is in state: "
                         + projectProposal.getProjectProposalState());
             }
-            /*
-            if (projectProposal.getProjectProposalState() == projectProposalState) {
-                throw new ProjectProposalStateNotChangedException(
-                        "There is no change in the Project Proposal State! ("
-                        + projectProposalState + ")");
-            }*/
 
             if (projectProposal.getProjectProposalState() != projectProposalState) {
                 proponentBean.sendEmailToProponent(projectProposal.getProponent().getUsername(),
@@ -251,7 +241,7 @@ public class ProjectProposalBean {
 
             projectProposal.setProjectProposalState(projectProposalState);
 
-        } catch (ProjectProposalNotPendingException /*| ProjectProposalStateNotChangedException*/ e) {
+        } catch (ProjectProposalNotPendingException e) {
             throw e;
         } catch (Exception ex) {
             throw new EJBException(ex.getMessage());

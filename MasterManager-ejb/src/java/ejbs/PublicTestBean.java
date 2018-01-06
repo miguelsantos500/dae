@@ -43,25 +43,25 @@ public class PublicTestBean {
         try {
             if (em.find(PublicTest.class, code) != null) {
                 throw new EntityAlreadyExistsException(
-                        "Uma prova publica já existe com esse código.");
+                        "There is already a public test with that code.");
             }
 
             Teacher juryPresident = em.find(Teacher.class, teacherJuryUsername);
             if (juryPresident == null) {
                 throw new EntityDoesNotExistException(
-                        "Não existe nenhum professore com esse username");
+                        "There is no teacher with that username.");
             }
 
             Teacher advisor = em.find(Teacher.class, advisorUsername);
             if (advisor == null) {
                 throw new EntityDoesNotExistException(
-                        "Não existe nenhum professore com esse username");
+                        "There is no adviser with that username.");
             }
 
             Student student = em.find(Student.class, studentUsername);
             if (student == null) {
                 throw new EntityDoesNotExistException(
-                        "Não existe nenhum estudante com esse username");
+                        "There is no student with that username.");
             }
             em.persist(new PublicTest(code, title, testDateTime,
                     place, link, juryPresident, advisor, outsideTeacherName,
@@ -105,13 +105,13 @@ public class PublicTestBean {
             PublicTest publicTest = em.find(PublicTest.class, code);
             if (publicTest == null) {
                 throw new EntityDoesNotExistException(
-                        "Não existe nenhuma prova publica com esse código.");
+                        "There is no public test with that code.");
             }
 
             Teacher juryPresident = em.find(Teacher.class, teacherJuryUsername);
             if (juryPresident == null) {
                 throw new EntityDoesNotExistException(
-                        "Não existe nenhum professore com esse username.");
+                        "There is no teacher with that username.");
             } else {
                 publicTest.setJuryPresident(juryPresident);
             }
@@ -154,7 +154,8 @@ public class PublicTestBean {
     @Path("all")
     public List<PublicTestDTO> getAll() {
         try {
-            List<PublicTest> publicTests = (List<PublicTest>) em.createNamedQuery("getAllPublicTests").getResultList();
+            List<PublicTest> publicTests = (List<PublicTest>) 
+                    em.createNamedQuery("getAllPublicTests").getResultList();
             return publicTestsToDTOs(publicTests);
         } catch (Exception e) {
             throw new EJBException(e.getMessage());
@@ -166,7 +167,8 @@ public class PublicTestBean {
     @Path("/search/{searchWord}")
     public List<PublicTestDTO> search(@PathParam("searchWord") String searchValue) {
         try {
-            List<PublicTest> publicTests = (List<PublicTest>) em.createNamedQuery("getAllPublicTests").getResultList();
+            List<PublicTest> publicTests = (List<PublicTest>) 
+                    em.createNamedQuery("getAllPublicTests").getResultList();
             List<PublicTest> aux = new LinkedList<>();
             for (PublicTest publicTest : publicTests) {
                 if (Integer.toString(publicTest.getCode()).contains(searchValue)) {
@@ -233,10 +235,12 @@ public class PublicTestBean {
             int code = Integer.parseInt(codeString);
             PublicTest publicTest = em.find(PublicTest.class, code);
             if (publicTest == null) {
-                throw new EntityDoesNotExistException("Não existe nenhuma prova publica com esse código.");
+                throw new EntityDoesNotExistException("Não existe nenhuma prova"
+                        + " publica com esse código.");
             }
             EntitieGeneric<PublicTest> generic = new EntitieGeneric<>(publicTest); 
-            Document document = new Document(doc.getFilepath(), doc.getDesiredName(), doc.getMimeType(), generic);
+            Document document = new Document(doc.getFilepath(), 
+                    doc.getDesiredName(), doc.getMimeType(), generic);
             em.persist(document);
             publicTest.setFileRecord(document);
 
@@ -278,8 +282,10 @@ public class PublicTestBean {
             throw new EntityDoesNotExistException();
         }
 
-        return new DocumentDTO(publicTest.getFileRecord().getId(), publicTest.getFileRecord().getFilepath(),
-                publicTest.getFileRecord().getDesiredName(), publicTest.getFileRecord().getMimeType());
+        return new DocumentDTO(publicTest.getFileRecord().getId(), 
+                publicTest.getFileRecord().getFilepath(),
+                publicTest.getFileRecord().getDesiredName(), 
+                publicTest.getFileRecord().getMimeType());
     }
 
 }

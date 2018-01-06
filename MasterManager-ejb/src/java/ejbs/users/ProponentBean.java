@@ -58,7 +58,7 @@ public class ProponentBean {
             Proponent proponent = em.find(Proponent.class, username);
             if (proponent == null) {
                 throw new EntityDoesNotExistException(
-                        "Não existe um utilizador Proponente com esse username.");
+                        "There is no proponent with that username.");
             }
 
             em.remove(proponent);
@@ -75,7 +75,8 @@ public class ProponentBean {
     @Path("all")
     public List<ProponentDTO> getAll() {
         try {
-            List<Proponent> proponents = em.createNamedQuery("getAllProponents").getResultList();
+            List<Proponent> proponents = 
+                    em.createNamedQuery("getAllProponents").getResultList();
             return proponentsToDTOs(proponents);
         } catch (Exception e) {
             e.printStackTrace();

@@ -11,7 +11,7 @@
     <h:body>
 
         <ui:composition template="../templates/skeleton.xhtml">
-            <ui:define name="title">CCP</ui:define>
+            <ui:define name="title">Detalhes de Prova Pública</ui:define>
             <ui:define name="main">
 
                 <h:panelGrid columns="2">
@@ -56,12 +56,12 @@
                         id="teacher"
                         value="#{administratorManager.currentPublicTest.advisorName}"/>
 
-                    <h:outputLabel for="outsideTeacherName" value="Nome do professore de fora(Membro do Júri): " />
+                    <h:outputLabel for="outsideTeacherName" value="Nome do professor de fora(Membro do Júri): " />
                     <h:outputText 
                         id="outsideTeacherName"
                         value="#{administratorManager.currentPublicTest.outsideTeacherName}"/>
 
-                    <h:outputLabel for="outsideTeacherEmail" value="Email do professore de fora: " />
+                    <h:outputLabel for="outsideTeacherEmail" value="Email do professor de fora: " />
                     <h:outputText 
                         id="outsideTeacherEmail"
                         value="#{administratorManager.currentPublicTest.outsideTeacherEmail}"/>
@@ -87,7 +87,7 @@
                 <br/>       
                 <br/>
 
-                <h:link value="Return" outcome="admin_index"/>
+                <h:link value="Voltar" outcome="admin_index"/>
 
                 <h:messages errorStyle="color: red" /> 
             </ui:define>

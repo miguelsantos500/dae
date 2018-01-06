@@ -1,5 +1,6 @@
 package entities;
 
+import entities.project.Project;
 import entities.publictest.PublicTest;
 import java.io.Serializable;
 import javax.persistence.CascadeType;
@@ -18,7 +19,8 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Table(name = "DOCUMENTS")
 @NamedQueries({
-    @NamedQuery(name = "getDocumentOfPublicTest", query = "SELECT doc FROM Document doc WHERE doc.publicTest.code = :code")
+    @NamedQuery(name = "getDocumentOfPublicTest", 
+                query = "SELECT doc FROM Document doc WHERE doc.publicTest.code = :code")
 })
 public class Document implements Serializable {
 
@@ -34,20 +36,12 @@ public class Document implements Serializable {
 
     @OneToOne(mappedBy = "fileRecord")
     private PublicTest publicTest;
-    
-    //acho que isto vai ter que ser manyToOne 
-   // @OneToOne(mappedBy = "fileRecord")
-   // private Application application;  
 
-    
-    ///////////////////////////////////////////////////////experiencia
     @ManyToOne
     @JoinColumn(name = "FILE_ID")
     @NotNull(message = "Tem que anexar todos os documentos")
     private Application application;
- ///////////////////////////////////////////////////////fim experiencia
-    
-    
+
     public Document() {
 
     }
@@ -56,14 +50,12 @@ public class Document implements Serializable {
         this.filepath = filepath;
         this.desiredName = desiredName;
         this.mimeType = mimeType;
-        
+
         if (entity.getEntity().getClass().equals(PublicTest.class)) {
             this.publicTest = (PublicTest) entity.getEntity();
-        }else if(entity.getEntity().getClass().equals(Application.class)){
+        } else if (entity.getEntity().getClass().equals(Application.class)) {
             this.application = (Application) entity.getEntity();
         }
-        
-        
 
     }
 
@@ -114,6 +106,5 @@ public class Document implements Serializable {
     public void setApplication(Application application) {
         this.application = application;
     }
-    
-    
+
 }

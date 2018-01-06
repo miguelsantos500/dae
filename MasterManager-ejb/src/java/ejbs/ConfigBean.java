@@ -150,13 +150,11 @@ public class ConfigBean {
             
             applicationBean.create("1111111", 1, "Eu sou o Manuel e quero fazer este projecto.");
             applicationBean.create("1111111", 7, "Quero ganhar experiência.");
-            applicationBean.create("3333333", 3, "Qeuro trabalhar nesta área e por isso quero fazer este projecto.");
+            applicationBean.create("3333333", 3, "Quero trabalhar nesta área e "
+                    + "por isso quero fazer este projecto.");
             applicationBean.create("3333333", 1, "Não sei o que dizer.");
             applicationBean.create("3333333", 5, "...");
 
-            //adicionar ficheiros às candidaturas
-            //todo
-            
             
             publicTestBean.create(1, "Title1", new Date(2000, 1, 1), "Sala yyy", "www.link.com", "2446546", "3243243", "Pedro Oliveia", "yyy@gmail.com", "1111111");
             publicTestBean.create(2, "Title2", new Date(2000, 1, 1), "Sala xxx", "www.link.com", "9473829", "3243244", "Pedro Silva", "xxx@gmail.com", "2222222");

@@ -1,4 +1,3 @@
-
 package ejbs.users;
 
 import dtos.CourseDTO;
@@ -20,14 +19,16 @@ import javax.validation.ConstraintViolationException;
  */
 @Stateless
 public class CourseBean {
-@PersistenceContext
+
+    @PersistenceContext
     private EntityManager em;
 
     public void create(int code, String name)
             throws EntityAlreadyExistsException, MyConstraintViolationException {
         try {
             if (em.find(Course.class, code) != null) {
-                throw new EntityAlreadyExistsException("A course with that code already exists.");
+                throw new EntityAlreadyExistsException("A course with that "
+                        + "code already exists.");
             }
             em.persist(new Course(code, name));
 
@@ -52,7 +53,7 @@ public class CourseBean {
     List<CourseDTO> coursesToDTOs(List<Course> courses) {
         List<CourseDTO> dtos = new ArrayList<>();
         for (Course c : courses) {
-            dtos.add(new CourseDTO(c.getCourseCode(), c.getCourseName()));            
+            dtos.add(new CourseDTO(c.getCourseCode(), c.getCourseName()));
         }
         return dtos;
     }

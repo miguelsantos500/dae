@@ -100,7 +100,6 @@ public class StudentManager {
 
     public List<ApplicationDTO> getSearchApplication() {
         try {
-            //tenho que saber qual é o estudante para que ele procure só as candidaturas desse estudante
             String username = userManager.getUsername();
             List<ApplicationDTO> foundApplications = applicationBean.search(searchableApplication, username);
             return foundApplications;
@@ -121,8 +120,8 @@ public class StudentManager {
             applications = applicationBean.getStudentApplications(username);
 
         } catch (ApplicationNumberException e) {
-            //TODO: apresentar a mensagem que não existe applications
-            FacesExceptionHandler.handleException(e, e.getMessage(), LOGGER);
+
+            FacesExceptionHandler.handleException(e, "Não existem candidatura!" + e.getMessage(), LOGGER);
 
         } catch (Exception e) {
             FacesExceptionHandler.handleException(e, "Erro inesperado: " + e.getMessage(), LOGGER);
@@ -136,71 +135,62 @@ public class StudentManager {
 
         try {
 
-            /*
-            WebTarget path = client.target(baseUri)
-                    .path("/applications/update");
-            System.out.println(path.getUri());
-            path.request(MediaType.APPLICATION_XML)
-                    .put(Entity.xml(currentApplication));
-             */
             uploadManager1.resetFilesArray();
-            
+
             DocumentDTO[] documents = new DocumentDTO[3];
-            
-            if(replaceCV){
+
+            if (replaceCV) {
                 uploadManager1.uploadSpecificFile(uploadManager1.getFileCv());
                 String path = uploadManager1.getCompletePathFiles().get(0);
                 String name = uploadManager1.getFilenames().get(0);
-                
-                documents[0] = new DocumentDTO(path, name, 
+
+                documents[0] = new DocumentDTO(path, name,
                         uploadManager1.getFileCv().getContentType());
-                
+
                 uploadManager1.resetFilesArray();
-            }else{
+            } else {
                 documents[0] = null;
             }
-            
-            if(replacePL){
+
+            if (replacePL) {
                 uploadManager1.uploadSpecificFile(uploadManager1.getFilePresentationLetter());
-                
+
                 String path = uploadManager1.getCompletePathFiles().get(0);
                 String name = uploadManager1.getFilenames().get(0);
-                
-                documents[1] = new DocumentDTO(path, name, 
+
+                documents[1] = new DocumentDTO(path, name,
                         uploadManager1.getFilePresentationLetter().getContentType());
-                
+
                 uploadManager1.resetFilesArray();
-            }else{
+            } else {
                 documents[1] = null;
             }
-            
-            if(replaceCert){
+
+            if (replaceCert) {
                 uploadManager1.uploadSpecificFile(uploadManager1.getFileCertificate());
-                
+
                 String path = uploadManager1.getCompletePathFiles().get(0);
                 String name = uploadManager1.getFilenames().get(0);
-                
-                documents[2] = new DocumentDTO(path, name, 
+
+                documents[2] = new DocumentDTO(path, name,
                         uploadManager1.getFileCertificate().getContentType());
-                
+
                 uploadManager1.resetFilesArray();
-                
-            }else{
+
+            } else {
                 documents[2] = null;
             }
-            
-            
+
             applicationBean.update(currentApplication, documents);
-            
+
             replaceCV = false;
             replacePL = false;
             replaceCert = false;
-            
-            
+
         } catch (Exception e) {
             e.printStackTrace();
             FacesExceptionHandler.handleException(e,
-                    "Unexpected error no updateApplication do AdministratorManager! "
+                    "Unexpected error on updateApplication StudentManager! "
                     + e.getMessage(), LOGGER);
             return null;
         }
@@ -216,7 +206,8 @@ public class StudentManager {
         } catch (EntityDoesNotExistException e) {
             FacesExceptionHandler.handleException(e, e.getMessage(), LOGGER);
         } catch (Exception e) {
-            FacesExceptionHandler.handleException(e, "Unexpected error! Try again later! " + e.getMessage(), component, LOGGER);
+            FacesExceptionHandler.handleException(e, "Unexpected error! "
+                    + "Try again later! " + e.getMessage(), component, LOGGER);
         }
     }
 
@@ -288,7 +279,8 @@ public class StudentManager {
         try {
             applicationBean.removeFileRecord(id, index);
         } catch (Exception e) {
-            FacesExceptionHandler.handleException(e, "Unexpected error no removeDocumentApplication! Try again later!", logger);
+            FacesExceptionHandler.handleException(e, "Unexpected error on removeDocumentApplication! "
+                    + "Try again later!", logger);
         }
     }
 

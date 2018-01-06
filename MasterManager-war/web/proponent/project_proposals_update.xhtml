@@ -4,7 +4,7 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core">
     <h:head>
-        <title>Academic Management</title>
+        <title>Actualizar Proposta de Projecto</title>
     </h:head>
     <h:body>
         <h:form>                  
@@ -34,7 +34,7 @@
                     id="title"
                     size="52"
                     required="true"
-                    requiredMessage="Error: Name cannot be empty."                            
+                    requiredMessage="Erro: O Nome não pode estar vazio."                            
                     value="#{proponentManager.currentProjectProposal.title}" />
                 <h:message for="title" errorStyle="color: red" />
 
@@ -43,7 +43,7 @@
                     id="proponent"
                     size="52"
                     required="true"
-                    requiredMessage="Error: Proponente cannot be empty."                            
+                    requiredMessage="Erro: O Proponente não pode estar vazio."                            
                     value="#{proponentManager.currentProjectProposal.proponentUsername}" >
                 </h:inputText>    
                 <h:message for="proponent" errorStyle="color: red" />
@@ -53,7 +53,7 @@
                     id="projectAbstract"
                     size="52"
                     required="true"
-                    requiredMessage="Error: Abstract cannot be empty."                            
+                    requiredMessage="Erro: O Abstract não pode estar vazio."                            
                     value="#{proponentManager.currentProjectProposal.projectAbstract}" >
                 </h:inputText>    
                 <h:message for="projectAbstract" errorStyle="color: red" />
@@ -63,7 +63,7 @@
                     id="workPlan"
                     size="52"
                     required="true"
-                    requiredMessage="Error: Plano de trabalho cannot be empty."                            
+                    requiredMessage="Erro: O Plano de Trabalho não pode estar vazio."                            
                     value="#{proponentManager.currentProjectProposal.workPlan}" >
                 </h:inputText>    
                 <h:message for="workPlan" errorStyle="color: red" />
@@ -73,7 +73,7 @@
                     id="workPlace"
                     size="52"
                     required="true"
-                    requiredMessage="Error: Local de trabalho cannot be empty."                            
+                    requiredMessage="Erro: O Local de Trabalho não pode estar vazio."                            
                     value="#{proponentManager.currentProjectProposal.workPlace}" >
                 </h:inputText>    
                 <h:message for="workPlace" errorStyle="color: red" />
@@ -84,7 +84,7 @@
 
                 <h:commandButton
                     id="submit"
-                    value="Update"
+                    value="Actualizar"
                     action="#{proponentManager.updateProjectProposal}" />
                 <h:message for="submit" style="color: red"/>
             </h:panelGrid>  

@@ -55,8 +55,7 @@ public class ProjectProposal implements Serializable {
     @ElementCollection(fetch=FetchType.EAGER)
     private List<String> scientificAreas;
 
-    //Quem propos a proposta
-    //TODO: Classe que é super, ou interface, de quem pode Propor, ao invés de User?
+    
     @NotNull
     @ManyToOne
     @JoinColumn(name = "PROPONENT_CODE")
@@ -84,9 +83,6 @@ public class ProjectProposal implements Serializable {
     @ElementCollection(fetch=FetchType.EAGER)
     private List<String> successRequirements;
 
-    /*    
-    @NotNull
-    private Budget budget;*///TODO:LATER
     @NotNull
     private String budget;
 

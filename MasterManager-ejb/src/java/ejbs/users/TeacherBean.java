@@ -34,7 +34,7 @@ public class TeacherBean {
         try {
             if (em.find(User.class, username) != null) {
                 throw new EntityAlreadyExistsException(
-                        "Um utilizador já existe com esse username.");
+                        "There is already a user with that username.");
             }
 
             Teacher teacher = new Teacher(username, password, name, email);
@@ -74,7 +74,7 @@ public class TeacherBean {
             Teacher teacher = em.find(Teacher.class, username);
             if (teacher == null) {
                 throw new EntityDoesNotExistException(
-                        "Não existe um utilizador Professore com esse username.");
+                        "There is no teacher with that username.");
             }
 
             em.remove(teacher);

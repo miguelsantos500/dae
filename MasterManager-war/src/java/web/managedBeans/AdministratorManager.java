@@ -24,6 +24,7 @@ import ejbs.users.TeacherBean;
 import entities.project.ProjectProposalState;
 import entities.project.ProjectType;
 import entities.users.UserGroup;
+import exceptions.ApplicationNumberException;
 import exceptions.ApplicationStateException;
 import exceptions.EntityAlreadyExistsException;
 import exceptions.EntityDoesNotExistException;
@@ -86,7 +87,7 @@ public class AdministratorManager {
     private ApplicationBean applicationBean;
     @EJB
     private ObservationBean observationBean;
-    
+
     /**
      * ** newObjects ***
      */
@@ -165,7 +166,7 @@ public class AdministratorManager {
         client = ClientBuilder.newClient();
     }
 
-    ///////////////////////////////////////////STUDENTS//////////////////////////////////////////
+    ////////////////////////////////////////////////////////STUDENTS/////////////////////////////////////////////////
     public String createStudent() {
 
         try {
@@ -178,7 +179,9 @@ public class AdministratorManager {
             newStudent.reset();
 
         } catch (Exception e) {
-            FacesExceptionHandler.handleException(e, "Erro inesperado no createStudent do AdministratorManager", component, logger);
+            FacesExceptionHandler.handleException(e,
+                    "Erro inesperado no createStudent do AdministratorManager",
+                    component, logger);
             e.printStackTrace();
             return null;
         }
@@ -195,7 +198,8 @@ public class AdministratorManager {
                     });
         } catch (Exception e) {
             e.printStackTrace();
-            FacesExceptionHandler.handleException(e, "Erro inesperado no getAllStudents AdministratorManager",
+            FacesExceptionHandler.handleException(e, "Erro inesperado no "
+                    + "getAllStudents AdministratorManager",
                     logger);
 
         }
@@ -211,7 +215,8 @@ public class AdministratorManager {
                     .put(Entity.xml(currentStudent));
 
         } catch (Exception e) {
-            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
+            FacesExceptionHandler.handleException(e, "Unexpected error! "
+                    + "Try again latter!", logger);
             return null;
         }
 
@@ -247,7 +252,7 @@ public class AdministratorManager {
         }
     }
 
-    ///////////////////////////////////////////TEACHERS//////////////////////////////////////////
+    ////////////////////////////////////////////////////TEACHERS///////////////////////////////////////////////////
     public String createTeacher() {
 
         try {
@@ -259,7 +264,8 @@ public class AdministratorManager {
             newTeacher.reset();
 
         } catch (Exception e) {
-            FacesExceptionHandler.handleException(e, "Erro inesperado no createTeacher do AdministratorManager", component, logger);
+            FacesExceptionHandler.handleException(e, "Erro inesperado no "
+                    + "createTeacher do AdministratorManager", component, logger);
             e.printStackTrace();
             return null;
         }
@@ -277,7 +283,8 @@ public class AdministratorManager {
 
         } catch (Exception e) {
             e.printStackTrace();
-            FacesExceptionHandler.handleException(e, "Erro inesperado no getAllTeachers AdministratorManager",
+            FacesExceptionHandler.handleException(e, "Erro inesperado no "
+                    + "getAllTeachers AdministratorManager",
                     logger);
 
         }
@@ -302,7 +309,8 @@ public class AdministratorManager {
 
         } catch (Exception e) {
             e.printStackTrace();
-            FacesExceptionHandler.handleException(e, "Erro inesperado no getAllTeachers AdministratorManager",
+            FacesExceptionHandler.handleException(e, "Erro inesperado no "
+                    + "getAllTeachers AdministratorManager",
                     logger);
 
         }
@@ -339,7 +347,7 @@ public class AdministratorManager {
         return "admin_index?faces-redirect=true";
     }
 
-    ////////////////////////////////////// PROJECT PROPOSAL /////////////////////////////////////////////////
+    ////////////////////////////////////////////// PROJECT PROPOSAL //////////////////////////////////////////////////////
     public void createProjectProposal() throws IOException {
 
         try {
@@ -490,62 +498,6 @@ public class AdministratorManager {
         }
     }
 
-    //ESTE METODO VAI SERVIR PARA DEPOIS associar UM ESTUDANTE PARA UMA DETERMINADA PROPOSTA depois de a candidatura 
-    //ser aceite
-    /*  public void assigneStudent(ActionEvent event) {
-        try {
-         //   UIParameter param = (UIParameter) event.getComponent().findComponent("studentUsername");
-        //    String username = param.getValue().toString();
-         String username = FacesContext.getCurrentInstance().getExternalContext().getUserPrincipal().getName();
-         logger.log(Level.SEVERE, " Student name is:"  + username);
-                 
-        studentBean.assigneStudent(username, currentProjectProposal.getCode());
-        } catch (EntityDoesNotExistException e) {
-            FacesExceptionHandler.handleException(e, e.getMessage(), logger);
-        } catch (Exception e) {
-            FacesExceptionHandler.handleException(e, "Erro inesperado, tente mais tarde.", logger);
-        }
-    }*/
-    //ESTE METODO VAI SERVIR PARA DEPOIS retirar UM ESTUDANTE de uma proposta da qual ele já
-    //tinha sido aceite
-    /*  public void unassigneStudent(ActionEvent event) {
-        try {
-            UIParameter param = (UIParameter) event.getComponent().findComponent("studentUsername");
-            String username = param.getValue().toString();
-            studentBean.unussigneStudent(username, currentProjectProposal.getCode());
-        } catch (EntityDoesNotExistException e) {
-            FacesExceptionHandler.handleException(e, e.getMessage(), logger);
-        } catch (Exception e) {
-            FacesExceptionHandler.handleException(e, "Erro inesperado, tente mais tarde.", logger);
-        }
-    }*/
-
- /*  public Collection<StudentDTO> getAppliedStudents() {
-
-        try {
-            return studentBean.getAssignedStudents(currentProjectProposal.getCode());
-        } catch (EntityDoesNotExistException e) {
-            FacesExceptionHandler.handleException(e, e.getMessage(), logger);
-            return null;
-        } catch (Exception e) {
-            FacesExceptionHandler.handleException(e, "Erro inesperado, tente mais tarde.", logger);
-            return null;
-        }
-    }
-     */
- /*  public Collection<StudentDTO> getUnappliedStudents() {
-
-        try {
-            return studentBean.getUnappliedStudents(currentProjectProposal.getCode());
-        } catch (EntityDoesNotExistException e) {
-            FacesExceptionHandler.handleException(e, e.getMessage(), logger);
-            return null;
-        } catch (Exception e) {
-            FacesExceptionHandler.handleException(e, "Erro inesperado, tente mais tarde.", logger);
-            return null;
-        }
-
-    }*/
     public String addObservation() {
         try {
             projectProposalBean.updateProjectProposalState(
@@ -563,7 +515,7 @@ public class AdministratorManager {
             return null;
         }
     }
-    
+
     public List<ObservationDTO> getAllObservations() {
         try {
             return client.target(URILookup.getBaseAPI()).
@@ -580,9 +532,8 @@ public class AdministratorManager {
             return null;
         }
     }
-    
 
-    ////////////// PUBLIC TEST ///////////////////
+    //////////////////////////////////////////////// PUBLIC TEST ////////////////////////////////////////////////////
     public String createPublicTest() {
 
         try {
@@ -630,7 +581,8 @@ public class AdministratorManager {
                     get(new GenericType<List<PublicTestDTO>>() {
                     });
         } catch (Exception e) {
-            FacesExceptionHandler.handleException(e, "Unexpected error no getSearchPublicTest!", logger);
+            FacesExceptionHandler.handleException(e, "Unexpected error no "
+                    + "getSearchPublicTest!", logger);
             return null;
         }
     }
@@ -643,7 +595,8 @@ public class AdministratorManager {
                     .put(Entity.xml(currentPublicTest));
 
         } catch (Exception e) {
-            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
+            FacesExceptionHandler.handleException(e, "Unexpected error! "
+                    + "Try again latter!", logger);
             return null;
         }
         return "admin_index?faces-redirect=true";
@@ -719,7 +672,7 @@ public class AdministratorManager {
         this.currentPublicTest = currentPublicTest;
     }
 
-    ///////////////////////////////////////////INSTITUTIONS//////////////////////////////////////////
+    //////////////////////////////////////////////////////////INSTITUTIONS///////////////////////////////////////////////////
     public String createInstitution() {
 
         try {
@@ -731,7 +684,8 @@ public class AdministratorManager {
             newInstitution.reset();
 
         } catch (Exception e) {
-            FacesExceptionHandler.handleException(e, "Erro inesperado no createInstitution do AdministratorManager", component, logger);
+            FacesExceptionHandler.handleException(e, "Erro inesperado no "
+                    + "createInstitution do AdministratorManager", component, logger);
             e.printStackTrace();
             return null;
         }
@@ -749,7 +703,8 @@ public class AdministratorManager {
 
         } catch (Exception e) {
             e.printStackTrace();
-            FacesExceptionHandler.handleException(e, "Erro inesperado no getAllTeachers AdministratorManager",
+            FacesExceptionHandler.handleException(e, "Erro inesperado no "
+                    + "getAllTeachers AdministratorManager",
                     logger);
 
         }
@@ -816,7 +771,7 @@ public class AdministratorManager {
         this.searchableInstitution = searchableInstitution;
     }
 
-    ///////////////////////////////////////////COURSES//////////////////////////////////////////
+    ////////////////////////////////////////////////////////COURSES//////////////////////////////////////////////////////
     public String createCourse() {
         try {
             courseBean.create(
@@ -827,7 +782,8 @@ public class AdministratorManager {
             FacesExceptionHandler.handleException(e, e.getMessage(), component, logger);
             return null;
         } catch (Exception e) {
-            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", component, logger);
+            FacesExceptionHandler.handleException(e, "Unexpected error! "
+                    + "Try again latter!", component, logger);
             return null;
         }
         return "index?faces-redirect=true";
@@ -837,7 +793,8 @@ public class AdministratorManager {
         try {
             return courseBean.getAll();
         } catch (Exception e) {
-            FacesExceptionHandler.handleException(e, "Unexpected error! Try again latter!", logger);
+            FacesExceptionHandler.handleException(e, "Unexpected error! "
+                    + "Try again latter!", logger);
             return null;
         }
     }
@@ -864,7 +821,7 @@ public class AdministratorManager {
                         files.get(i).getContentType()
                 ));
             }
-            //cria a candidatura e reeber o id gerado automaticamente
+            //cria a candidatura e receber o id gerado automaticamente
             Long applicationId = applicationBean.create(
                     username,
                     code,
@@ -891,8 +848,14 @@ public class AdministratorManager {
                     .addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(),
                             "candidaturas"));
 
+        } catch (ApplicationNumberException e) {
+            FacesContext.getCurrentInstance()
+                    .addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(),
+                            "candidaturas"));
+
         } catch (Exception e) {
-            FacesExceptionHandler.handleException(e, "Erro inesperado no creeateApplication do AdministratorManager", component, logger);
+            FacesExceptionHandler.handleException(e,
+                    "Erro inesperado no creeateApplication do AdministratorManager", component, logger);
             e.printStackTrace();
         }
         // return "student/student_index?faces-redirect=true";
@@ -931,23 +894,28 @@ public class AdministratorManager {
         }
     }
 
- /*   public void removeDocumentApplication(ActionEvent event) {
+    public String updateApplication() {
 
         try {
-            UIParameter param = (UIParameter) event.getComponent().findComponent("applicationId");
-            Long id = Long.parseLong(param.getValue().toString());
-            applicationBean.removeFileRecord(id);
+            applicationBean.update(currentApplication);
 
-            //       ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
-            //   externalContext.redirect("http://localhost:8080/MasterManager-war/faces/student/student_application_update.xhtml");
-        } catch (EntityDoesNotExistException e) {
-            FacesExceptionHandler.handleException(e, e.getMessage(), logger);
+        } catch (ApplicationStateException e) {
+            FacesContext.getCurrentInstance()
+                    .addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(),
+                            "candidaturas"));
+
         } catch (Exception e) {
-            FacesExceptionHandler.handleException(e, "Unexpected error no removeDocumentApplication! Try again latter!", logger);
+            e.printStackTrace();
+            FacesExceptionHandler.handleException(e, "Unexpected error no "
+                    + "updateApplication do AdministratorManager!", logger);
+            return null;
         }
-    }*/
 
-    public String updateApplication() {
+        return "student_index?faces-redirect=true";
+
+    }
+
+    public String updateApplicationRest() {
 
         try {
             WebTarget path = client.target(baseUri)
@@ -958,7 +926,8 @@ public class AdministratorManager {
 
         } catch (Exception e) {
             e.printStackTrace();
-            FacesExceptionHandler.handleException(e, "Unexpected error no updateApplication do AdministratorManager!", logger);
+            FacesExceptionHandler.handleException(e, "Unexpected error no "
+                    + "updateApplication do AdministratorManager!", logger);
             return null;
         }
 
@@ -1080,7 +1049,6 @@ public class AdministratorManager {
         this.searchableStudent = searchableStudent;
     }
 
-
     public String getSearchableProjectProposal() {
         return searchableProjectProposal;
     }
@@ -1088,7 +1056,7 @@ public class AdministratorManager {
     public void setSearchableProjectProposal(String searchableProjectProposal) {
         this.searchableProjectProposal = searchableProjectProposal;
     }
-    
+
     public ProjectType[] getAllProjectTypes() {
         return ProjectType.values();
     }
