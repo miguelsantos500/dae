@@ -37,9 +37,9 @@ public class Document implements Serializable {
     @OneToOne(mappedBy = "fileRecord")
     private PublicTest publicTest;
 
+    
     @ManyToOne
     @JoinColumn(name = "FILE_ID")
-    @NotNull(message = "Tem que anexar todos os documentos")
     private Application application;
 
     public Document() {

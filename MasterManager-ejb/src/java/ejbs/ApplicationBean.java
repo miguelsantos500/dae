@@ -242,7 +242,13 @@ public class ApplicationBean {
             }
 
             List<Document> fileRecords = application.getFileRecords();
-
+            
+            
+            for(Document d : fileRecords) {
+                em.remove(d);
+            }
+            
+            
             List<DocumentDTO> updatedDocuments = new LinkedList<>();
 
             for (int i = 0; i < documents.length; i++) {
@@ -283,7 +289,13 @@ public class ApplicationBean {
 
             //removo a candidatura da lista de candidaturas do estudante
             application.getStudent().removeApplication(application);
-
+            
+            
+            for(Document d : application.getFileRecords()) {
+                em.remove(d);
+            }
+            
+            
             //apago a candiatura da tabela
             em.remove(application);
 
@@ -330,7 +342,8 @@ public class ApplicationBean {
         }
 
     }
-
+    
+    
     public void approveApplication(Long id) {
         try {
             Application application = em.find(Application.class, id);
@@ -429,8 +442,8 @@ public class ApplicationBean {
             }
 
             application.setFileRecords(null);
-            em.merge(application);
             em.remove(document);
+            em.merge(application);
 
         } catch (EntityDoesNotExistException e) {
             throw e;

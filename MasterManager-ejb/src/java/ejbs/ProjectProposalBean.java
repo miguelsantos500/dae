@@ -26,6 +26,7 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
+import javax.mail.AuthenticationFailedException;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.validation.ConstraintViolation;
@@ -231,6 +232,13 @@ public class ProjectProposalBean {
                         "This Project Proposal is not in state PENDING, ACCEPTED, NOT_ACCEPTED, is in state: "
                         + projectProposal.getProjectProposalState());
             }
+            /*
+            if (projectProposal.getProjectProposalState() == projectProposalState) {
+                throw new ProjectProposalStateNotChangedException(
+                        "There is no change in the Project Proposal State! ("
+                        + projectProposalState + ")");
+            }*/
+            projectProposal.setProjectProposalState(projectProposalState);
 
             if (projectProposal.getProjectProposalState() != projectProposalState) {
                 proponentBean.sendEmailToProponent(projectProposal.getProponent().getUsername(),
@@ -238,8 +246,6 @@ public class ProjectProposalBean {
                         "A Sua Proposta de Projecto está agora no Estado "
                         + projectProposalState + ".");
             }
-
-            projectProposal.setProjectProposalState(projectProposalState);
 
         } catch (ProjectProposalNotPendingException e) {
             throw e;

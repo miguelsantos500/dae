@@ -23,7 +23,7 @@
                     requiredMessage="Erro: campo não pode estar vazio!"
                     value="#{administratorManager.searchableStudent}"/>
 
-                <br></br>
+                <br/>
 
                 <h:commandButton
                     id="searchStudent"
@@ -151,7 +151,25 @@
                 <h:message for="searchProjectProposal" style="color: red" />   
 
             </h:form> 
-
+            
+            <br/>
+            <br/>
+            
+            <em:dt 
+                title="Projetos" 
+                headers="#{['Título', 'Estudante', 'Orientador(es)']}"
+                props="#{['projectProposalTitle', 'studentName', 'teachers']}"
+                list="#{administratorManager.allProjects}">
+                <p:column headerText="Acções">
+                    <h:form>
+                        <h:commandLink rendered="${object.teachers == 'Não Atribuido'}" 
+                                       value="Atribuir Orientador(es)" action="admin_atribuir_orientadores?facesredirect=true">
+                            <f:setPropertyActionListener
+                                target="#{administratorManager.currentProject}" value="#{object}" />
+                        </h:commandLink>
+                    </h:form>
+                </p:column>
+            </em:dt>
 
             <br/>
             <br/>
@@ -275,18 +293,6 @@
             <br/>
             <br/>
 
-            <h:form enctype="multipart/form-data">
-                <p:growl id="messages" showDetail="true" />
-                <p:fileUpload value="#{uploadManager.file}" mode="simple" skinSimple="true"/>
-                <p:commandButton value="Submit" ajax="false" actionListener="#{uploadManager.upload}"/>
-            </h:form>
-            <h:messages errorClass="error" />
-
-            <h:form>
-                <p:commandButton value="Download" ajax="false" icon="ui-icon-arrowthick-1-s">
-                    <p:fileDownload value="#{downloadManager.file}" />
-                </p:commandButton>
-            </h:form>
         </ui:define>
     </ui:composition>
 </html>

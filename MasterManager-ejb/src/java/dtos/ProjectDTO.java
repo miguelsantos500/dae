@@ -1,9 +1,8 @@
 package dtos;
 
 import entities.Document;
-import entities.project.ProjectProposal;
-import entities.users.Student;
-import entities.users.Teacher;
+import java.util.LinkedList;
+import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -14,11 +13,12 @@ public class ProjectDTO {
 
     private Long id;
 
-    private Teacher[] teachers;
+    private String teachers;
 
     private String messageToTeacher;
 
-    private ProjectProposal projectProposal;
+    private int projectProposalCode;
+    private String projectProposalTitle;
 
     private Document articles;
     private Document sourceCode;
@@ -26,27 +26,32 @@ public class ProjectDTO {
     private Document other;
 
     private String documentsDescription;
-
-    private Student student;
+    
+    private String studentUsername;
+    private String studentName;
     
     public ProjectDTO() {
     }
 
-    public ProjectDTO(Long id, Teacher[] teachers, String messageToTeacher, 
-                    ProjectProposal projectProposal, Student student, String docDescription) {
+    public ProjectDTO(Long id, String messageToTeacher, 
+                    String projectProposalTitle, int projectProposalCode, 
+                    String studentName, String studentUsername, String teachers) {
         this.id = id;
-        this.student = student;
-        this.projectProposal = projectProposal;
+        this.studentUsername = studentUsername;
+        this.studentName = studentName;
+        this.projectProposalCode = projectProposalCode;
+        this.projectProposalTitle = projectProposalTitle;
         this.messageToTeacher = messageToTeacher;
-        this.documentsDescription = docDescription;
         this.teachers = teachers;
     }
     
     public void reset() {
-        student = null;
-        projectProposal = null;
+        studentUsername = null;
+        studentName = null;
         messageToTeacher = null;
         documentsDescription = null;
+        projectProposalTitle = null;
+        projectProposalTitle = null;
         teachers = null;
     }
 
@@ -58,28 +63,12 @@ public class ProjectDTO {
         this.id = id;
     }
 
-    public Teacher[] getTeachers() {
-        return teachers;
-    }
-
-    public void setTeachers(Teacher[] teachers) {
-        this.teachers = teachers;
-    }
-
     public String getMessageToTeacher() {
         return messageToTeacher;
     }
 
     public void setMessageToTeacher(String messageToTeacher) {
         this.messageToTeacher = messageToTeacher;
-    }
-
-    public ProjectProposal getProjectProposal() {
-        return projectProposal;
-    }
-
-    public void setProjectProposal(ProjectProposal projectProposal) {
-        this.projectProposal = projectProposal;
     }
 
     public Document getArticles() {
@@ -122,13 +111,46 @@ public class ProjectDTO {
         this.documentsDescription = documentsDescription;
     }
 
-    public Student getStudent() {
-        return student;
+    public int getProjectProposalCode() {
+        return projectProposalCode;
     }
 
-    public void setStudent(Student student) {
-        this.student = student;
+    public void setProjectProposalCode(int projectProposalCode) {
+        this.projectProposalCode = projectProposalCode;
     }
 
+    public String getProjectProposalTitle() {
+        return projectProposalTitle;
+    }
+
+    public void setProjectProposalTitle(String projectProposalTitle) {
+        this.projectProposalTitle = projectProposalTitle;
+    }
+
+    public String getStudentUsername() {
+        return studentUsername;
+    }
+
+    public void setStudentUsername(String studentUsername) {
+        this.studentUsername = studentUsername;
+    }
+
+    public String getStudentName() {
+        return studentName;
+    }
+
+    public void setStudentName(String studentName) {
+        this.studentName = studentName;
+    }
+
+    public String getTeachers() {
+        return teachers;
+    }
+
+    public void setTeachers(String teachers) {
+        this.teachers = teachers;
+    }
+
+    
     
 }

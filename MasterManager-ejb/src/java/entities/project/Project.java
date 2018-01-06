@@ -12,6 +12,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -19,6 +20,8 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "PROJECTS")
+@NamedQuery(name = "getAllProjects",
+        query = "SELECT s FROM Project s ORDER BY s.id")
 public class Project implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -106,4 +109,18 @@ public class Project implements Serializable {
         this.teachers.remove(teacher);
     }
 
+    public String getTeachersNames() {
+        if (teachers.isEmpty()) {
+            return "Não Atribuido";
+        }
+        
+        StringBuilder sb = new StringBuilder();
+        for (Teacher teacher : teachers) {
+            sb.append(teacher.getName());
+            sb.append(", ");
+        }
+        
+        sb.setLength(sb.length() - 2);
+        return sb.toString();
+    }
 }

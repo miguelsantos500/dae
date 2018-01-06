@@ -2,18 +2,18 @@ package web.managedBeans;
 
 import dtos.ApplicationDTO;
 import dtos.CourseDTO;
-import dtos.DocumentApplicationDTO;
 import dtos.DocumentDTO;
 import dtos.InstitutionDTO;
 import dtos.ObservationDTO;
+import dtos.ProjectDTO;
 import dtos.ProjectProposalDTO;
 import dtos.ProponentDTO;
 import dtos.PublicTestDTO;
 import dtos.StudentDTO;
 import dtos.TeacherDTO;
 import ejbs.ApplicationBean;
-import ejbs.EmailBean;
 import ejbs.ObservationBean;
+import ejbs.ProjectBean;
 import ejbs.ProjectProposalBean;
 import ejbs.PublicTestBean;
 import ejbs.users.CCPUserBean;
@@ -35,7 +35,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
@@ -52,14 +51,12 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.Form;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import org.primefaces.model.UploadedFile;
 import util.URILookup;
 import web.FacesExceptionHandler;
 import web.UploadManager;
-import web.UploadManager1;
 import web.UserManager;
 
 @ManagedBean
@@ -87,7 +84,9 @@ public class AdministratorManager {
     private ApplicationBean applicationBean;
     @EJB
     private ObservationBean observationBean;
-
+    @EJB
+    private ProjectBean projectBean;
+    
     /**
      * ** newObjects ***
      */
@@ -110,6 +109,7 @@ public class AdministratorManager {
     private PublicTestDTO currentPublicTest;
     private ProjectProposalDTO currentProjectProposal;
     private ApplicationDTO currentApplication;
+    private ProjectDTO currentProject;
 
     public ApplicationBean getApplicationBean() {
         return applicationBean;
@@ -134,13 +134,12 @@ public class AdministratorManager {
     @ManagedProperty(value = "#{uploadManager}")
     private UploadManager uploadManager;
 
-    @ManagedProperty(value = "#{uploadManager1}")
-    private UploadManager1 uploadManager1;
-
     @ManagedProperty(value = "#{userManager}")
     private UserManager userManager;
 
     private String scientificAreasString;
+    
+    private List<String> orientadores;
 
     private UIComponent component;
     private static final Logger logger = Logger.getLogger("web.managedBeans.AdministratorManager");
@@ -812,12 +811,12 @@ public class AdministratorManager {
         try {
             List<DocumentDTO> documents = new LinkedList<>();
 
-            List<UploadedFile> files = uploadManager1.getFiles();
+            List<UploadedFile> files = uploadManager.getFiles();
 
             for (int i = 0; i < files.size(); i++) {
                 documents.add(new DocumentDTO(
-                        uploadManager1.getCompletePathFiles().get(i),
-                        uploadManager1.getFilenames().get(i),
+                        uploadManager.getCompletePathFiles().get(i),
+                        uploadManager.getFilenames().get(i),
                         files.get(i).getContentType()
                 ));
             }
@@ -836,7 +835,7 @@ public class AdministratorManager {
                     documents);
 
             //fazer reset ao array de ficheiros
-            uploadManager1.resetFilesArray();
+            uploadManager.resetFilesArray();
 
             newApplication.reset();
 
@@ -947,7 +946,39 @@ public class AdministratorManager {
         ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
         externalContext.redirect("http://localhost:8080/MasterManager-war/faces/admin/admin_index.xhtml");
     }
+    
+    /////////////////////////////////////////// PROJECTS //////////////////////////////////////////
+    
+    public List<ProjectDTO> getAllProjects() {
+        List<ProjectDTO> returnedProjects = null;
+        try {
+            returnedProjects = client.target(baseUri)
+                    .path("/project/all")
+                    .request(MediaType.APPLICATION_XML)
+                    .get(new GenericType<List<ProjectDTO>>() {
+                    });
 
+        } catch (Exception e) {
+            e.printStackTrace();
+            FacesExceptionHandler.handleException(e, "Erro inesperado no getAllTeachers AdministratorManager",
+                    logger);
+
+        }
+        return returnedProjects;
+    }
+    
+    public String enrollTeacher() {
+        try {
+            projectBean.enrollTeacher(orientadores, currentProject.getId());
+        }  catch (Exception e) {
+            e.printStackTrace();
+            FacesExceptionHandler.handleException(e, "Erro inesperado no getAllTeachers AdministratorManager",
+                    logger);
+        }
+        
+        return "admin_index?faces-redirect=true";
+    }
+            
     ///////////////////////////////////////////Getters e setters tem que ser organizado//////////////////////////////////////////
     public ProjectProposalDTO getNewProjectProposal() {
         return newProjectProposal;
@@ -1122,12 +1153,19 @@ public class AdministratorManager {
         this.currentApplication = currentApplication;
     }
 
-    public UploadManager1 getUploadManager1() {
-        return uploadManager1;
+    public ProjectDTO getCurrentProject() {
+        return currentProject;
     }
 
-    public void setUploadManager1(UploadManager1 uploadManager1) {
-        this.uploadManager1 = uploadManager1;
+    public void setCurrentProject(ProjectDTO currentProject) {
+        this.currentProject = currentProject;
     }
 
+    public List<String> getOrientadores() {
+        return orientadores;
+    }
+
+    public void setOrientadores(List<String> orientadores) {
+        this.orientadores = orientadores;
+    }
 }
