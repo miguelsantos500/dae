@@ -58,7 +58,6 @@ import org.primefaces.model.UploadedFile;
 import util.URILookup;
 import web.FacesExceptionHandler;
 import web.UploadManager;
-import web.UploadManager1;
 import web.UserManager;
 
 @ManagedBean
@@ -132,9 +131,6 @@ public class AdministratorManager {
      */
     @ManagedProperty(value = "#{uploadManager}")
     private UploadManager uploadManager;
-
-    @ManagedProperty(value = "#{uploadManager1}")
-    private UploadManager1 uploadManager1;
 
     @ManagedProperty(value = "#{userManager}")
     private UserManager userManager;
@@ -855,12 +851,12 @@ public class AdministratorManager {
         try {
             List<DocumentDTO> documents = new LinkedList<>();
 
-            List<UploadedFile> files = uploadManager1.getFiles();
+            List<UploadedFile> files = uploadManager.getFiles();
 
             for (int i = 0; i < files.size(); i++) {
                 documents.add(new DocumentDTO(
-                        uploadManager1.getCompletePathFiles().get(i),
-                        uploadManager1.getFilenames().get(i),
+                        uploadManager.getCompletePathFiles().get(i),
+                        uploadManager.getFilenames().get(i),
                         files.get(i).getContentType()
                 ));
             }
@@ -879,7 +875,7 @@ public class AdministratorManager {
                     documents);
 
             //fazer reset ao array de ficheiros
-            uploadManager1.resetFilesArray();
+            uploadManager.resetFilesArray();
 
             newApplication.reset();
 
@@ -1152,14 +1148,6 @@ public class AdministratorManager {
 
     public void setCurrentApplication(ApplicationDTO currentApplication) {
         this.currentApplication = currentApplication;
-    }
-
-    public UploadManager1 getUploadManager1() {
-        return uploadManager1;
-    }
-
-    public void setUploadManager1(UploadManager1 uploadManager1) {
-        this.uploadManager1 = uploadManager1;
     }
 
 }
