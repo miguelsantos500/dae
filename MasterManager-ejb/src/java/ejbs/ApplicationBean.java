@@ -362,6 +362,15 @@ public class ApplicationBean {
             projectBean.create(projectProposal, application.getStudent(), 
                     projectProposal.getProponent().getUsername());
             
+            List<Application> aux = new LinkedList<>();
+            aux.addAll(application.getStudent().getApplications());
+            
+            for (Application app : aux) {
+                if (app.getApplicationState().equals(ApplicationState.PENDING)) {
+                    remove(String.valueOf(app.getId()));
+                }
+            }
+            
             /*emailBean.send(application.getStudent().getEmail(), "Candidatura", 
                     "A sua candidatura para o projeto " + projectProposal.getTitle() +
                     " foi aceite.\n\nBom Trabalho!");
