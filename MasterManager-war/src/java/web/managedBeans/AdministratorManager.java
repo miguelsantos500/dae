@@ -297,9 +297,16 @@ public class AdministratorManager {
                     });
             List<TeacherDTO> aux = new LinkedList<>(returnedTeachers);
             for (TeacherDTO teacherDTO : aux) {
+                
                 if (ccpUserBean.isCCPUser(teacherDTO.getEmail())) {
                     returnedTeachers.remove(teacherDTO);
                     returnedTeachers.add(0, teacherDTO);
+                }
+                
+                for (String teachersListUsername : currentProject.getTeachersListUsernames()) {
+                    if (teachersListUsername.equals(teacherDTO.getUsername())){
+                        returnedTeachers.remove(teacherDTO);
+                    }
                 }
             }
 
@@ -603,8 +610,7 @@ public class AdministratorManager {
             newPublicTest.reset();
 
         } catch (EntityAlreadyExistsException | EntityDoesNotExistException e) {
-            FacesExceptionHandler.handleException(e, "Erro ao criar a prova pública!",
-                    component, logger);
+            FacesExceptionHandler.handleException(e, e.getMessage(), component, logger);
             return null;
         }
         return "admin_index?faces-redirect=true";

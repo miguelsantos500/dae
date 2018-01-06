@@ -167,6 +167,12 @@
                             <f:setPropertyActionListener
                                 target="#{administratorManager.currentProject}" value="#{object}" />
                         </h:commandLink>
+                        &nbsp;
+                        <h:commandLink rendered="${object.teachers != 'Não Atribuido'}" value="Criar Prova Publica" 
+                                       action="admin_publictest_create?facesredirect=true">
+                            <f:setPropertyActionListener
+                                target="#{administratorManager.currentProject}" value="#{object}" />
+                        </h:commandLink>
                     </h:form>
                 </p:column>
             </em:dt>
@@ -197,9 +203,9 @@
 
             <em:dt 
                 title="Provas Públicas" 
-                headers="#{['Código', 'Titulo', 'Dia da Prova', 'Local', 'Estudante',
+                headers="#{['Titulo', 'Dia da Prova', 'Local', 'Estudante',
                            'Presidente do Jury', 'Orientador', 'Professore de Fora']}"
-                props="#{['code', 'title', 'testDateString', 'place', 'studentName',
+                props="#{['title', 'testDateString', 'place', 'studentName',
                          'juryPresidentName', 'advisorName', 'outsideTeacherName']}"
                 list="#{administratorManager.allPublicTests}">
                 <p:column headerText="Acções">
@@ -229,7 +235,7 @@
                         &nbsp;
                         <p:growl id="messages" showDetail="true" />
                         <p:fileUpload value="#{uploadManager.file}" mode="simple" skinSimple="true"/>
-                        <p:commandButton value="Submit" ajax="false" actionListener="#{uploadManager.upload}" >
+                        <p:commandButton value="Upload Ata" ajax="false" actionListener="#{uploadManager.upload}" >
                             <f:actionListener binding="#{administratorManager.uploadFileRecord(component)}"/>
                             <f:param name="publicTestCode2" id="publicTestCode2"
                                      value="#{object.code}" />
@@ -237,9 +243,6 @@
                     </h:form>
                 </p:column>
             </em:dt>
-
-            <h:link class="btn btn-primary" value="Criar Prova Pública" outcome="admin_publictest_create"/>
-
 
             <br/>
             <br/>

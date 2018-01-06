@@ -12,7 +12,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class ProjectDTO {
 
     private Long id;
-
+    
+    private List<String> teachersListNames;
+    private List<String> teachersListUsernames;
     private String teachers;
 
     private String messageToTeacher;
@@ -31,6 +33,8 @@ public class ProjectDTO {
     private String studentName;
     
     public ProjectDTO() {
+        this.teachersListNames = new LinkedList<>();
+        this.teachersListUsernames = new LinkedList<>();
     }
 
     public ProjectDTO(Long id, String messageToTeacher, 
@@ -43,6 +47,8 @@ public class ProjectDTO {
         this.projectProposalTitle = projectProposalTitle;
         this.messageToTeacher = messageToTeacher;
         this.teachers = teachers;
+        this.teachersListNames = new LinkedList<>();
+        this.teachersListUsernames = new LinkedList<>();
     }
     
     public void reset() {
@@ -53,6 +59,8 @@ public class ProjectDTO {
         projectProposalTitle = null;
         projectProposalTitle = null;
         teachers = null;
+        this.teachersListNames = new LinkedList<>();
+        this.teachersListUsernames = new LinkedList<>();
     }
 
     public Long getId() {
@@ -151,6 +159,27 @@ public class ProjectDTO {
         this.teachers = teachers;
     }
 
+    public List<String> getTeachersListNames() {
+        return teachersListNames;
+    }
+
+    public void setTeachersListNames(List<String> teachersListNames) {
+        this.teachersListNames = teachersListNames;
+    }
+
+    public List<String> getTeachersListUsernames() {
+        return teachersListUsernames;
+    }
+
+    public void setTeachersListUsernames(List<String> teachersListUsernames) {
+        this.teachersListUsernames = teachersListUsernames;
+    }
+
+    public void addToListTeacherName(String name) {
+        this.teachersListNames.add(name);
+    }
     
-    
+    public void addToListTeacherUsername(String username) {
+        this.teachersListUsernames.add(username);
+    }
 }

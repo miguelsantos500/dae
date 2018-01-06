@@ -36,17 +36,17 @@ public class ProjectBean {
 
     @PersistenceContext
     private EntityManager em;
-    
-    public void create(ProjectProposal projectProposal, Student student, 
-            String proponentUsername )
+
+    public void create(ProjectProposal projectProposal, Student student,
+            String proponentUsername)
             throws EntityAlreadyExistsException,
             EntityDoesNotExistException, MyConstraintViolationException {
         try {
             Project project = new Project(projectProposal, student);
             em.persist(project);
-            
+
             Teacher teacher = em.find(Teacher.class, proponentUsername);
-            if (teacher != null){
+            if (teacher != null) {
                 project.addTeacher(teacher);
                 teacher.setProject(project);
                 em.merge(teacher);
@@ -62,7 +62,7 @@ public class ProjectBean {
         }
 
     }
-    
+
     @GET
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Path("all")
@@ -74,7 +74,7 @@ public class ProjectBean {
             throw new EJBException(e.getMessage());
         }
     }
-    
+
     private List<ProjectDTO> projectsToDTOs(List<Project> projects) {
         List<ProjectDTO> dtos = new ArrayList<>();
         for (Project s : projects) {
@@ -84,24 +84,32 @@ public class ProjectBean {
     }
 
     private ProjectDTO projectToDTO(Project projects) {
-        return new ProjectDTO(
-                    projects.getId(),
-                    projects.getMessageToTeacher(),
-                    projects.getProjectProposal().getTitle(),
-                    projects.getProjectProposal().getCode(),
-                    projects.getStudent().getName(),
-                    projects.getStudent().getUsername(),
-                    projects.getTeachersNames());
-    }
+        ProjectDTO projectDTO = new ProjectDTO(
+                projects.getId(),
+                projects.getMessageToTeacher(),
+                projects.getProjectProposal().getTitle(),
+                projects.getProjectProposal().getCode(),
+                projects.getStudent().getName(),
+                projects.getStudent().getUsername(),
+                projects.getTeachersNames());
+        
+        for (Teacher teacher : projects.getTeachers()) {
+            projectDTO.addToListTeacherName(teacher.getName());
+            projectDTO.addToListTeacherUsername(teacher.getUsername());
+        }
+        
+        return projectDTO;
     
+    }
+
     public void enrollTeacher(List<String> teachers, Long id)
-            throws EntityDoesNotExistException{
+            throws EntityDoesNotExistException {
         try {
             Project project = em.find(Project.class, id);
             if (project == null) {
                 throw new EntityDoesNotExistException("There is no Project with that id.");
             }
-            
+
             Teacher teacher;
             for (String teacherUsername : teachers) {
                 teacher = em.find(Teacher.class, teacherUsername);
@@ -110,7 +118,7 @@ public class ProjectBean {
                 }
                 project.addTeacher(teacher);
             }
-            
+
         } catch (EntityDoesNotExistException e) {
             throw e;
         } catch (Exception e) {

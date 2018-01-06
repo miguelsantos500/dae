@@ -61,11 +61,10 @@
                 <h:message for="link" errorStyle="color: red" /> 
 
                 <h:outputLabel for="student" value="Estudante: " />
-                <h:inputText
-                    id="student"
-                    size="50"
-                    disabled="false"
-                    value="#{administratorManager.newPublicTest.studentUsername}"/>
+                <p:selectOneMenu id="student" value="#{administratorManager.newPublicTest.studentUsername}">
+                    <f:selectItem itemLabel="#{administratorManager.currentProject.studentName}" 
+                                  itemValue="#{administratorManager.currentProject.studentUsername}" />
+                </p:selectOneMenu>
                 <br></br>
 
                 <h:outputLabel for="juryPresident" value="Presidente do Júri(Membro da CCP): " />
@@ -85,10 +84,10 @@
                     id="teacher"
                     value="#{administratorManager.newPublicTest.advisorUsername}" >
                     <f:selectItems
-                        value="#{administratorManager.allTeachers}"
-                        var="teacher"
-                        itemValue="#{teacher.username}"
-                        itemLabel="#{teacher.name}" />
+                        value="#{administratorManager.currentProject.teachersListUsernames}" 
+                        var="username"
+                        itemValue="#{username}"
+                        itemLabel="#{username}" />
                 </h:selectOneMenu>
                 <br></br>
 
@@ -113,7 +112,7 @@
                 </h:inputText>
                 <h:message for="outsideTeacherEmail" errorStyle="color: red" /> 
 
-                
+
 
                 <h:commandButton
                     id="submit"
