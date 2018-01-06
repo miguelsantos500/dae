@@ -40,12 +40,9 @@ public class Document implements Serializable {
    // private Application application;  
 
     
-    ///////////////////////////////////////////////////////experiencia
     @ManyToOne
     @JoinColumn(name = "FILE_ID")
-    @NotNull(message = "Tem que anexar todos os documentos")
     private Application application;
- ///////////////////////////////////////////////////////fim experiencia
     
     
     public Document() {

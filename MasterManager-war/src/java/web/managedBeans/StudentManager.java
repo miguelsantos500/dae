@@ -216,7 +216,7 @@ public class StudentManager {
         } catch (EntityDoesNotExistException e) {
             FacesExceptionHandler.handleException(e, e.getMessage(), LOGGER);
         } catch (Exception e) {
-            FacesExceptionHandler.handleException(e, "Unexpected error! Try again later! " + e.getMessage(), component, LOGGER);
+            FacesExceptionHandler.handleException(e, "Unexpected error! Try again later! " + e.getMessage(), LOGGER);
         }
     }
 

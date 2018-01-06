@@ -27,8 +27,6 @@ public class DownloadManager implements Serializable {
     @EJB
     private PublicTestBean publicTestBean;
     
-     @EJB
-    private Application application;
     
     public DownloadManager() {
         
